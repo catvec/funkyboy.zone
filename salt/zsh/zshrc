@@ -1,0 +1,7 @@
+# Source all files in {{ pillar.zsh.zprofiled_path }}
+for file in $(ls {{ pillar.zsh.zprofiled_path }}); do
+  if ! . {{ pillar.zsh.zprofiled_path }}/"$file"; then
+    echo "Error: Failed to source $file" >&2
+    exit 1
+  fi
+done
