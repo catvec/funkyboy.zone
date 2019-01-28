@@ -1,12 +1,30 @@
-socklog-void:
+{% set pkg = 'socklog-void' %}
+{% set sock_svc = 'socklog-unix' %}
+{% set logd_svc = 'nanoklogd' %}
+
+{{ pkg }}:
   pkg.installed
 
-socklog-unix:
+{{ sock_svc}}-enabled:
   service.enabled:
+    - name: {{ sock_svc }}
     - require:
-      - pkg: socklog-void
+      - pkg: {{ pkg }}
 
-nanoklogd:
-  service.enabled:
+{{ sock_svc }}-running:
+  service.running:
+    - name: {{ sock_svc }}
     - require:
-      - pkg: socklog-void
+      - service: {{ sock_svc }}-enabled
+
+{{ logd_svc}}-enabled:
+  service.enabled:
+    - name: {{ logd_svc }}
+    - require: 
+      - pkg: {{ pkg }}
+
+{{ logd_svc }}-running:
+  service.running:
+    - name: {{ logd_svc }}
+    - require:
+      - service: {{ logd_svc }}-enabled
