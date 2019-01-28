@@ -1,0 +1,2 @@
+lnav:
+  pkg.installed
