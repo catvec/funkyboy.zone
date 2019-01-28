@@ -3,7 +3,7 @@ Linux server run at funkyboy.zone
 
 # Table Of Contents
 - [Overview](#overview)
-- [The Name?](#the-name?)
+- [The Name?](#the-name)
 - [Setup](#setup)
 - [Files](#files)
 
