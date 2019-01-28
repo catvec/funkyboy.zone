@@ -12,7 +12,7 @@ Server is setup using [Salt](https://saltstack.com).
 # Setup
 1. Run the initial setup script:
    ```
-   ./client-scripts/init.sh ADDRESS
+   ./client-scripts/init.sh root@funkyboy.zone
    ```
 
 # Files
