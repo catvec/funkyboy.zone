@@ -1,13 +1,21 @@
 # funkyboy.zone
-linux server run at funkyboy.zone
+Linux server run at funkyboy.zone
 
 # Table Of Contents
 - [Overview](#overview)
+- [The Name?](#the-name?)
 - [Setup](#setup)
 - [Files](#files)
 
 # Overview
 Server is setup using [Salt](https://saltstack.com).  
+
+# The Name?
+**Why funkyboy.zone?**  
+In one of my favorite movies, 
+[Redline](https://en.wikipedia.org/wiki/Redline_(2009_film)), the antagonist 
+has a secret weapon named "Funky Boy". I found this humorous, and decided to 
+name my Linux server: Funky Boy.
 
 # Setup
 On your computer:
