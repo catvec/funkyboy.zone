@@ -4,23 +4,18 @@ linux server run at funkyboy.zone
 # Table Of Contents
 - [Overview](#overview)
 - [Setup](#setup)
+- [Files](#files)
 
 # Overview
 Server is setup using [Salt](https://saltstack.com).  
 
 # Setup
-Put this repository in the `/opt/salt` folder on the server.  
+1. Run the initial setup script:
+   ```
+   ./client-scripts/init.sh ADDRESS
+   ```
 
-To setup the repository run:
-
-```
-mkdir -p /srv
-ln -s /opt/salt/salt /srv/salt
-ln -s /opt/salt/pillar /srv/pillar
-```
-
-Then execute the following commands to setup the server:
-
-```
-salt-call --local state.apply
-```
+# Files
+- `server-scripts/` - Scripts to be run on the server
+- `client-scripts/` - Scripts to be run on a client
+- `{salt,pillar}/` - Salt files
