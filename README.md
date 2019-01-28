@@ -10,9 +10,15 @@ linux server run at funkyboy.zone
 Server is setup using [Salt](https://saltstack.com).  
 
 # Setup
+On your computer:
+
 1. Run the initial setup script:
    ```
    ./client-scripts/init.sh root@funkyboy.zone
+   ```
+2. Setup rest of server:
+   ```
+   ./client-scripts/apply.sh root@funkyboy.zone
    ```
 
 # Files
