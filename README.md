@@ -18,13 +18,12 @@ has a secret weapon named "Funky Boy". I found this humorous, and decided to
 name my Linux server: Funky Boy.
 
 # Setup
-On your computer:
-
-1. Run the initial setup script:
+1. Create a droplet on DigitalOcean running Void Linux
+2. Run the initial setup script:
    ```
    ./client-scripts/init.sh root@funkyboy.zone
    ```
-2. Setup rest of server:
+3. Setup rest of server:
    ```
    ./client-scripts/apply.sh root@funkyboy.zone
    ```
