@@ -30,6 +30,14 @@ if [ -z "$1" ]; then
 fi
 address="$1"
 
+# Copy SSH id
+echo "===== Copying SSH id"
+
+if ! ssh-copy-id "$address"; then
+	echo "Error: Failed to copy SSH id" >&2
+	exit 1
+fi
+
 # Install rsync
 echo "===== Installing rsync on server if needed"
 
