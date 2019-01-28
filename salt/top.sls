@@ -1,6 +1,7 @@
 base:
   '*':
     - socklog
+    - crond
     - motd
     - neovim
     - zsh
