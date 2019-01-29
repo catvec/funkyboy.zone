@@ -1,13 +1,19 @@
-/opt/scripts:
+{% set dir = '/opt/scripts' %}
+{% set repo = 'https://github.com/Noah-Huppert/scripts.git' %}
+
+{{ dir }}:
   file.directory:
     - makedirs: True
-    - mode: 557
+    - dir_mode: 775
+    - file_mode: 775
+    - recurse:
+      - mode
 
-https://github.com/Noah-Huppert/scripts.git:
+{{ repo }}:
   git.latest:
-    - target: /opt/scripts
+    - target: {{ dir }}
     - require:
-      - file: /opt/scripts
+      - file: {{ dir }}
 
 {{ pillar.zsh.zprofiled_path }}/scripts-repo:
   file.managed:
