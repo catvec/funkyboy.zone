@@ -1,6 +1,7 @@
 base:
   '*':
     - socklog
+    - sshd-config
     - crond
     - motd
     - users
