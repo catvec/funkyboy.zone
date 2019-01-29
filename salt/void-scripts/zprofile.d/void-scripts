@@ -1,0 +1,1 @@
+export PATH="$PATH:{{ pillar.void_scripts_dir }}"

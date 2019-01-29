@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+#?
+# logs - Display logs from socklog with LNav 
+#
+# USAGE
+#
+#	logs [GROUP] [--help,-h] [--list-groups,-ls]
+#
+# ARGUMENTS
+#
+#	GROUP    (Optional) Log group to display, defaults to 'everything'. To 
+#	         display available log groups see the --list-groups,-ls option
+#
+# OPTIONS
+#
+#	--help,-h            Show help text
+#
+#	--list-groups,-ls    If provided will list available log groups 
+#	                     and exit
+#?
+
+# Exit on any error
+set -e
+
+# Configuration
+logs_dir=/var/log/socklog
+default_group=everything
+
+# Arguments
+while [ ! -z "$1" ]; do
+	case "$1" in
+		--help|-h)
+			show-help "$0"
+			exit 1
+			;;
+
+		--list-groups|-ls)
+			ls_out=$(ls "$logs_dir")
+			if [[ "$?" != "0" ]] ; then
+				echo "Error: Failed to list log groups" >&2
+				exit 1
+			fi
+
+			for item in $ls_out; do
+				echo "$item"
+			done
+
+			exit 0
+			;;
+
+		*)
+			group="$1"
+			shift
+			;;
+	esac
+done
+
+if [ -z "$group" ]; then
+	group="$default_group"
+fi
+
+# Display log group
+if ! lnav "$logs_dir/$group/current"; then
+	echo "Error: Failed to display \"$group\" log group" >&2
+	exit 1
+fi
