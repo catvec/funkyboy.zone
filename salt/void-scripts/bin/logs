@@ -59,6 +59,11 @@ if [ -z "$group" ]; then
 	group="$default_group"
 fi
 
+if [ ! -f "$groups" ]; then
+	echo "Error: Log group \"$group\" doesn't exist" >&2
+	exit 1
+fi
+
 # Display log group
 if ! lnav "$logs_dir/$group/current"; then
 	echo "Error: Failed to display \"$group\" log group" >&2
