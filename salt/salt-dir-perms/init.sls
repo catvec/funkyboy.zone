@@ -10,4 +10,4 @@
     - recurse:
       - group
       - mode
-    - dir_mode: 777
+    - dir_mode: 775
