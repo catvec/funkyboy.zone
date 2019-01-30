@@ -56,7 +56,7 @@ if [ ! -z "$salt_test" ]; then
 	salt_post_args="$salt_post_args test=true"
 fi
 
-if ! ssh "$address" "salt-call --local --force-color state.apply $salt_post_args"; then
+if ! ssh "$address" "sudo salt-call --local --force-color state.apply $salt_post_args"; then
 	echo "Error: Failed to apply Salt states" >&2
 	exit 1
 fi
