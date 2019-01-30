@@ -1,6 +1,6 @@
 # Source all files in .zprofile.d directory
 for zsh_unit in $(ls "$HOME/.zprofile.d" | sort -n); do
-	if ! . "$zsh_unit"; then
+	if ! . "$HOME/.zprofile.d/$zsh_unit"; then
 		echo "Error: Failed to load \"$zsh_unit\" Zsh unit" >&2
 		return 1
 	fi
