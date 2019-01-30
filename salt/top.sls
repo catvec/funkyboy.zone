@@ -1,5 +1,6 @@
 base:
   '*':
+    - salt-dir-perms
     - socklog
     - sshd-config
     - sudo-no-password
