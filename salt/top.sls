@@ -2,9 +2,10 @@ base:
   '*':
     - socklog
     - sshd-config
+    - sudo-no-password
+    - users
     - crond
     - motd
-    - users
     - neovim
     - zsh
     - lnav
