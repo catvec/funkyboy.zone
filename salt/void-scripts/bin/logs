@@ -15,7 +15,7 @@
 #
 #	--help,-h            Show help text
 #
-#	--list-groups,-ls    If provided will list available log groups 
+#	--list-groups,-l    If provided will list available log groups 
 #	                     and exit
 #?
 
@@ -34,7 +34,7 @@ while [ ! -z "$1" ]; do
 			exit 1
 			;;
 
-		--list-groups|-ls)
+		--list-groups|-l)
 			ls_out=$(ls "$logs_dir")
 			if [[ "$?" != "0" ]] ; then
 				echo "Error: Failed to list log groups" >&2
