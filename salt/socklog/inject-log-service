@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+#?
+# inject-log-service - Injects the log-service script as the log script for 
+#                      each service
+#
+# USAGE
+#
+#	inject-log-service
+#
+# BEHAVIOR
+#
+#	For each service in /var/service the log/run script will be replaced 
+#	by the log-service script.
+#
+# 	If a log/run file exists it is backed up under log/run.old
+#
+#?
+
+# Exit on any error
+set -e
+
+# Configuration
+log_service_install_f={{ pillar.socklog.log_service_path }}
+
+# For each service
+for svc in $(ls /var/service); do
+	svc_dir="/var/service/$svc"
+	svc_log_dir="$svc_dir/log"
+	svc_log_run_f="$svc_log_dir/run"
+
+	# Check if an existing log/run file exists
+	if [ -e "$svc_log_run_f" ]; then
+		# Check if existing log/run file is log-service script
+		actual_path=$(readlink -f "$svc_log_run_f")
+		if [[ "$?" != "0" ]]; then
+			echo "Error: Failed to readlink for $svc_log_run_f" >&2
+			exit 1
+		fi
+
+		if [[ "$actual_path" == "$log_service_install_f" ]]; then
+			# If log-service already injected, continue to next svc
+			continue
+		fi
+
+		# Backup existing log/run file
+		mv "$svc_log_run_f" "$svc_log_run_f.old"
+	fi
+
+	# Inject log-service script
+	if ! mkdir -p "$svc_log_dir"; then
+		echo "Error: Failed to create service log directory \"$svc_log_dir\"" >&2
+		exit 1
+	fi
+
+	if ! ln -s "$log_service_install_f" "$svc_log_run_f"; then
+		echo "Error: Failed to link $log_service_install_f -> $svc_log_run_f" >&2
+		exit 1
+	fi
+done
