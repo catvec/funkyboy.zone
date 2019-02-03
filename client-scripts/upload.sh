@@ -30,7 +30,9 @@ address="$1"
 prog_path=$(dirname "$0")
 repo_path=$(realpath "$prog_path/..")
 
-if ! rsync -r "$repo_path"  "$address":/opt/; then
+if ! rsync \
+	--exclude .git \
+	-r "$repo_path" "$address":/opt/; then
 	echo "Error: Failed to upload repository files to $address" >&2
 	exit 1
 fi
