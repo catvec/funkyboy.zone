@@ -27,6 +27,8 @@ fi
 address="$1"
 
 # Upload
+echo "===== Uploading"
+
 prog_path=$(dirname "$0")
 repo_path=$(realpath "$prog_path/..")
 
@@ -34,6 +36,14 @@ if ! rsync \
 	--exclude .git \
 	-r "$repo_path" "$address":/opt/; then
 	echo "Error: Failed to upload repository files to $address" >&2
+	exit 1
+fi
+
+# Chown
+echo "===== Chowning"
+
+if ! ssh "$address" "sudo chown -R :salt /opt/funkyboy.zone"; then
+	echo "Error: Failed to chown repository files on host" >&2
 	exit 1
 fi
 
