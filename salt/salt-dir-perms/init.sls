@@ -7,7 +7,7 @@
 {{ dir }}:
   file.directory:
     - group: {{ group }}
-  #    - recurse:
-    #      - group
-    #      - mode
+    - recurse:
+      - group
+      - mode
     - dir_mode: 775
