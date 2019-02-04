@@ -35,13 +35,7 @@
     - require:
       - service: {{ klogd_svc }}-enabled
 
-{{ pillar.syslog.log_service_path }}:
-  file.managed:
-    - source: salt://syslog/log-service
-    - mode: 775
-
 {{ pillar.syslog.inject_log_service_path }}:
   file.managed:
     - source: salt://syslog/inject-log-service
     - mode: 755
-    - template: jinja
