@@ -4,11 +4,15 @@
 #
 # USAGE
 #
-#	upload.sh ADDRESS
+#	upload.sh ADDRESS [--no-chown]
 #
 # ARGUMENTS
 #
 #	ADDRESS    Server address, can include username if required
+#
+# OPTIONS
+#
+#	--no-chown    Don't chown files with a group
 #
 # BEHAVIOR
 #
@@ -19,12 +23,26 @@
 # Exit on any error
 set -e
 
+# Arguments
+while [ ! -z "$1" ]; do
+	case "$1" in
+		--no-chown)
+			no_chown="true"
+			shift
+			;;
+
+		*)
+			address="$1"
+			shift
+			;;
+	esac
+done
+
 # Check for address argument
-if [ -z "$1" ]; then
+if [ -z "$address" ]; then
 	echo "Error: ADDRESS argument required" >&2
 	exit 1
 fi
-address="$1"
 
 # Upload
 echo "===== Uploading"
@@ -40,11 +58,13 @@ if ! rsync \
 fi
 
 # Chown
-echo "===== Chowning"
+if [ -z "$no_chown" ]; then
+	echo "===== Chowning"
 
-if ! ssh "$address" "sudo chown -R :salt /opt/funkyboy.zone"; then
-	echo "Error: Failed to chown repository files on host" >&2
-	exit 1
+	if ! ssh "$address" "sudo chown -R :salt /opt/funkyboy.zone"; then
+		echo "Error: Failed to chown repository files on host" >&2
+		exit 1
+	fi
 fi
 
 echo "Done"
