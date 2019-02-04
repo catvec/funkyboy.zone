@@ -52,10 +52,12 @@ for svc in $(ls /var/service); do
 	svc_log_dir="$svc_dir/log"
 	svc_log_run_f="$svc_log_dir/run"
 
-	echo "===== Injecting $svc_dir"
+	echo "===== Injecting $svc"
 
 	# {{{2 Check if an existing log/run file exists
 	if [ -e "$svc_log_run_f" ]; then
+		echo "Already has logging service"
+
 		# {{{3 Check if existing log/run file is log-service script
 		actual_path=$(readlink -f "$svc_log_run_f")
 		if [[ "$?" != "0" ]]; then
@@ -81,18 +83,20 @@ for svc in $(ls /var/service); do
 		else
 			echo "[dry run] mv $svc_log_run_f $backup_svc_log_run_f"
 		fi
-	fi
-
-	# {{{2 Inject log-service script
-	if [ -z "$dry_run" ]; then
-		if ! mkdir -p "$svc_log_dir"; then
-			echo "Error: Failed to create service log directory \"$svc_log_dir\"" >&2
-			exit 1
-		fi
 	else
-		echo "[dry run] mkdir -p $svc_log_dir"
+		echo "No existing logging service"
+
+		if [ -z "$dry_run" ]; then
+			if ! mkdir -p "$svc_log_dir"; then
+				echo "Error: Failed to create service log directory \"$svc_log_dir\"" >&2
+				exit 1
+			fi
+		else
+			echo "[dry run] mkdir -p $svc_log_dir"
+		fi
 	fi
 
+	# {{{2 Inject log-service script	
 	if [ -z "$dry_run" ]; then
 		if ! ln -s "$log_service_install_f" "$svc_log_run_f"; then
 			echo "Error: Failed to link $log_service_install_f -> $svc_log_run_f" >&2
