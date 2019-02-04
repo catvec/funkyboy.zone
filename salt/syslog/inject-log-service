@@ -24,6 +24,12 @@
 # {{{1 Exit on any error
 set -e
 
+# {{{1 Check if running as root
+if [[ "$EUID" != "0" ]]; then
+	echo "Error: Must run as root" >&2
+	exit 1
+fi
+
 # {{{1 Configuration
 log_service_install_f=$(which vlogger)
 if [[ "$?" != "0" ]]; then
@@ -47,17 +53,21 @@ while [ ! -z "$1" ]; do
 done
 
 # {{{1 For each service
+already_injected_svcs=""
+freshly_injected_svcs=""
+overwritten_injected_svcs=""
+
 for svc in $(ls /var/service); do
 	svc_dir="/var/service/$svc"
 	svc_log_dir="$svc_dir/log"
 	svc_log_run_f="$svc_log_dir/run"
 
+	should_restart_log_svc="false"
+
 	echo "===== Injecting $svc"
 
 	# {{{2 Check if an existing log/run file exists
 	if [ -e "$svc_log_run_f" ]; then
-		echo "Already has logging service"
-
 		# {{{3 Check if existing log/run file is log-service script
 		actual_path=$(readlink -f "$svc_log_run_f")
 		if [[ "$?" != "0" ]]; then
@@ -67,16 +77,15 @@ for svc in $(ls /var/service); do
 
 		if [[ "$actual_path" == "$log_service_install_f" ]]; then
 			# If log-service already injected, continue to next svc
-			echo "Already injected"
+			already_injected_svcs="$already_injected_svcs $svc"
 			continue
 		fi
 
 		# {{{3 Backup existing log/run file
-		echo "Not injected"
+		overwritten_injected_svcs="$overwritten_injected_svcs $svc"
+		should_restart_log_svc="true"
 
 		backup_svc_log_run_f="$svc_log_run_f.old"
-
-		echo "Backing up $svc_log_run_f to $backup_svc_log_run_f"
 
 		if [ -z "$dry_run" ]; then
 			mv "$svc_log_run_f" "$backup_svc_log_run_f"
@@ -84,19 +93,16 @@ for svc in $(ls /var/service); do
 			echo "[dry run] mv $svc_log_run_f $backup_svc_log_run_f"
 		fi
 	else
-		echo "No existing logging service"
-
+		freshly_injected_svcs="$freshly_injected_svcs $svc"
 		if [ -z "$dry_run" ]; then
 			if ! mkdir -p "$svc_log_dir"; then
 				echo "Error: Failed to create service log directory \"$svc_log_dir\"" >&2
 				exit 1
 			fi
-		else
-			echo "[dry run] mkdir -p $svc_log_dir"
 		fi
 	fi
 
-	# {{{2 Inject log-service script	
+	# {{{2 Inject log-service script
 	if [ -z "$dry_run" ]; then
 		if ! ln -s "$log_service_install_f" "$svc_log_run_f"; then
 			echo "Error: Failed to link $log_service_install_f -> $svc_log_run_f" >&2
@@ -105,4 +111,26 @@ for svc in $(ls /var/service); do
 	else
 		echo "[dry run] ln -s $log_service_install_f $svc_log_run_f"
 	fi
+
+	# {{{2 Restart log service if we replaced an existing log service with
+	# a new log service
+	if [[ "$should_restart_log_svc" == "true" ]]; then
+		if [ -z "$dry_run" ]; then
+			if ! sv restart "$svc/log"; then
+				echo "Error: Failed to restart $svc log service" >&2
+				exit 1
+			fi
+		else
+			echo "[dry run] sv restart $svc/log"
+		fi
+	fi
 done
+
+# {{{1 Print results of action
+if [ ! -z "$dry_run" ]; then
+	echo "In dry run mode"
+fi
+
+echo "Already injected: $already_injected_svcs"
+echo "Freshly injected: $freshly_injected_svcs"
+echo "Overwritten injected: $overwritten_injected_svcs"
