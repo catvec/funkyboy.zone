@@ -20,7 +20,7 @@
 set -e
 
 # Configuration
-log_service_install_f={{ pillar.socklog.log_service_path }}
+log_service_install_f={{ pillar.syslog.log_service_path }}
 
 # For each service
 for svc in $(ls /var/service); do

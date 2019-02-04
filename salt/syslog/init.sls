@@ -4,9 +4,9 @@
 #
 # Places the log-service and inject-log-service scripts on the host
 
-{% set pkg = pillar['socklog']['pkg'] %}
-{% set sock_svc = pillar['socklog']['sock_svc'] %}
-{% set klogd_svc = pillar['socklog']['klogd_svc'] %}
+{% set pkg = pillar['syslog']['pkg'] %}
+{% set sock_svc = pillar['syslog']['sock_svc'] %}
+{% set klogd_svc = pillar['syslog']['klogd_svc'] %}
 
 {{ pkg }}:
   pkg.installed
@@ -35,13 +35,13 @@
     - require:
       - service: {{ klogd_svc }}-enabled
 
-{{ pillar.socklog.log_service_path }}:
+{{ pillar.syslog.log_service_path }}:
   file.managed:
-    - source: salt://socklog/log-service
+    - source: salt://syslog/log-service
     - mode: 775
 
-{{ pillar.socklog.inject_log_service_path }}:
+{{ pillar.syslog.inject_log_service_path }}:
   file.managed:
-    - source: salt://socklog/inject-log-service
+    - source: salt://syslog/inject-log-service
     - mode: 755
     - template: jinja

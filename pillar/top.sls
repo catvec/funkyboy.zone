@@ -2,5 +2,5 @@ base:
   '*':
     - zsh
     - users
-    - socklog
+    - syslog
     - void-scripts
