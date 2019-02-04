@@ -41,7 +41,7 @@ fi
 # Install rsync
 echo "===== Installing rsync on server if needed"
 
-if ! ssh "$address" 'which rsync || xbps-install -Sy rsync'; then
+if ! ssh "$address" 'which rsync &> /dev/null || xbps-install -Sy rsync'; then
 	echo "Error: Failed to install rsync on server" >&2
 	exit 1
 fi
@@ -49,7 +49,7 @@ fi
 # Upload
 echo "===== Uploading files"
 
-if ! "$prog_dir"/upload.sh "$address"; then
+if ! "$prog_dir"/upload.sh "$address" --no-chown; then
 	echo "Error: Failed to upload files" >&2
 	exit 1
 fi
@@ -59,6 +59,14 @@ echo "===== Running init script on server"
 
 if ! ssh "$address" /opt/funkyboy.zone/server-scripts/init.sh; then
 	echo "Error: Failed to run init script on server" >&2
+	exit 1
+fi
+
+# Apply salt state
+echo "===== Applying salt state for first time"
+
+if ! "$prog_dir/apply.sh" "$address" --no-chown; then
+	echo "Error: Failed to apply salt state for first time" >&2
 	exit 1
 fi
 

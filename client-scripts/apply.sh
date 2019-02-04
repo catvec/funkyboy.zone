@@ -4,7 +4,7 @@
 #
 # USAGE
 #
-#	apply.sh ADDRESS [--test,-t]
+#	apply.sh ADDRESS [--test,-t] [--no-chown]
 #
 # ARGUMENTS
 #
@@ -12,7 +12,8 @@
 #
 # OPTIONS
 #
-#	--test,-t    Run Salt in test mode
+#	--test,-t     Run Salt in test mode
+#	--no-chown    Do not chown uploaded directory
 #
 # BEHAVIOR
 #
@@ -34,6 +35,11 @@ while [ ! -z "$1" ]; do
 			shift
 			;;
 
+		--no-chown)
+			no_chown="true"
+			shift
+			;;
+
 		*)
 			address="$1"
 			shift
@@ -44,7 +50,11 @@ done
 # Upload files
 echo "===== Uploading files"
 
-if ! "$prog_dir"/upload.sh "$address"; then
+if [ ! -z "$no_chown" ]; then
+	upload_args="--no-chown"
+fi
+
+if ! "$prog_dir"/upload.sh "$address" $upload_args; then
 	echo "Error: Failed to upload files" >&2
 	exit 1
 fi
