@@ -13,4 +13,4 @@
     - recurse:
       - group
       - mode
-    - dir_mode: 775
+    - dir_mode: 771
