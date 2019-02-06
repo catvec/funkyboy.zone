@@ -1,8 +1,9 @@
-# Sets up the socklog logging service
+# Sets up the socklog logging service.
 #
 # Installs socklog and enables its services.
 #
-# Places the log-service and inject-log-service scripts on the host
+# Configures all running services to send their output to socklog 
+# using vlogger.
 
 {% set pkg = pillar['syslog']['pkg'] %}
 {% set sock_svc = pillar['syslog']['sock_svc'] %}
