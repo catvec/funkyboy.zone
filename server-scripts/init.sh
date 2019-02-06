@@ -75,13 +75,23 @@ else
 	echo "/srv directory already exists"
 fi
 
-for symlink_dir in salt pillar secrets/salt secrets/pillar; do
-	if [ ! -d "/srv/$symlink_dir" ]; then
-		if ! ln -s "/opt/funkyboy.zone/$symlink_dir" "/srv/$symlink_dir"; then
-			echo "Error: Failed to symlink /srv/$symlink_dir directory" >&2
+symlink_sources=(salt pillar secrets/salt secrets/pillar)
+symlink_targets=(/srv/salt /srv/pillar /srv/salt-secrets /srv/pillar-secrets)
+
+for i in $(seq 0 $((${#symlink_sources[@]} - 1))); do
+	symlink_source=${symlink_sources[$i]}
+	symlink_target=${symlink_targets[$i]}
+
+	# Check if target dir exists
+	if [ ! -d "$symlink_target" ]; then
+		# Symlink
+		if ! ln -s "/opt/funkyboy.zone/$symlink_source" "$symlink_target"; then
+			echo "Error: Failed to symlink $symlink_source to $symlink_target directory" >&2
 			exit 1
 		fi
+
+		echo "Symlinked $symlink_source to $symlink_target"
 	else
-		echo "/srv/$symlink_dir directory already symlinked"
+		echo "$symlink_target directory already symlinked"
 	fi
 done
