@@ -1,3 +1,5 @@
+# Installs dcron and sets it up to be the cron daemon.
+
 {% set pkg = 'dcron' %}
 {% set svc = 'crond' %}
 
