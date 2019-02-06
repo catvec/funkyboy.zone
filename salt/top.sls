@@ -19,3 +19,4 @@ base:
     - nginx
     - znc-secret
     - znc
+    - file-modes-website

@@ -50,3 +50,4 @@
       - service: {{ svc }}-enabled
     - watch:
       - file: {{ conf_f }}
+      - file: {{ pillar.nginx.config_dir }}/{{ pillar.file_modes_website.config_file }}
