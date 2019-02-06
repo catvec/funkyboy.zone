@@ -75,8 +75,8 @@ else
 	echo "/srv directory already exists"
 fi
 
-symlink_sources=(salt pillar secrets/salt secrets/pillar)
-symlink_targets=(/srv/salt /srv/pillar /srv/salt-secrets /srv/pillar-secrets)
+symlink_sources=(salt pillar secret/salt secret/pillar)
+symlink_targets=(/srv/salt /srv/pillar /srv/salt-secret /srv/pillar-secret)
 
 for i in $(seq 0 $((${#symlink_sources[@]} - 1))); do
 	symlink_source=${symlink_sources[$i]}
