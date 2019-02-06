@@ -19,6 +19,14 @@ name my Linux server: Funky Boy.
 
 # Setup
 1. Create a droplet on DigitalOcean running Void Linux
+2. Clone down this repository and initialize the submodules
+   ```
+   git clone git@github.com:Noah-Huppert/funkyboy.zone.git
+   cd funkyboy.zone
+   git submodule update --init
+   ```
+   You must have access to the [funkyboy.zone-secrets](https://github.com/Noah-Huppert/funkyboy.zone-secrets)
+   repository. This private repository holds secret setup information.
 2. Run the initial setup script:
    ```
    ./client-scripts/init.sh root@funkyboy.zone

@@ -75,7 +75,7 @@ else
 	echo "/srv directory already exists"
 fi
 
-for symlink_dir in salt pillar; do
+for symlink_dir in salt pillar secrets/salt secrets/pillar; do
 	if [ ! -d "/srv/$symlink_dir" ]; then
 		if ! ln -s "/opt/funkyboy.zone/$symlink_dir" "/srv/$symlink_dir"; then
 			echo "Error: Failed to symlink /srv/$symlink_dir directory" >&2
