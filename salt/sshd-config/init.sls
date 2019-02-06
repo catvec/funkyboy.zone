@@ -1,3 +1,5 @@
+# Configures the SSH daemon to disallow logins from root.
+
 {% set file = '/etc/ssh/sshd_config' %}
 
 {{ file }}:
