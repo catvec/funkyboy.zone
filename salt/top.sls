@@ -1,5 +1,6 @@
 base:
   '*':
+    - salt-config
     - salt-dir-perms
     - syslog
     - sshd-config
