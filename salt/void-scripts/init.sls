@@ -1,3 +1,5 @@
+# Downloads the void-scripts repository and adds its files to the PATH.
+
 {% set mode = 775 %}
 
 {{ pillar.void_scripts_dir }}:
