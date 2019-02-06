@@ -15,5 +15,6 @@ base:
     - lnav
     - scripts-repo
     - void-scripts
+    - nginx
     - znc-secret
     - znc
