@@ -1,4 +1,6 @@
-# Installs https://github.com/bahamas10/vsv
+# Installs vsv (https://github.com/bahamas10/vsv), adds it to the PATH and 
+# configures its man page.
+
 {% set repo = 'https://github.com/bahamas10/vsv.git' %}
 
 {{ repo }}:
