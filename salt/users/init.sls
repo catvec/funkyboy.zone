@@ -1,3 +1,8 @@
+# Creates users, sets up their ssh key in their account, and configures their
+# Zsh profile.
+#
+# See the users pillar for an explanation of the pillar values.
+
 {% for user in pillar['users'] %}
 
 {% set zsh_units_dir = '/home/' + user['name'] + '/.zprofile.d' %}
