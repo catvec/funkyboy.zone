@@ -17,7 +17,6 @@ base:
     - python
     - scripts-repo
     - void-scripts
-    - nginx
     - znc-secret
     - znc
     - file-modes-website
