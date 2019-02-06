@@ -2,6 +2,7 @@ base:
   '*':
     - salt-config
     - salt-dir-perms
+    - srv-dir-perms
     - syslog
     - sshd-config
     - sudo-no-password
