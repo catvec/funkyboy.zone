@@ -2,7 +2,6 @@
 {% set pkg = 'nginx' %}
 {% set svc = 'nginx' %}
 {% set conf_f = '/etc/nginx/nginx.conf' %}
-{% set html_dir = pillar['nginx']['service_dir'] + '/' + pillar['nginx']['html_dir'] %}
 
 {{ pkg }}:
   pkg.installed
@@ -25,7 +24,7 @@
       - group
       - mode
 
-{{ html_dir }}:
+{{ pillar.nginx.html_dir }}:
   file.recurse:
     - source: salt://nginx/html
     - user: {{ pillar.nginx.files.user }}
