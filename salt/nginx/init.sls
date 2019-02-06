@@ -2,6 +2,7 @@
 {% set pkg = 'nginx' %}
 {% set svc = 'nginx' %}
 {% set conf_f = '/etc/nginx/nginx.conf' %}
+{% set html_dir = pillar['nginx']['service_dir'] + '/' + pillar['nginx']['html_dir'] %}
 
 {{ pkg }}:
   pkg.installed
@@ -16,19 +17,21 @@
 
 {{ pillar.nginx.service_dir }}:
   file.directory:
-    - user: nginx
-    - group: nginx
-    - mode: 775
+    - user: {{ pillar.nginx.files.user }}
+    - group: {{ pillar.nginx.files.group }}
+    - mode: {{ pillar.nginx.files.mode }}
     - recurse:
       - user
       - group
       - mode
 
-{{ pillar.nginx.service_dir }}/{{ pillar.nginx.html_dir }}:
+{{ html_dir }}:
   file.recurse:
-    - source: salt://nginx/www
-    - require:
-      - file: {{ pillar.nginx.service_dir }}
+    - source: salt://nginx/html
+    - user: {{ pillar.nginx.files.user }}
+    - group: {{ pillar.nginx.files.group }}
+    - dir_mode: {{ pillar.nginx.files.mode }}
+    - file_mode: {{ pillar.nginx.files.mode }}
 
 {{ pillar.nginx.config_dir }}:
   file.directory:
