@@ -1,0 +1,3 @@
+#!/usr/bin/env zsh
+# Adds vsv to the path
+export PATH="$PATH:{{ pillar.vsv.install_path }}"

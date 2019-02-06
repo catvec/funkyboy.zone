@@ -9,7 +9,8 @@ base:
     - motd
     - neovim
     - zsh
-    - lnav
     - git
+    - vsv
+    - lnav
     - scripts-repo
     - void-scripts
