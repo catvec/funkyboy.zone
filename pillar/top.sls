@@ -5,5 +5,6 @@ base:
     - syslog
     - vsv
     - void-scripts
+    - nginx
     - znc-secret
     - znc
