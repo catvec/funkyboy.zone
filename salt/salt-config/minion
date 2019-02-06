@@ -678,7 +678,7 @@
 file_roots:
   base:
     - /srv/salt
-    - /srv/salt-secrets
+    - /srv/salt-secret
 
 # The master_roots setting configures a master-only copy of the file_roots dictionary,
 # used by the state compiler.
@@ -855,7 +855,7 @@ file_roots:
 pillar_roots:
   base:
     - /srv/pillar
-    - /srv/pillar-secrets
+    - /srv/pillar-secret
 
 
 # A list of paths to be recursively decrypted during pillar compilation.
