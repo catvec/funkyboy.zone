@@ -14,6 +14,7 @@ base:
     - git
     - vsv
     - lnav
+    - python
     - scripts-repo
     - void-scripts
     - nginx
