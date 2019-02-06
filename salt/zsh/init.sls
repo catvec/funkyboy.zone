@@ -1,3 +1,5 @@
+# Install Zsh and configure the global zsh profile for all users.
+
 zsh:
   pkg.installed
 
