@@ -20,6 +20,7 @@ name my Linux server: Funky Boy.
 # Setup
 1. Create a droplet on DigitalOcean running Void Linux
 2. Create DNS entries pointing towards droplet
+
    | Type | Hostname | Target  |
    | ---- | -------- | ------- |
    | A    | @        | Droplet |
