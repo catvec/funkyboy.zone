@@ -51,3 +51,4 @@
     - watch:
       - file: {{ conf_f }}
       - file: {{ pillar.nginx.config_dir }}/{{ pillar.file_modes_website.config_file }}
+      - file: {{ pillar.nginx.config_dir }}/{{ pillar.noahhuppert_website.config_file }}
