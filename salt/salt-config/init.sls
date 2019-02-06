@@ -1,4 +1,4 @@
-# Configures the Salt master to find Salt states in:
+# Configures the Salt minion to find Salt states in:
 #
 #   - /srv/salt
 #   - /srv/salt-secrets
@@ -11,7 +11,7 @@
 # This is where the scripts in this repository will upload the latest 
 # Salt files.
 
-/etc/salt/master:
+/etc/salt/minion:
   file.managed:
-    - source: salt://salt-config/master
+    - source: salt://salt-config/minion
     - mode: 664
