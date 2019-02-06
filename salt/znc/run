@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+exec chpst -u znc:znc znc --foreground --no-color --datadir {{ pillar.znc.directory }} 2>&1
