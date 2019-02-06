@@ -1,3 +1,6 @@
+# Downloads the scripts repository onto the server and adds its files to 
+# the PATH.
+
 {% set dir = '/opt/scripts' %}
 {% set repo = 'https://github.com/Noah-Huppert/scripts.git' %}
 
