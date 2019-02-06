@@ -25,13 +25,23 @@
 # Exit on any error
 set -e
 
+# Configuration
+repo_dir=/opt/funkyboy.zone
+
 # Set root password
 echo "===== Setting root password"
-echo "(You will be prompted for a new password)"
+echo "Set root password? [y/N]"
+read set_root_password
 
-if ! passwd root; then
-	echo "Error: Failed to set root password" >&2
-	exit 1
+if [[ "$set_root_password" == "y" ]]; then
+	echo "(You will be prompted for a new password)"
+
+	if ! passwd root; then
+		echo "Error: Failed to set root password" >&2
+		exit 1
+	fi
+else
+	echo "Will not set root password"
 fi
 
 # Delete misc files in /root
@@ -85,7 +95,7 @@ for i in $(seq 0 $((${#symlink_sources[@]} - 1))); do
 	# Check if target dir exists
 	if [ ! -d "$symlink_target" ]; then
 		# Symlink
-		if ! ln -s "/opt/funkyboy.zone/$symlink_source" "$symlink_target"; then
+		if ! ln -s "$repo_dir/$symlink_source" "$symlink_target"; then
 			echo "Error: Failed to symlink $symlink_source to $symlink_target directory" >&2
 			exit 1
 		fi
@@ -95,3 +105,11 @@ for i in $(seq 0 $((${#symlink_sources[@]} - 1))); do
 		echo "$symlink_target directory already symlinked"
 	fi
 done
+
+# Bootstrap salt
+echo "===== Bootstrap salt configuration"
+
+if ! cp "$repo_dir/salt/salt-config/minion" /etc/salt/minion; then
+	echo "Error: Failed to bootstrap Salt configuration" >&2
+	exit 1
+fi
