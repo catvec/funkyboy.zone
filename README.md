@@ -19,12 +19,12 @@ name my Linux server: Funky Boy.
 
 # Setup
 1. Create a droplet on DigitalOcean running Void Linux
-2. Create DNS entries pointing towards droplet
-
-   | Type | Hostname | Target  |
-   | ---- | -------- | ------- |
-   | A    | @        | Droplet |
-   | A    | *        | Droplet |
+2. Create DNS entries pointing towards droplet:
+   ```
+   ./client-scripts/setup-dns.sh
+   ```
+   The Digital Ocean command line interface must be installed and have access 
+   to the `funkyboy.zone`, `noahh.io`, and `noahhuppert.com` domains.
 3. Clone down this repository and initialize the submodules
    ```
    git clone git@github.com:Noah-Huppert/funkyboy.zone.git
