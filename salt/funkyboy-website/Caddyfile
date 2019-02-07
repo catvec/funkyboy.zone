@@ -1,9 +1,10 @@
 {{ pillar.funkyboy_website.hosts }} {
 	root {{ pillar.caddy.serve_dir }}/{{ pillar.funkyboy_website.www_dir }}
 
-	tls {
-		dns digitalocean
-	}
+	tls off
+	#tls {
+	#	dns digitalocean
+	#}
 
 	gzip
 }
