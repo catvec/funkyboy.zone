@@ -89,12 +89,14 @@ if [[ "$mode" == "$mode_set" ]]; then
 
 	# {{{1 Create or update DNS entries
 	for domain in "${domain_names[@]}"; do
+		echo
 		echo "===== $domain"
 
 		# {{{2 For each record name
 		for host in '*' '@'; do
-			echo "Type $host"
-			echo "-------"
+			echo " --------"
+			echo "| Type $host |"
+			echo " --------"
 
 			# {{{3 Check if entry exists
 			while read entry_info; do
