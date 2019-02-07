@@ -2,6 +2,7 @@
 
 {% set build_dir = '/opt/caddy' %}
 {% set build_script = build_dir + '/build.sh' %}
+{% set install_check_script = build_dir + '/check-installed.sh' %}
 {% set svc_file = '/etc/sv/caddy/run' %}
 {% set svc = 'caddy' %}
 
@@ -21,6 +22,14 @@
 {{ build_dir }}:
   file.directory
 
+{{ install_check_script }}:
+  file.managed:
+    - name: {{ install_check_script }}
+    - source: salt://caddy/check-installed.sh
+    - mode: 755
+    - require:
+      - file: {{ build_dir }}
+
 {{ build_script }}-present:
   file.managed:
     - name: {{ build_script }}
@@ -28,14 +37,16 @@
     - mode: 775
     - require:
       - file: {{ build_dir }}
-
+    
 {{ build_script }}-run:
   cmd.run:
     - name: {{ build_script }}
     - cwd: {{ build_dir }}
+    - unless: {{ install_check_script }} {{ build_dir }}
     - require:
+      - file: {{ install_check_script }}
       - file: {{ build_script }}-present
-
+      
 {{ svc_file }}:
   file.managed:
     - source: salt://caddy/run
