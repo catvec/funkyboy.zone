@@ -73,7 +73,15 @@ fi
 
 # {{{3 Edit plugin file
 # {{{4 Find area to inject plugins in
-inject_line_start=$(cat "$plugin_file" | sed '/package caddymain/q' | wc -l)
+# {{{5 Check the marker we are looking for exists in this version of the source
+inject_line_marker="package caddymain"
+if ! cat "$plugin_file" | grep "$inject_line_marker" &> /dev/null; then
+	echo "Error: Failed to find inject marker, it is likely the source code has changed" >&2
+	exit 1
+fi
+
+# {{{5 Find line number of marker for later use
+inject_line_start=$(cat "$plugin_file" | sed "/$inject_line_marker/q" | wc -l)
 if [[ "$?" != "0" ]]; then
 	echo "Error: Failed to get line count to package statement in plugin file" >&2
 	exit 1
@@ -110,6 +118,13 @@ fi
 # {{{1 Remove plugins from plugins file
 echo "===== Disabling plugins"
 
+plugin_file_injected_backup="$plugin_file.injected"
+
+if ! cp "$plugin_file" "$plugin_file_injected_backup"; then
+	echo "Error: Failed to save injected version of plugins file" >&2
+	exit 1
+fi
+
 if ! mv "$plugin_file_backup" "$plugin_file"; then
 	echo "Error: Failed to restore old plugins file" >&2
 	exit 1
@@ -119,7 +134,7 @@ fi
 echo "===== Install Caddy"
 install_file="/usr/bin/caddy"
 
-if ! mv "$GOPATH/bin/caddy" "$install_file"; then
+if ! mv caddy "$install_file"; then
 	echo "Error: Failed to copy Caddy binary to /usr/bin" >&2
 	exit 1
 fi
@@ -131,5 +146,10 @@ fi
 
 if ! chmod 775 "$install_file"; then
 	echo "Error: Failed to chmod Caddy binary" >&2
+	exit 1
+fi
+
+if ! setcap CAP_NET_BIND_SERVICE=+eip "$install_file"; then
+	echo "Error: Failed to give Caddy binary permission to bind low numbered ports" >&2
 	exit 1
 fi
