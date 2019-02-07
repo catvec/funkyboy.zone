@@ -20,6 +20,7 @@
 {{ build_script }}-run:
   cmd.run:
     - name: {{ build_script }}
+    - cwd: {{ build_dir }}
     - require:
       - file: {{ build_script }}-present
 

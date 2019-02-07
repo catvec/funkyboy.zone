@@ -15,6 +15,9 @@
 # {{{1 Exit on any error
 set -e
 
+# {{{1 Configurations
+plugins=("github.com/caddyserver/dnsproviders/digitalocean")
+
 # {{{1 Setup a GOPATH in the current directory
 echo "===== Making local GOPATH build directory"
 
@@ -49,12 +52,17 @@ fi
 # {{{1 Enable plugins
 echo "===== Enabling plugins"
 
-plugin_file="caddymain/run.go"
-plugins_string=<<EOF
-import _ "github.com/caddyserver/dnsproviders/digitalocean"
-EOF
+# {{{2 Install plugins
+for plugin in "${plugins[@]}"; do
+	if ! go get -u "$plugin"; then
+		echo "Error: Failed to go get \"$plugin\" plugin" >&2
+		exit 1
+	fi
+done
 
 # {{{2 Compose new plugins file
+plugin_file="caddymain/run.go"
+
 # {{{3 Backup old plugin file
 plugin_file_backup="$plugin_file.old"
 
@@ -64,28 +72,30 @@ if ! cp "$plugin_file" "$plugin_file_backup"; then
 fi
 
 # {{{3 Edit plugin file
-# {{{4 Get start of file
+# {{{4 Find area to inject plugins in
 inject_line_start=$(cat "$plugin_file" | sed '/package caddymain/q' | wc -l)
 if [[ "$?" != "0" ]]; then
 	echo "Error: Failed to get line count to package statement in plugin file" >&2
 	exit 1
 fi
 
-plugin_file_begin=$(head -n "$inject_line_start" "$plugin_file")
-if [[ "$?" != "0" ]]; then
-	echo "Error: Failed to get beginning of plugin file" >&2
+# {{{4 Add start of file
+if ! head -n "$inject_line_start" "$plugin_file_backup" > "$plugin_file"; then
+	echo "Error: Failed to inject beginning of plugins file" >&2
 	exit 1
 fi
 
-plugin_file_end=$(tail -n $(("$inject_line_start" + 1)) "$plugin_file")
-if [[ "$?" != "0" ]]; then
-	echo "Error: Failed to get end of plugin file" >&2
-	exit 1
-fi
+# {{{4 Add plugins into file
+for plugin in "${plugins[@]}"; do
+	if ! echo "import _ \"$plugin\"" >> "$plugin_file"; then
+		echo "Error: Failed to inject \"$plugin\" plugin into plugins file" >&2
+		exit 1
+	fi
+done
 
-echo "$plugin_file_begin\n$plugins_string\n$plugin_file_end" > "$plugin_file"
-if [[ "$?" != "0" ]]; then
-	echo "Error: Failed to inject plugins" >&2
+# {{{4 Add end of file
+if ! tail -n +$(("$inject_line_start" + 1)) "$plugin_file_backup" >> "$plugin_file"; then
+	echo "Error: Failed to inject end of plugins file" >&2
 	exit 1
 fi
 
@@ -102,5 +112,12 @@ echo "===== Disabling plugins"
 
 if ! mv "$plugin_file_backup" "$plugin_file"; then
 	echo "Error: Failed to restore old plugins file" >&2
+	exit 1
+fi
+
+# {{{1 Add binary to path
+echo "===== Install Caddy"
+if ! mv "$GOPATH/bin/caddy" /usr/bin/caddy; then
+	echo "Error: Failed to copy Caddy binary to /usr/bin" >&2
 	exit 1
 fi
