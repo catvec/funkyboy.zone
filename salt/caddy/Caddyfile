@@ -1,5 +1,1 @@
 import {{ pillar.caddy.config_dir }}/*
-
-gzip
-
-tls off
