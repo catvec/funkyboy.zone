@@ -4,9 +4,9 @@
 
 {{ repo }}:
   git.latest:
-    - target: {{ pillar.caddy.serve_dir }}/{{ pillar.noahhuppert_website.www_dir }}
+    - target: {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.noahhuppert.www_parent_dir }}
 
-{{ pillar.caddy.serve_dir }}/{{ pillar.noahhuppert_website.www_dir }}:
+{{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.noahhuppert.www_parent_dir }}:
   file.directory:
     - user: {{ pillar.caddy.files.user }}
     - group: {{ pillar.caddy.files.group }}
@@ -17,11 +17,3 @@
       - mode
     - require:
       - git: {{ repo }}
-
-{{ pillar.caddy.config_dir }}/{{ pillar.noahhuppert_website.config_file }}:
-  file.managed:
-    - source: salt://noahhuppert-website/Caddyfile
-    - template: jinja
-    - user: {{ pillar.caddy.files.user }}
-    - group: {{ pillar.caddy.files.group }}
-    - mode: {{ pillar.caddy.files.mode }}
