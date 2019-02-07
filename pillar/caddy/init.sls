@@ -1,5 +1,6 @@
 caddy:
   serve_dir: /srv/caddy
+  config_parent_dir: /etc/caddy
   config_dir: /etc/caddy/Caddyfile.d
   config_file: /etc/caddy/Caddyfile
   files:

@@ -6,6 +6,18 @@
 {% set svc = 'caddy' %}
 
 # Build Caddy
+{{ pillar.caddy.files.group }}-group:
+  group.present:
+    - name: {{ pillar.caddy.files.group }}
+
+{{ pillar.caddy.files.user }}-user:
+  user.present:
+    - name: {{ pillar.caddy.files.user }}
+    - groups:
+      - {{ pillar.caddy.files.group }}
+    - require:
+      - group: {{ pillar.caddy.files.group }}-group
+
 {{ build_dir }}:
   file.directory
 
@@ -42,12 +54,21 @@
     - file_mode: {{ pillar.caddy.files.mode }}
 
 # Setup configuration 
+{{ pillar.caddy.config_parent_dir }}:
+  file.directory:
+    - user: {{ pillar.caddy.files.user }}
+    - group: {{ pillar.caddy.files.group }}
+    - dir_mode: {{ pillar.caddy.files.mode }}
+    - file_mode: {{ pillar.caddy.files.mode }}
+
 {{ pillar.caddy.config_dir }}:
   file.directory:
     - user: {{ pillar.caddy.files.user }}
     - group: {{ pillar.caddy.files.group }}
     - dir_mode: {{ pillar.caddy.files.mode }}
     - file_mode: {{ pillar.caddy.files.mode }}
+    - require:
+      - file: {{ pillar.caddy.config_parent_dir }}
 
 {{ pillar.caddy.config_file }}:
   file.managed:
@@ -57,6 +78,8 @@
     - group: {{ pillar.caddy.files.group }}
     - dir_mode: {{ pillar.caddy.files.mode }}
     - file_mode: {{ pillar.caddy.files.mode }}
+    - require:
+      - file: {{ pillar.caddy.config_parent_dir }}
 
 # Run service
 {{ svc }}-enabled:
