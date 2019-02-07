@@ -10,5 +10,3 @@ base:
     - void-scripts
     - znc-secret
     - znc
-    - file-modes-website
-    - noahhuppert-website
