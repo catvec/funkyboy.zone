@@ -18,7 +18,7 @@ set -e
 # {{{1 Setup a GOPATH in the current directory
 echo "===== Making local GOPATH build directory"
 
-export GOPATH=build-gopath
+export GOPATH="$PWD/build-gopath"
 
 if ! mkdir -p "$GOPATH"; then
 	echo "Error: Failed to make local GOPATH build directory: $GOPATH" >&2
