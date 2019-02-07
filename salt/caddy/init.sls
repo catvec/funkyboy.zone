@@ -108,4 +108,4 @@
       - service: {{ svc }}-enabled
     - watch:
       - file: {{ pillar.caddy.config_file }}
-      - file: {{ pillar.caddy.config_dir }}/*
+      #- file: {{ pillar.caddy.config_dir }}/*
