@@ -2,6 +2,7 @@ base:
   '*':
     - zsh
     - users
+    - crond
     - syslog
     - vsv
     - void-scripts

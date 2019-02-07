@@ -58,13 +58,20 @@ freshly_injected_svcs=""
 overwritten_injected_svcs=""
 
 for svc in $(ls /var/service); do
+	echo "===== Injecting $svc"
+
+	# {{{2 Check if we should ignore service
+	if [[ "$svc" =~ ^(acpid|agetty.*|udevd|uuidd)$ ]]; then
+		echo "Skipping"
+		continue
+	fi
+
+	# {{{2 Service files and directories
 	svc_dir="/var/service/$svc"
 	svc_log_dir="$svc_dir/log"
 	svc_log_run_f="$svc_log_dir/run"
 
 	should_restart_log_svc="false"
-
-	echo "===== Injecting $svc"
 
 	# {{{2 Check if an existing log/run file exists
 	if [ -e "$svc_log_run_f" ]; then
@@ -99,6 +106,8 @@ for svc in $(ls /var/service); do
 				echo "Error: Failed to create service log directory \"$svc_log_dir\"" >&2
 				exit 1
 			fi
+		else
+			echo "[dry run] mkdir -p $svc_log_dir"
 		fi
 	fi
 

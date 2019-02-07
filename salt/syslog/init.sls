@@ -40,3 +40,11 @@
   file.managed:
     - source: salt://syslog/inject-log-service
     - mode: 755
+
+{{ pillar.crond.config_dir }}/inject-log-service:
+  file.managed:
+    - source: salt://syslog/crontab
+    - makedirs: True
+    - template: jinja
+    - require:
+      - file: {{ pillar.syslog.inject_log_service_path }}

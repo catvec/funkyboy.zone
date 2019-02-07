@@ -1,0 +1,1 @@
+* * * * * {{ pillar.syslog.inject_log_service_path }} --dry-run 2>&1 /usr/bin/vlogger -t crond-inject-log-service
