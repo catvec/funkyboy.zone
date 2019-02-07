@@ -1,0 +1,5 @@
+#!/bin/sh
+export CADDYPATH=/var/lib/caddy
+export DO_AUTH_TOKEN={{ pillar.caddy.do_auth_token }}
+cd /etc/caddy
+exec chpst -o 8192 -u caddy caddy -agree -email {{ pillar.caddy.email }}

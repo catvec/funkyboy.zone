@@ -16,6 +16,7 @@ base:
     - lnav
     - python
     - go
+    - caddy
     - scripts-repo
     - void-scripts
     - znc-secret
