@@ -37,10 +37,6 @@ name my Linux server: Funky Boy.
    ```
    ./client-scripts/init.sh root@funkyboy.zone
    ```
-5. Setup rest of server:
-   ```
-   ./client-scripts/apply.sh root@funkyboy.zone
-   ```
 
 # Files
 - `server-scripts/` - Scripts to be run on the server
