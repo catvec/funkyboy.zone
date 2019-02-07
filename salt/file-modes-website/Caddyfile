@@ -1,0 +1,10 @@
+{{ pillar.file_modes_website.hosts }} {
+	root {{ pillar.caddy.serve_dir }}/{{ pillar.file_modes_website.www_dir }}
+
+	tls off
+	#tls {
+	#	dns digitalocean
+	#}
+
+	gzip
+}
