@@ -117,7 +117,19 @@ fi
 
 # {{{1 Add binary to path
 echo "===== Install Caddy"
-if ! mv "$GOPATH/bin/caddy" /usr/bin/caddy; then
+install_file="/usr/bin/caddy"
+
+if ! mv "$GOPATH/bin/caddy" "$install_file"; then
 	echo "Error: Failed to copy Caddy binary to /usr/bin" >&2
+	exit 1
+fi
+
+if ! chown caddy:caddy "$install_file"; then
+	echo "Error: Failed to chown Caddy binary" >&2
+	exit 1
+fi
+
+if ! chmod 775 "$install_file"; then
+	echo "Error: Failed to chmod Caddy binary" >&2
 	exit 1
 fi
