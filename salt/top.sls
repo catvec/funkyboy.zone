@@ -15,6 +15,7 @@ base:
     - vsv
     - lnav
     - python
+    - go
     - scripts-repo
     - void-scripts
     - znc-secret
