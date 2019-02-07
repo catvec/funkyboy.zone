@@ -110,9 +110,9 @@ if [[ "$mode" == "$mode_set" ]]; then
 
 					# {{{4 Check if entry has correct data
 					if [[ "$data" == "$target_droplet_ipv4" && "$ttl" == "$entry_ttl" ]]; then # Correct data
-						echo "Data and TTL correct"
+						entry_ok="$id"
+						break
 					else # Incorrect data
-						echo "Data and / or TTL incorrect, setting"
 						update_entry_id="$id"
 						break
 					fi
@@ -121,7 +121,9 @@ if [[ "$mode" == "$mode_set" ]]; then
 			done <<< $(doctl compute domain records list "$domain" --format "ID,Type,Name,Data,TTL" --no-header)
 
 			# {{{3 Update or create
-			if [ -z "$update_entry_id" ]; then # Create
+			if [ ! -z "$entry_ok" ]; then
+				echo "Data and TTL correct"
+			elif [ -z "$update_entry_id" ]; then # Create
 				echo "No record found, creating"
 
 				if [ -z "$dry_run" ]; then
@@ -137,6 +139,8 @@ if [[ "$mode" == "$mode_set" ]]; then
 					echo "[dry run] create record, type: A, name: $host, data: $target_droplet_ipv4"
 				fi
 			else # Update
+				echo "Data and / or TTL incorrect, updating"
+
 				if [ -z "$dry_run" ]; then
 					if ! doctl compute domain records update "$domain" \
 						--record-id "$id" \
