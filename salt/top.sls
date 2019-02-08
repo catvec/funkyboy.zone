@@ -24,4 +24,4 @@ base:
     - funkyboy-website
     - file-modes-website
     - noahhuppert-website
-    - inject-log-service # Must always be last
+    - putsvl # Must always be last

@@ -1,0 +1,242 @@
+#!/usr/bin/env bash
+#?
+# putsvl - Manages service logging services
+#
+# USAGE
+#
+#	putsvl OPERATION [SVC...]
+#
+# ARGUMENTS
+#
+#	OPERATION    Action to perform. See OPERATIONS section.
+#
+#	SVC          (Optional) Service(s) to target with operation. Defaults 
+#	             to all enabled services
+#
+# OPERATIONS
+#
+#	check    Check if services are using vlogger as their logging service
+#
+#	set      Set services' logging service to vlogger
+#
+#?
+
+# {{{1 Configuration
+operation_check="check"
+operation_set="set"
+
+# {{{1 Arguments
+# {{{2 Operation argument
+if [ -z "$1" ]; then
+	echo "Error: OPERATION argument is required" >&2
+	exit 1
+else
+	if [[ "$1" != "$operation_check" && "$1" != "$operation_set" ]]; then
+		echo "Error: OPERATION argument can only be \"$operation_check\" or \"$operation_set\"" >&2
+		exit 1
+	fi
+
+	operation="$1"
+	shift
+fi
+
+# {{{2 Services arguments
+services=()
+
+if [ -z "$1" ]; then # No service arguments provided
+	services=($(ls /var/service))
+else # Service arguments provided
+	while [ ! -z "$1" ]; do
+		# {{{3 Check service exists
+		if [ ! -d "/etc/sv/$1" ]; then
+			echo "Error: SVC with name \"$1\" does not exist" >&2
+			exit 1
+		fi
+
+		# {{{3 Add
+		services+=("$1")
+		shift
+	done
+fi
+
+# {{{1 Check for vlogger path
+vlogger_path=$(which vlogger)
+
+if [[ "$?" != '0' ]]; then
+	echo "Error: Could not find vlogger" >&2
+	exit 1
+fi
+
+# {{{1 Check if we have access to service control files
+if [[ "$EUID" != "0" ]]; then
+	echo "Error: Must run as root" >&2
+	exit 1
+fi
+
+# {{{1 Define operation functions
+
+# Checks if a service's logging service is vlogger
+#
+# ARGUMENTS
+#
+#	1. svc    Service to check
+#
+# RETURNS
+#
+#	0    Service is using vlogger as logging service
+#	1    Service is not using vlogger as logging service
+#	2    Error occurred while checking
+#
+function op_check(){ # (svc)
+	# {{{2 Check arguments
+	if [ -z "$1" ]; then
+		echo "Error: op_check(): SVC argument must be provided" >&2
+		return 2
+	fi
+	svc="$1"
+	shift
+
+	# {{{2 Check for any log service file
+	logging_svc_path="/etc/sv/$svc/log/run"
+	if [ -f "$logging_svc_path" ]; then # Has any logging service
+		# {{{3 Get log service real path
+		logging_svc_realpath=$(readlink -f "$logging_svc_path")
+		if [[ "$?" != "0" ]]; then
+			echo "Error: op_check($svc): Failed to read logging service real path" >&2
+			return 2
+		fi
+
+		# {{{3 Check if log service file is vlogger
+		if [[ "$logging_svc_realpath" == "$vlogger_path" ]]; then
+			# Service is using vlogger as logging service
+			return 0
+		else
+			# Service is not using vlogger as logging service
+			return 1
+		fi
+	else # Has no logging service
+		return 1
+	fi
+}
+
+# Sets a service's logging service to vlogger
+#
+# ARGUMENTS
+#
+#	1. svc    Service to set logging service for
+#
+# RETURNS
+#
+#	0    Succeeded
+#	1    Failed
+#
+function op_set(){ # (svc)
+	# {{{2 Check arguments
+	if [ -z "$1" ]; then
+		echo "Error: op_set(): SVC argument must be provided" >&2
+		return 1
+	fi
+	svc="$1"
+	shift
+
+	# {{{2 Check if already using vlogger as logging service
+	op_check "$svc"
+	check_res="$?"
+	if [[ "$check_res" == "0" ]]; then # Already using vlogger as logging service
+		return 0
+	elif [[ "$check_res" == "2" ]]; then # Error while checking
+		echo "Error: op_set($svc): Failed to check if service was already using vlogger as logging service" >&2
+		return 1
+	else # Not using vlogger as logging service yet
+		# {{{3 Stop service
+		if ! sv stop "$svc"; then
+			echo "Error: op_set($svc): Failed to stop service" >&2
+			return 1
+		fi
+		echo "Stopped"
+
+		# {{{3 Stop service's logging service if exists
+		if [ -f "/etc/sv/$svc/log/run" ]; then
+			if ! sv stop "$svc/log"; then
+				echo "Error: op_set($svc): Failed to stop service's logging service" >&2
+				return 1
+			fi
+			echo "Stopped logging"
+		fi
+
+		# {{{3 Disable service
+		if ! rm "/var/service/$svc"; then
+			echo "Error: op_set($svc): Failed to disable service" >&2
+			return 1
+		fi
+		echo "Disabled"
+
+		# {{{3 Create logging service directory
+		if ! mkdir -p "/etc/sv/$svc/log"; then
+			echo "Error: op_set($svc): Failed to create logging service directory" >&2
+			return 1
+		fi
+		echo "Created logging service directory"
+
+		# {{{3 Link vlogger to logging service
+		if ! ln -s "$vlogger_path" "/etc/sv/$svc/log/run"; then
+			echo "Error: op_set($svc): Failed to link vlogger to logging service" >&2
+			return 1
+		fi
+		echo "Linked logging service"
+
+		# {{{3 Enable service
+		if ! ln -s "/etc/sv/$svc" /var/service; then
+			echo "Error: op_set($svc): Failed to enable service" >&2
+			return 1
+		fi
+		echo "Enabled"
+	fi
+
+	return 0
+}
+
+# {{{1 Run operation
+all_ok="true"
+
+for svc in "${services[@]}"; do # For each service specified
+	# {{{2 Check if service should be ignored
+	if [[ "$svc" =~ ^(acpid|agetty.*|udevd|uuidd)$ ]]; then
+		echo "===== Ignoring $svc"
+
+		continue
+	fi
+
+	# {{{2 Run operation
+	if [[ "$operation" == "$operation_check" ]]; then # Check operation
+		echo "===== Checking $svc"
+		op_check "$svc"
+		check_res="$?"
+
+		if [[ "$check_res" == "0" ]]; then
+			echo "OK"
+		elif [[ "$check_res" == "1" ]]; then
+			echo "Not OK"
+
+			all_ok="false"
+		else
+			echo "Error checking"
+
+			all_ok="false"
+		fi
+	else
+		echo "===== Setting $svc"
+
+		if op_set "$svc"; then
+			echo "OK"
+		else
+			echo "Error setting"
+
+			all_ok="false"
+		fi
+	fi
+done
+
+if [[ "$all_ok" != "true" ]]; then
+	exit 1
+fi
