@@ -64,6 +64,14 @@
     - dir_mode: {{ pillar.caddy.files.mode }}
     - file_mode: {{ pillar.caddy.files.mode }}
 
+# Setup SSL certificate directory
+{{ pillar.caddy.caddy_path }}:
+  file.directory:
+    - user: {{ pillar.caddy.files.user }}
+    - group: {{ pillar.caddy.files.group }}
+    - dir_mode: 770
+    - file_mode: 770
+
 # Setup configuration 
 {{ pillar.caddy.config_parent_dir }}:
   file.directory:
@@ -99,6 +107,7 @@
     - require:
       - file: {{ pillar.caddy.config_dir }}
       - file: {{ pillar.caddy.config_file }}
+      - file: {{ pillar.caddy.caddy_path }}
       - file: {{ svc_file }}
 
 {{ svc }}-running:
