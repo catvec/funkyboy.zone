@@ -19,7 +19,7 @@
     - require:
       - file: {{ pillar.inject_log_service.script_dir }}
 
-{{ pillar.inject_log_service.inject_script_file }}-run:
-  cmd.run:
-    - name: {{ pillar.inject_log_service.inject_script_file }}
-    - unless: {{ pillar.inject_log_service.check_script_file }}
+#{{ pillar.inject_log_service.inject_script_file }}-run:
+#  cmd.run:
+#    - name: {{ pillar.inject_log_service.inject_script_file }}
+#    - unless: {{ pillar.inject_log_service.check_script_file }}

@@ -17,9 +17,12 @@
 #	--dry-run    Don't actually perform any actions, just print out what
 #	             would happen
 #
+#	--check      Don't inject log service, instead check if 
+#	             already injected
+#
 # BEHAVIOR
 #
-#	For each service in /var/service the log/run script will be replaced 
+#	For the specified service(s) their log/run script will be replaced 
 #	by the vlogger script.
 #
 # 	If a log/run file exists it is backed up under log/run.old
@@ -67,9 +70,9 @@ else # No SVC specified, check all
 fi
 
 # {{{1 For each service
-already_injected_svcs=""
-freshly_injected_svcs=""
-overwritten_injected_svcs=""
+already_injected_svcs=()
+freshly_injected_svcs=()
+overwritten_injected_svcs=()
 
 for svc in $services; do
 	echo "===== Injecting $svc"
@@ -78,6 +81,25 @@ for svc in $services; do
 	if [[ "$svc" =~ ^(acpid|agetty.*|udevd|uuidd)$ ]]; then
 		echo "Skipping"
 		continue
+	fi
+
+	# {{{2 Service directories
+	svc_log_f="/etc/sv/$svc/log/run"
+
+	# {{{2 Check if log service file already exists
+	if [ -f "$svc_log_f" ]; then
+		# {{{3 Get actual path of log service file
+		svc_log_f_realpath=$(readlink -f "$svc_log_f")
+		if [[ "$?" != "0" ]]; then
+			echo "Error: Failed to readlink for $svc_log_f" >&2
+			exit 1
+		fi
+
+		# {{{3 Check if log service is the one we want to inject
+		if [[ "$svc_log_f_realpath" == "$log_service_install_f" ]]; then
+			already_injected_svcs+=("$svc")
+			continue
+		fi
 	fi
 
 	# {{{2 Service files and directories
