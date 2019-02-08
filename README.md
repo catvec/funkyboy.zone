@@ -18,8 +18,7 @@ has a secret weapon named "Funky Boy". I found this humorous, and decided to
 name my Linux server: Funky Boy.
 
 # Setup
-1. Create a droplet on DigitalOcean running Void Linux
-2. Clone down this repository and initialize the submodules
+1. Clone down this repository and initialize the submodules
    ```
    git clone git@github.com:Noah-Huppert/funkyboy.zone.git
    cd funkyboy.zone
@@ -27,6 +26,12 @@ name my Linux server: Funky Boy.
    ```
    You must have access to the [funkyboy.zone-secrets](https://github.com/Noah-Huppert/funkyboy.zone-secrets)
    repository. This private repository holds secret setup information.
+
+2. Create a droplet on DigitalOcean running Void Linux:
+   ```
+   ./client-scripts/setup-droplet.sh
+   ```
+
 3. Create DNS entries pointing towards droplet:
    ```
    ./client-scripts/setup-dns.sh
