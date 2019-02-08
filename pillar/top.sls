@@ -10,4 +10,3 @@ base:
     - void-scripts
     - znc-secret
     - znc
-    - inject-log-service

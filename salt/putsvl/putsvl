@@ -153,7 +153,6 @@ function op_set(){ # (svc)
 			echo "Error: op_set($svc): Failed to stop service" >&2
 			return 1
 		fi
-		echo "Stopped"
 
 		# {{{3 Stop service's logging service if exists
 		if [ -f "/etc/sv/$svc/log/run" ]; then
@@ -161,7 +160,6 @@ function op_set(){ # (svc)
 				echo "Error: op_set($svc): Failed to stop service's logging service" >&2
 				return 1
 			fi
-			echo "Stopped logging"
 		fi
 
 		# {{{3 Disable service
@@ -169,28 +167,36 @@ function op_set(){ # (svc)
 			echo "Error: op_set($svc): Failed to disable service" >&2
 			return 1
 		fi
-		echo "Disabled"
 
 		# {{{3 Create logging service directory
 		if ! mkdir -p "/etc/sv/$svc/log"; then
 			echo "Error: op_set($svc): Failed to create logging service directory" >&2
 			return 1
 		fi
-		echo "Created logging service directory"
 
 		# {{{3 Link vlogger to logging service
 		if ! ln -s "$vlogger_path" "/etc/sv/$svc/log/run"; then
 			echo "Error: op_set($svc): Failed to link vlogger to logging service" >&2
 			return 1
 		fi
-		echo "Linked logging service"
 
 		# {{{3 Enable service
 		if ! ln -s "/etc/sv/$svc" /var/service; then
 			echo "Error: op_set($svc): Failed to enable service" >&2
 			return 1
 		fi
-		echo "Enabled"
+
+		# {{{3 Start logging service
+		if ! sv start "$svc/log"; then
+			echo "Error: op_set($svc): failed to start logging service" >&2
+			return 1
+		fi
+
+		# {{{3 Start service
+		if ! sv start "$svc"; then
+			echo "Error: op_set($svc): failed to start service" >&2
+			return 1
+		fi
 	fi
 
 	return 0
