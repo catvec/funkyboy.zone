@@ -21,8 +21,14 @@
 #
 # BEHAVIOR
 #
-#	Create DNS records pointing towards a droplet with the 
-#	name: funkyboy.zone
+#	MODE == create
+#
+#		Create DNS records pointing towards a droplet with the 
+#		name: funkyboy.zone
+#
+#	MODE == delete
+#
+#		Delete DNS A records with host value: `*` or `@`
 #
 # DEPENDENCIES
 #
@@ -137,6 +143,7 @@ if [[ "$mode" == "$mode_set" ]]; then
 						echo "Error: Failed to create record" >&2
 						exit 1
 					fi
+					echo
 				else
 					echo "[dry run] create record, type: A, name: $host, data: $target_droplet_ipv4"
 				fi
@@ -151,6 +158,7 @@ if [[ "$mode" == "$mode_set" ]]; then
 						echo "Error: Failed to set data for record" >&2
 						exit 1
 					fi
+					echo
 				else
 					echo "[dry run] update record, ID: $id, data: $target_droplet_ipv4"
 				fi
@@ -182,6 +190,7 @@ elif [[ "$mode" == "$mode_delete" ]]; then
 						echo "Error: Failed to delete record" >&2
 						exit 1
 					fi
+					echo
 				else
 					echo "[dry run] delete record, id: $id, type: $t, name: $name, data: $data"
 				fi
