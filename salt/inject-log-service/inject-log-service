@@ -132,6 +132,8 @@ for svc in $(ls /var/service); do
 		else
 			echo "[dry run] sv restart $svc/log"
 		fi
+	else
+		vs status "$svc/log"
 	fi
 done
 
