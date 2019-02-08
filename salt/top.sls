@@ -24,4 +24,5 @@ base:
     - funkyboy-website
     - file-modes-website
     - noahhuppert-website
+    - workout-website
     - putsvl # Must always be last

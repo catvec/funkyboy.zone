@@ -13,24 +13,23 @@ caddy:
     funkyboy:
       www_dir: funkyboy
       hosts:
-        - http://funkyboy.zone
-        - https://funkyboy.zone
-        - "http://*.funkyboy.zone"
-        - "https://*.funkyboy.zone"
+        {% for subdomain in [ '', '*.' ] %}
+        - "{{ subdomain }}funkyboy.zone"
+        {% endfor %}
     noahhuppert:
       www_parent_dir: noahhuppert
       www_dir: noahhuppert/www
       hosts:
-        - http://noahh.io
-        - https://noahh.io
-        - "http://*.noahh.io"
-        - "https://*.noahh.io"
-        - http://noahhuppert.com
-        - https://noahhuppert.com
-        - "http://*.noahhuppert.com"
-        - "https://*.noahhuppert.com"
+        {% for host in [ 'noahh.io', 'noahhuppert.com' ] %}
+        {% for subdomain in [ '', '*.' ] %}
+        - "{{ subdomain }}{{ host }}"
+        {% endfor %}
+        {% endfor %}
     file_modes:
       www_dir: file-modes
       hosts:
-        - http://modes.funkyboy.zone
-        - https://modes.funkyboy.zone
+        - modes.funkyboy.zone
+    workout:
+      www_dir: workout
+      hosts:
+        - swoll.funkyboy.zone
