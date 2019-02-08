@@ -5,9 +5,14 @@
 #
 # USAGE
 #
-#	inject-log-service [--dry-run]
+#	inject-log-service [OPTIONS] [SVC]
 #
 # ARGUMENTS
+#
+#	SVC    (Optional) Name of service to inject, if not provided injects 
+#	       all services
+#
+# OPTIONS
 #
 #	--dry-run    Don't actually perform any actions, just print out what
 #	             would happen
@@ -46,18 +51,27 @@ while [ ! -z "$1" ]; do
 			;;
 		
 		*)
-			echo "Error: Unknown argument \"$1\"" >&2
-			exit 1
+			svc_arg="$1"
+			shift
 			;;
 	esac
 done
+
+# {{{1 Get name of service(s) to inject
+services=()
+
+if [ ! -z "$svc_arg" ]; then # If SVC argument given
+	services+=("$svc_arg")
+else # No SVC specified, check all
+	services=("$(ls /var/service)")
+fi
 
 # {{{1 For each service
 already_injected_svcs=""
 freshly_injected_svcs=""
 overwritten_injected_svcs=""
 
-for svc in $(ls /var/service); do
+for svc in $services; do
 	echo "===== Injecting $svc"
 
 	# {{{2 Check if we should ignore service
@@ -133,7 +147,7 @@ for svc in $(ls /var/service); do
 			echo "[dry run] sv restart $svc/log"
 		fi
 	else
-		vs status "$svc/log"
+		sv status "$svc/log"
 	fi
 done
 
