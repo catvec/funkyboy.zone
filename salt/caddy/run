@@ -1,5 +1,49 @@
-#!/bin/sh
-export CADDYPATH=/var/lib/caddy
+#!/usr/bin/env bash
+# Exit on any error
+set -e
+
+# Configuration
+last_run_file="/run/caddy_svc_last_run"
+time_between_starts=10
+
+# Get start time
+start_time=$(date +%s)
+if [[ "$?" != "0" ]]; then
+	echo "Error: Failed to get start time"
+	exit 1
+fi
+
+# Configuration
+export CADDYPATH={{ pillar.caddy.caddy_path }}
 export DO_AUTH_TOKEN={{ pillar.caddy.do_auth_token }}
+
 cd /etc/caddy
+
+# Check configuration file
+if ! caddy -validate; then
+	echo "Error: Failed to validate configuration"
+	exit 1
+fi
+
+# Check we haven't exited too recently
+if [ -f "$last_run_file" ]; then # If file exists
+	# Get last run time
+	last_run_time=$(date -r "$last_run_file" +%s)
+	if [[ "$?" != "0" ]]; then
+		echo "Error: Failed to get last run time"
+		exit 1
+	fi
+
+	# Check if it has been long enough
+	if (( ("$start_time" - "$last_run_time") < "$time_between_starts")); then
+		echo "Error: Starting too soon, exiting.."
+		exit 1
+	else
+		echo "Can start now"
+	fi
+fi
+
+touch "$last_run_file"
+
+# Run
 exec chpst -o 8192 -u caddy caddy -agree -email {{ pillar.caddy.email }}
