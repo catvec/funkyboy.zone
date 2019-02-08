@@ -3,11 +3,12 @@ caddy:
   config_parent_dir: /etc/caddy
   config_dir: /etc/caddy/Caddyfile.d
   config_file: /etc/caddy/Caddyfile
+  caddy_path: /var/lib/caddy
   files:
     user: caddy
     group: caddy
     mode: 775
-  tls: False
+  tls: True
   static_sites:
     funkyboy:
       www_dir: funkyboy
