@@ -3,6 +3,7 @@ base:
     - salt-config
     - salt-dir-perms
     - srv-dir-perms
+    - xz
     - syslog
     - sshd-config
     - sudo-no-password
