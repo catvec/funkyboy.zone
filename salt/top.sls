@@ -10,6 +10,7 @@ base:
     - crond
     - motd
     - xz
+    - docker
     - neovim
     - zsh
     - git
