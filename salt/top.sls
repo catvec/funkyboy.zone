@@ -28,4 +28,5 @@ base:
     - noahhuppert-website
     - workout-website
     - factorio
+    - backup
     - putsvl # Must always be last
