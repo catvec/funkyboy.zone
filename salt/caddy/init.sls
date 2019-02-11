@@ -14,6 +14,7 @@
 {{ pillar.caddy.files.user }}-user:
   user.present:
     - name: {{ pillar.caddy.files.user }}
+    - createhome: False
     - groups:
       - {{ pillar.caddy.files.group }}
     - require:
