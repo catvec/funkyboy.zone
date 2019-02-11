@@ -13,6 +13,7 @@
 {{ pillar.factorio.user.name }}-user:
   user.present:
     - name: {{ pillar.factorio.user.name }}
+    - createhome: False
     - uid: {{ pillar.factorio.user.id }}
     - gid: {{ pillar.factorio.group.id }}
     - groups:
