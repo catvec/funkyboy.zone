@@ -51,6 +51,8 @@ target_droplet_name="funkyboy.zone"
 target_droplet_region="nyc1"
 target_droplet_size="s-1vcpu-2gb"
 
+target_backup_volume_name="funkyboy-zone-backup"
+
 target_image_name="Void-Linux"
 
 target_ssh_key_name="Katla"
@@ -165,6 +167,22 @@ if [[ "$mode" == "$mode_create" ]]; then
 		exit 1
 	fi
 
+	# {{{2 Find ID of backup volume
+	while read volume_info; do
+		id=$(echo "$volume_info" | awk '{ print $1 }')
+		name=$(echo "$volume_info" | awk '{ print $2 }')
+
+		if [[ "$name" == "$target_backup_volume_name" ]]; then
+			target_backup_volume_id="$id"
+			break
+		fi
+	done <<< $(doctl compute volume list --format "ID,Name" --no-header)
+
+	if [ -z "$target_backup_volume_id" ]; then
+		echo "Error: Failed to find backup volume with name \"$target_backup_volume_name\"" >&2
+		exit 1
+	fi
+
 	# {{{2 Create droplet
 	if [ -z "$dry_run" ]; then
 		echo "Creating"
@@ -174,6 +192,7 @@ if [[ "$mode" == "$mode_create" ]]; then
 			--region "$target_droplet_region" \
 			--size "$target_droplet_size" \
 			--ssh-keys "$target_ssh_key_id" \
+			--volumes "$target_backup_volume_id" \
 			--enable-backups \
 			--wait; then
 			echo "Error: Failed to create droplet" >&2
