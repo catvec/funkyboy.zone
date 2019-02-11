@@ -1,0 +1,25 @@
+{% set game_port = pillar['factorio']['ports']['game'] %}
+{% set rcon_port = pillar['factorio']['ports']['rcon'] %}
+
+{% for host in pillar['factorio']['hosts'] %}
+{{ host }} {
+	proxy {{ host }}:80 localhost:{{ game_port }} {
+		transparent
+	}
+
+	proxy {{ host }}:{{ rcon_port }} localhost:{{ rcon_port }} {
+		transparent
+	}
+}
+{% endfor %}
+
+{% for host in pillar['factorio']['mods_hosts'] %}
+{{ host }} {
+	root {{ pillar.factorio.mods_download_directory }}
+	browse /
+
+	tls {
+		dns digitalocean
+	}
+}
+{% endfor %}

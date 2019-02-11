@@ -22,6 +22,7 @@ users:
       - wheel
       - socklog
       - salt
+      - docker
     public_key: >-
       ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH7worAdtOa+cq2AuyFBdvbX+8Zy4zcHRChFb4EerKGX noah@katla
     zsh_units: all

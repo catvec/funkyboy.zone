@@ -6,11 +6,11 @@ base:
     - syslog
     - sshd-config
     - sudo-no-password
+    - docker
     - users
     - crond
     - motd
     - xz
-    - docker
     - neovim
     - zsh
     - git
@@ -27,4 +27,5 @@ base:
     - file-modes-website
     - noahhuppert-website
     - workout-website
+    - factorio
     - putsvl # Must always be last

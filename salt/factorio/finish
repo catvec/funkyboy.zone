@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+exec chpst -u {{ pillar.factorio.user.name }}:docker docker stop factorio

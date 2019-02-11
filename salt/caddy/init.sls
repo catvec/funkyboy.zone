@@ -95,8 +95,7 @@
     - template: jinja
     - user: {{ pillar.caddy.files.user }}
     - group: {{ pillar.caddy.files.group }}
-    - dir_mode: {{ pillar.caddy.files.mode }}
-    - file_mode: {{ pillar.caddy.files.mode }}
+    - mode: {{ pillar.caddy.files.mode }}
     - require:
       - file: {{ pillar.caddy.config_parent_dir }}
 
@@ -117,4 +116,4 @@
       - service: {{ svc }}-enabled
     - watch:
       - file: {{ pillar.caddy.config_file }}
-      #- file: {{ pillar.caddy.config_dir }}/*
+      - file: {{ pillar.caddy.config_dir }}/*

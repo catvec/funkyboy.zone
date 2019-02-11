@@ -10,3 +10,5 @@ base:
     - void-scripts
     - znc-secret
     - znc
+    - factorio
+    - factorio-secret
