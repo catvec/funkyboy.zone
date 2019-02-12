@@ -4,11 +4,12 @@
 #
 # USAGE
 #
-#	init.sh ADDRESS
+#	init.sh [-u USER] [-h HOST]
 #
-# ARGUMENTS
+# OPTIONS
 #
-#	ADDRESS    Server address
+#	-u USER    User with which to access server
+#	-h HOST    Host with which to access server
 #
 # BEHAVIOR
 #
@@ -17,18 +18,39 @@
 #
 #?
 
-# Exit on any error
+# {{1 Exit on any error
 set -e
 
-# Get script directory
+# {{{1 Get script directory
 prog_dir=$(realpath $(dirname "$0"))
 
-# Address argument
-if [ -z "$1" ]; then
-	echo "Error: ADDRESS argument is required" >&2
-	exit 1
+# Arguments
+while getopts "u:a:nt" opt; do
+	case "$opt" in
+		u)
+			user="$OPTARG"
+			;;
+
+		h)
+			host="$OPTARG"
+			;;
+
+		'?')
+			show-help "$0"
+			exit 1
+			;;
+	esac
+done
+
+if [ -z "$user" ]; then
+	user="$USER"
 fi
-address="$1"
+
+if [ -z "$host" ]; then
+	host="funkyboy.zone"
+fi
+
+address="$user@$host"
 
 # Copy SSH id
 echo "===== Copying SSH id"
@@ -49,7 +71,7 @@ fi
 # Upload
 echo "===== Uploading files"
 
-if ! "$prog_dir"/upload.sh "$address" --no-chown; then
+if ! "$prog_dir"/upload.sh -u "$user" -h "$host" -n; then
 	echo "Error: Failed to upload files" >&2
 	exit 1
 fi
@@ -65,7 +87,7 @@ fi
 # Apply salt state
 echo "===== Applying salt state for first time"
 
-if ! "$prog_dir/apply.sh" "$address" --no-chown; then
+if ! "$prog_dir/apply.sh" -u "$user" -h "$host" -n; then
 	echo "Error: Failed to apply salt state for first time" >&2
 	exit 1
 fi

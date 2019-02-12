@@ -4,16 +4,14 @@
 #
 # USAGE
 #
-#	apply.sh ADDRESS [--test,-t] [--no-chown]
-#
-# ARGUMENTS
-#
-#	ADDRESS    Server address
+#	apply.sh [-u USER] [-h HOST] [-n] [-t]
 #
 # OPTIONS
 #
-#	--test,-t     Run Salt in test mode
-#	--no-chown    Do not chown uploaded directory
+#	-u USER    User with which to access server
+#	-h HOST    Host with which to access server
+#	-n         Do not chown uploaded folders to Salt group
+#	-t         Run Salt state.apply in test mode
 #
 # BEHAVIOR
 #
@@ -21,45 +19,61 @@
 #
 #?
 
-# Exit on any error
+# {{{1 Exit on any error
 set -e
 
-# Get script directory
+# {{{1 Get script directory
 prog_dir=$(realpath $(dirname "$0"))
 
-# Arguments
-while [ ! -z "$1" ]; do
-	case "$1" in
-		--test|-t)
-			salt_test="true"
-			shift
+# {{{1 Arguments
+while getopts "u:a:nt" opt; do
+	case "$opt" in
+		u)
+			user="$OPTARG"
 			;;
 
-		--no-chown)
+		h)
+			host="$OPTARG"
+			;;
+
+		n)
 			no_chown="true"
-			shift
 			;;
 
-		*)
-			address="$1"
-			shift
+		t)
+			salt_test="true"
+			;;
+
+		'?')
+			show-help "$0"
+			exit 1
 			;;
 	esac
 done
 
-# Upload files
+if [ -z "$user" ]; then
+	user="$USER"
+fi
+
+if [ -z "$host" ]; then
+	host="funkyboy.zone"
+fi
+
+address="$user@$host"
+
+# {{{1 Upload files
 echo "===== Uploading files"
 
 if [ ! -z "$no_chown" ]; then
-	upload_args="--no-chown"
+	upload_args="-n"
 fi
 
-if ! "$prog_dir"/upload.sh "$address" $upload_args; then
+if ! "$prog_dir"/upload.sh -u "$user" -h "$host" $upload_args; then
 	echo "Error: Failed to upload files" >&2
 	exit 1
 fi
 
-# Apply salt
+# {{{1 Apply salt
 echo "===== Applying Salt states"
 
 if [ ! -z "$salt_test" ]; then

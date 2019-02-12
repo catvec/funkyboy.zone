@@ -4,15 +4,13 @@
 #
 # USAGE
 #
-#	upload.sh ADDRESS [--no-chown]
-#
-# ARGUMENTS
-#
-#	ADDRESS    Server address, can include username if required
+#	upload.sh [-u USER] [-h HOST] [-n]
 #
 # OPTIONS
 #
-#	--no-chown    Don't chown files with a group
+#	-u USER    User with which to access server
+#	-h HOST    Host with which to access server
+#	-n         Do not chown uploaded folders to Salt group
 #
 # BEHAVIOR
 #
@@ -24,25 +22,36 @@
 set -e
 
 # Arguments
-while [ ! -z "$1" ]; do
-	case "$1" in
-		--no-chown)
-			no_chown="true"
-			shift
+while getopts "u:h:n" opt; do
+	case "$opt" in
+		u)
+			user="$OPTARG"
 			;;
 
-		*)
-			address="$1"
-			shift
+		h)
+			host="$OPTARG"
+			;;
+
+		n)
+			no_chown="true"
+			;;
+
+		'?')
+			show-help "$0"
+			exit 1
 			;;
 	esac
 done
 
-# Check for address argument
-if [ -z "$address" ]; then
-	echo "Error: ADDRESS argument required" >&2
-	exit 1
+if [ -z "$user" ]; then
+	user="$USER"
 fi
+
+if [ -z "$host" ]; then
+	host="funkyboy.zone"
+fi
+
+address="$user@$host"
 
 # Upload
 echo "===== Uploading"
