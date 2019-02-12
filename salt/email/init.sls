@@ -8,12 +8,17 @@ mailx:
 postfix:
   pkg.installed
 
+opendkim:
+  pkg.installed
+
 {{ pillar.email.config_file }}:
   file.managed:
+    - source: salt://email/main.cf
     - mode: 644
 
 {{ pillar.email.aliases_file }}:
   file.managed:
+    - source: salt://email/aliases
     - mode: 644
     - template: jinja
 
