@@ -11,6 +11,8 @@ base:
     - crond
     - motd
     - xz
+    - backup
+    - email
     - neovim
     - zsh
     - git
@@ -28,5 +30,4 @@ base:
     - noahhuppert-website
     - workout-website
     - factorio
-    - backup
     - putsvl # Must always be last

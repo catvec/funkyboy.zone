@@ -1,0 +1,2 @@
+postmaster:    root
+root:          {{ pillar.email.external_webmaster_email }}

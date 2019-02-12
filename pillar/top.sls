@@ -5,6 +5,8 @@ base:
     - crond
     - syslog
     - vsv
+    - email
+    - email-secret
     - caddy
     - caddy-secret
     - void-scripts
