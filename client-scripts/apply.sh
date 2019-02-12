@@ -8,8 +8,10 @@
 #
 # OPTIONS
 #
-#	-u USER    User with which to access server
-#	-h HOST    Host with which to access server
+#	-u USER    (Optional) User with which to access server, defaults to
+#	           current user
+#	-h HOST    (Optional) Host with which to access server, defaults 
+#	           to funkyboy.zone
 #	-n         Do not chown uploaded folders to Salt group
 #	-t         Run Salt state.apply in test mode
 #

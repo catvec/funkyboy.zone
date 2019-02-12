@@ -8,8 +8,10 @@
 #
 # OPTIONS
 #
-#	-u USER    User with which to access server
-#	-h HOST    Host with which to access server
+#	-u USER    (Optional) User with which to access server, defaults
+#	           to "root"
+#	-h HOST    (Optional) Host with which to access server, defaults
+#	           to funkyboy.zone
 #
 # BEHAVIOR
 #
@@ -43,7 +45,7 @@ while getopts "u:a:nt" opt; do
 done
 
 if [ -z "$user" ]; then
-	user="$USER"
+	user="root"
 fi
 
 if [ -z "$host" ]; then
