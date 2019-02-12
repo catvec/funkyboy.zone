@@ -1,0 +1,5 @@
+# Secret env file
+.env
+
+# Terraform plugins
+client-scripts/.terraform/
