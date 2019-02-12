@@ -41,7 +41,7 @@ name my Linux server: Funky Boy.
 
 4. Run the initial setup script:
    ```
-   ./client-scripts/init.sh root@funkyboy.zone
+   ./client-scripts/init.sh
    ```
 
 # Files
