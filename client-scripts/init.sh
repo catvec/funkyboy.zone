@@ -27,7 +27,7 @@ set -e
 prog_dir=$(realpath $(dirname "$0"))
 
 # Arguments
-while getopts "u:a:nt" opt; do
+while getopts "uh" opt; do
 	case "$opt" in
 		u)
 			user="$OPTARG"
