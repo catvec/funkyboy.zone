@@ -3,8 +3,10 @@
 {% set svc_dir = '/etc/sv/' + pillar['factorio']['service'] %}
 {% set svc_file = svc_dir + '/run' %}
 {% set svc_finish_file = svc_dir + '/finish' %}
-{% set config_file = pillar['factorio']['directory'] + '/config/server-settings.json' %}
+{% set config_dir = pillar['factorio']['directory'] + '/config' %}
+{% set config_file = config_dir + '/server-settings.json' %}
 
+# Factorio user
 {{ pillar.factorio.group.name }}-group:
   group.present:
     - name: {{ pillar.factorio.group.name }}
@@ -21,6 +23,7 @@
     - require:
       - group: {{ pillar.factorio.group.name }}-group
 
+# Configuration
 {{ pillar.factorio.directory }}:
   file.directory:
     - user: {{ pillar.factorio.user.name }}
@@ -31,6 +34,15 @@
       - user: {{ pillar.factorio.user.name }}-user
       - group: {{ pillar.factorio.group.name }}-group
 
+{{ config_dir }}:
+  file.directory:
+    - user: {{ pillar.factorio.user.name }}
+    - group: {{ pillar.factorio.group.name }}
+    - file_mode: {{ pillar.factorio.mode }}
+    - dir_mode: {{ pillar.factorio.mode }}
+    - require:
+      - file: {{ pillar.factorio.directory }}
+
 {{ config_file }}:
   file.managed:
     - source: salt://factorio/server-settings.json
@@ -39,8 +51,9 @@
     - group: {{ pillar.factorio.group.name }}
     - mode: {{ pillar.factorio.mode }}
     - require:
-      - file: {{ pillar.factorio.directory }}
+      - file: {{ config_dir }}
 
+# Mods
 {{ pillar.factorio.mods_download_directory }}:
   file.recurse:
     - source: salt://factorio/mod_zips
@@ -71,6 +84,7 @@ all_mods_zip:
     - require:
       - file: {{ pillar.factorio.directory }}
 
+# Service
 {{ svc_dir }}:
   file.directory
 
@@ -105,6 +119,7 @@ all_mods_zip:
       - file: {{ config_file }}
       - file: {{ pillar.factorio.mods_directory }}
 
+# Caddy
 {{ pillar.caddy.config_dir }}/factorio:
   file.managed:
     - source: salt://factorio/Caddyfile
