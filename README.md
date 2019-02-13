@@ -28,19 +28,12 @@ name my Linux server: Funky Boy.
    You must have access to the [funkyboy.zone-secrets](https://github.com/Noah-Huppert/funkyboy.zone-secrets)
    repository. This private repository holds secret setup information.
 
-2. Create a droplet on DigitalOcean running Void Linux:
+2. Setup cloud resources on DigitalOcean using [Terraform](https://terraform.io):
    ```
-   ./client-scripts/setup-droplet.sh
+   ./client-scripts/setup-cloud.sh
    ```
 
-3. Create DNS entries pointing towards droplet:
-   ```
-   ./client-scripts/setup-dns.sh
-   ```
-   The Digital Ocean command line interface must be installed and have access 
-   to the `funkyboy.zone`, `noahh.io`, and `noahhuppert.com` domains.
-
-4. Run the initial setup script:
+3. Run the initial setup script:
    ```
    ./client-scripts/init.sh
    ```
