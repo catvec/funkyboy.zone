@@ -5,6 +5,7 @@ Linux server run at funkyboy.zone
 - [Overview](#overview)
 - [The Name?](#the-name)
 - [Setup](#setup)
+- [First Time Setup](#first-time-setup)
 - [Files](#files)
 
 # Overview
@@ -43,6 +44,34 @@ name my Linux server: Funky Boy.
    ```
    ./client-scripts/init.sh
    ```
+
+# First Time Setup
+This section contains one time setup steps which were manually run to create 
+files in states.
+
+## ZNC
+The configuration file in the `znc` state was initially generated with 
+the command:
+
+```
+znc --makeconf
+```
+
+This file was then further edited.
+
+## Email
+The keys for OpenDKIM in the `email-secret` state were generated with 
+the command:
+
+```
+opendkim-genkey -s mail -d funkyboy.zone
+```
+
+These outputted `mail.private` and `mail.txt` files were renamed to 
+`funkyboy-zone.private` and `funkyboy-zone.txt`.
+
+The `funkyboy-zone-dkim` record in the `client-scripts/infra.tf` file is 
+sourced from the `funkyboy-zone.txt` file.
 
 # Files
 - `server-scripts/` - Scripts to be run on the server

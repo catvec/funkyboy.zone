@@ -679,3 +679,9 @@ readme_directory = /usr/share/doc/postfix
 inet_protocols = ipv4
 meta_directory = /etc/postfix
 shlib_directory = no
+
+# MAIL FILTER
+milter_protocol = 2
+milter_default_action = accept
+smtpd_milters = inet:localhost:12301
+non_smtpd_milters = inet:localhost:12301

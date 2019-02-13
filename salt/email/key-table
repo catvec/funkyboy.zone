@@ -1,0 +1,3 @@
+{% for host in pillar['email']['hosts'] %}
+mail._domainkey.{{ host }} {{ host }}:mail:/etc/opendkim/keys/{{ host }}/mail.private
+{% endfor %}

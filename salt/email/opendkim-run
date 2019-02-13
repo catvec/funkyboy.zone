@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+exec chpst -u {{ pillar.email.opendkim.user }}:{{ pillar.email.opendkim.group }} opendkim -x {{ pillar.email.opendkim.config_file }} -f
