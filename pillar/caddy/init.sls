@@ -33,3 +33,7 @@ caddy:
       www_dir: workout
       hosts:
         - swoll.funkyboy.zone
+    public_www:
+      www_dir: public-www
+      hosts:
+        - public.funkyboy.zone

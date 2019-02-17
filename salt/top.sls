@@ -30,4 +30,5 @@ base:
     - noahhuppert-website
     - workout-website
     - factorio
+    - public-www
     - putsvl # Must always be last

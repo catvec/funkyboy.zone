@@ -15,3 +15,4 @@ base:
     - factorio
     - factorio-secret
     - backup
+    - public-www
