@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Add $ARGS for more arguments
+[ -f ./conf ] && . ./conf
+
+: ${CONF_FILE:=/etc/alertmanager.yml}
+: ${CONF_FLAG:=--config.file=$CONF_FILE}
+: ${WRKDIR:=/var/lib/alertmanager}
+
+cd "$WRKDIR"
+
+set -x
+exec chpst -u {{ pillar.prometheus.alert.user }}:{{ pillar.prometheus.alert.group }} alertmanager ${CONF_FLAG} ${ARGS}

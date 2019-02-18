@@ -7,6 +7,8 @@ base:
     - vsv
     - email
     - email-secret
+    - prometheus
+    - prometheus-secret
     - caddy
     - caddy-secret
     - void-scripts

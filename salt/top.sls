@@ -20,6 +20,7 @@ base:
     - lnav
     - python
     - go
+    - prometheus
     - caddy
     - scripts-repo
     - void-scripts
