@@ -2,6 +2,7 @@
 email:
   postfix: 
     config_file: /etc/postfix/main.cf
+    user: postfix
   opendkim:
     user: opendkim
     group: opendkim

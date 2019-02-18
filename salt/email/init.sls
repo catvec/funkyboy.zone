@@ -35,6 +35,10 @@ newaliases:
 {{ pillar.email.opendkim.group }}-group:
   group.present:
     - name: {{ pillar.email.opendkim.group }}
+    - members:
+      - {{ pillar.email.postfix.user }}
+    - require:
+      - pkg: postfix
 
 {{ pillar.email.opendkim.user }}-user:
   user.present:
@@ -149,6 +153,7 @@ newaliases:
     - require:
       - file: {{ pillar.email.postfix.config_file }}
       - file: {{ pillar.email.aliases_file }}
+      - group: {{ pillar.email.opendkim.group }}-group
 
 {{ postfix_svc }}-running:
   service.running:
