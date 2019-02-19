@@ -1,4 +1,4 @@
-{{ pillar.prometheus.grafana.hosts }} {
+{{ pillar.grafana.hosts }} {
 	proxy / localhost:3000
 
 	tls {

@@ -1,9 +1,0 @@
-#!/bin/sh
-
-[ -f ./conf ] && . ./conf
-
-: ${WRKDIR:=/var/lib/prometheus}
-
-cd "${WRKDIR}"
-
-exec chpst -u {{ pillar.prometheus.record.user }}:{{ pillar.prometheus.record.group }} prometheus --config.file=/etc/prometheus/prometheus.yml $ARGS

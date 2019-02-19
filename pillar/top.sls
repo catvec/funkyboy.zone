@@ -8,7 +8,8 @@ base:
     - email
     - email-secret
     - prometheus
-    - prometheus-secret
+    - alertmanager
+    - grafana
     - caddy
     - caddy-secret
     - void-scripts

@@ -21,6 +21,8 @@ base:
     - python
     - go
     - prometheus
+    - alertmanager
+    - grafana
     - caddy
     - scripts-repo
     - void-scripts

@@ -1,136 +1,58 @@
 # Install and configures Prometheus.
 
-{% set record_pkg = 'prometheus' %}
-{% set alert_pkg = 'alertmanager' %}
-{% set grafana_pkg = 'grafana' %}
+{% set pkg = 'prometheus' %}
+{% set svc = 'prometheus' %}
 
-{% set record_svc = 'prometheus' %}
-{% set alert_svc = 'alertmanager' %}
-{% set grafana_svc = 'grafana' %}
-
-# Prometheus
-{{ record_pkg }}:
+# Install
+{{ pkg }}:
   pkg.installed
 
-{{ pillar.prometheus.record.group }}-group:
+# Configure
+{{ pillar.prometheus.group }}-group:
   group.present:
-    - name: {{ pillar.prometheus.record.group }}
+    - name: {{ pillar.prometheus.group }}
     - members:
-      - {{ pillar.prometheus.record.user }}
+      - {{ pillar.prometheus.user }}
     - require:
-      - pkg: {{ record_pkg }}
+      - pkg: {{ pkg }}
 
-{{ pillar.prometheus.record.svc_file }}:
+{{ pillar.prometheus.svc_file }}:
   file.managed:
-    - source: salt://prometheus/prometheus_run
+    - source: salt://prometheus/run
     - template: jinja
     - require:
-      - pkg: {{ record_pkg }}
+      - pkg: {{ pkg }}
 
-{{ pillar.prometheus.record.config_file }}:
+{{ pillar.prometheus.config_file }}:
   file.managed:
     - source: salt://prometheus/prometheus.yml
-    - group: {{ pillar.prometheus.record.group }}
+    - group: {{ pillar.prometheus.group }}
     - mode: 755
     - require:
-      - group: {{ pillar.prometheus.record.group }}-group
+      - group: {{ pillar.prometheus.group }}-group
 
-{{ pillar.prometheus.record.rules_file }}:
+{{ pillar.prometheus.rules_file }}:
   file.managed:
     - source: salt://prometheus/alert_rules.yml
-    - group: {{ pillar.prometheus.record.group }}
+    - group: {{ pillar.prometheus.group }}
     - mode: 755
     - require:
-      - group: {{ pillar.prometheus.record.group }}-group
+      - group: {{ pillar.prometheus.group }}-group
 
-{{ record_svc }}-enabled:
+# Service
+{{ svc }}-enabled:
   service.enabled:
-    - name: {{ record_svc }}
+    - name: {{ svc }}
     - require:
-      - file: {{ pillar.prometheus.record.svc_file }}
+      - file: {{ pillar.prometheus.svc_file }}
 
-{{ record_svc }}-running:
+{{ svc }}-running:
   service.running:
-    - name: {{ record_svc }}
+    - name: {{ svc }}
     - watch:
-      - file: {{ pillar.prometheus.record.config_file }}
-      - file: {{ pillar.prometheus.record.rules_file }}
+      - file: {{ pillar.prometheus.config_file }}
+      - file: {{ pillar.prometheus.rules_file }}
     - require:
-      - service: {{ record_svc }}-enabled
-      - service: {{ alert_svc }}-running
-      - file: {{ pillar.prometheus.record.config_file }}
-      - file: {{ pillar.prometheus.record.rules_file }}
-
-# Alertmanager
-{{ alert_pkg }}:
-  pkg.installed
-
-{{ pillar.prometheus.alert.group }}-group:
-  group.present:
-    - name: {{ pillar.prometheus.alert.group }}
-    - members:
-      - {{ pillar.prometheus.alert.user }}
-    - require:
-      - pkg: {{ alert_pkg }}
-
-{{ pillar.prometheus.alert.svc_file }}:
-  file.managed:
-    - source: salt://prometheus/alertmanager_run
-    - template: jinja
-    - require:
-      - pkg: {{ alert_pkg }}
-
-{{ pillar.prometheus.alert.config_file }}:
-  file.managed:
-    - source: salt://prometheus/alertmanager.yml
-    - group: {{ pillar.prometheus.alert.group }}
-    - mode: 755
-    - require:
-      - group: {{ pillar.prometheus.alert.group }}-group
-
-{{ alert_svc }}-enabled:
-  service.enabled:
-    - name: {{ alert_svc }}
-    - require:
-      - pkg: {{ alert_pkg }}
-
-{{ alert_svc }}-running:
-  service.running:
-    - name: {{ alert_svc }}
-    - watch:
-      - file: {{ pillar.prometheus.alert.config_file }}
-    - require:
-      - service: {{ alert_svc }}-enabled
-      - group: {{ pillar.prometheus.alert.group }}-group
-
-# Grafana
-{{ grafana_pkg }}:
-  pkg.installed
-
-{{ pillar.prometheus.grafana.config_file }}:
-  file.managed:
-    - source: salt://prometheus/grafana.ini
-    - template: jinja
-
-{{ pillar.caddy.config_dir }}/{{ pillar.prometheus.grafana.caddy_cfg }}:
-  file.managed:
-    - source: salt://prometheus/Caddyfile
-    - template: jinja
-    - user: {{ pillar.caddy.files.user }}
-    - group: {{ pillar.caddy.files.group }}
-    - mode: {{ pillar.caddy.files.mode }}
-
-{{ grafana_svc }}-enabled:
-  service.enabled:
-    - name: {{ grafana_svc }}
-    - require:
-      - pkg: {{ grafana_pkg }}
-
-{{ grafana_svc }}-running:
-  service.running:
-    - name: {{ grafana_svc }}
-    - watch:
-      - file: {{ pillar.prometheus.grafana.config_file }}
-    - require:
-      - service: {{ grafana_svc }}-enabled
-      - service: {{ record_svc }}-running
+      - service: {{ svc }}-enabled
+      - file: {{ pillar.prometheus.config_file }}
+      - file: {{ pillar.prometheus.rules_file }}
