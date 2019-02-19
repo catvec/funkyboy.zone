@@ -69,6 +69,9 @@ sourced from the `funkyboy-zone.txt` file.
 ## Prometheus
 Make a secure admin password and store it in the `prometheus-secret` pillar.
 
+Then log into Grafana and add Prometheus as a data source with 
+default credentials.
+
 # Files
 - `server-scripts/` - Scripts to be run on the server
 - `client-scripts/` - Scripts to be run on a client
