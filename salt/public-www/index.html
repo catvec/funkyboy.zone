@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<title>Public Files</title>
+	</head>
+
+	<body>
+		<h1>Public Files</h1>
+		<section>
+			<h2>About</h2>
+
+			<p>
+				Each user on Funky Boy can serve public files from the
+				<code>public.funkyboy.zone</code> sub-domain.
+			</p>
+		</section>
+
+		<section>
+			<h2>Instructions</h2>
+
+			<p>
+				Place files in the <code>{{ pillar.public_www.shortcut_directory }}/USERNAME</code> directory.<br>
+				<br>
+				Ensure that these files can be accessed by the 
+				<code>caddy</code> group by setting mode <code>755</code> on all files.<br>
+				<br>
+				Access your files via the 
+				<code>public.funkyboy.zone/USERNAME</code> URL.
+			</p>
+		</section>
+	</body>
+</html>

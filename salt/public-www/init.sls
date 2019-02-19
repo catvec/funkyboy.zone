@@ -5,6 +5,14 @@
     - dir_mode: 755
     - file_mode: 755
 
+{{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.public_www.www_dir }}/index.html:
+  file.managed:
+    - source: salt://public-www/index.html
+    - template: jinja
+    - user: {{ pillar.caddy.files.user }}
+    - group: {{ pillar.caddy.files.group }}
+    - mode: {{ pillar.caddy.files.mode }}
+
 {{ pillar.public_www.shortcut_directory }}:
   file.symlink:
     - target: {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.public_www.www_dir }}
@@ -16,8 +24,8 @@
   file.directory:
     - owner: {{ user.name }}
     - group: {{ pillar.caddy.files.group }}
-    - dir_mode: 750
-    - file_mode: 750
+    - dir_mode: 755
+    - file_mode: 755
     - require:
       - file: {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.public_www.www_dir }}
 {% endfor %}
