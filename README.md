@@ -67,13 +67,7 @@ The `funkyboy-zone-dkim` record in the `client-scripts/infra.tf` file is
 sourced from the `funkyboy-zone.txt` file.
 
 ## Prometheus
-Create a GitHub application and store the client ID and secret in the 
-`prometheus-secret` Pillar.
-
-Make the homepage URL: `https://grafana.funkyboy.zone`  
-Make the callback URL: `https://grafana.funkyboy.zone/login/github`  
-
-Make a secure admin password and store it in the same pillar.
+Make a secure admin password and store it in the `prometheus-secret` pillar.
 
 # Files
 - `server-scripts/` - Scripts to be run on the server
