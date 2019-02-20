@@ -14,10 +14,6 @@ data "digitalocean_image" "void-linux" {
 	name = "Void-Linux"
 }
 
-data "digitalocean_volume" "backup-volume" {
-	name = "funkyboy-zone-backup"
-}
-
 data "digitalocean_ssh_key" "katla" {
 	name = "Katla"
 }
@@ -45,12 +41,6 @@ resource "digitalocean_droplet" "funkyboy-zone" {
 		"${data.digitalocean_ssh_key.katla.fingerprint}"
 	]
 	backups = true
-}
-
-# {{{2 Volume
-resource "digitalocean_volume_attachment" "backup-volume-attach" {
-	droplet_id = "${digitalocean_droplet.funkyboy-zone.id}"
-	volume_id = "${data.digitalocean_volume.backup-volume.id}"
 }
 
 # {{{2 DNS records
