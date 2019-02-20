@@ -82,7 +82,7 @@ To create a custom image complete the following steps:
 1. Download installation media ISO
 2. Create VirtualBox machine
 3. Install operating system on virtual machine
-4. Install Python 3
+4. Install Python 3 and Pip
 5. Install Cloud Init
     - Download latest 
       [Cloud Init distribution](https://launchpad.net/cloud-init)
