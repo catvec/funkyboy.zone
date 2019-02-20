@@ -93,6 +93,7 @@ To create a custom image complete the following steps:
     - Build:
       ```
       cd cloud-init-x.x.x
+      pip3 -r requirements.txt
       python3 setup.py build
       ```
     - Install:
