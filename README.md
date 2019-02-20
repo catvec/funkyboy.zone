@@ -4,8 +4,9 @@ Linux server run at funkyboy.zone
 # Table Of Contents
 - [Overview](#overview)
 - [The Name?](#the-name)
-- [Setup](#setup)
-- [First Time Setup](#first-time-setup)
+- [Cloud Setup](#cloud-setup)
+- [First Time State Setup](#first-time-state-setup)
+- [Custom Cloud Image Creation](#custom-cloud-image-creation)
 - [Files](#files)
 
 # Overview
@@ -18,7 +19,7 @@ In one of my favorite movies,
 has a secret weapon named "Funky Boy". I found this humorous, and decided to 
 name my Linux server: Funky Boy.
 
-# Setup
+# Cloud Setup
 1. Clone down this repository and initialize the submodules
    ```
    git clone git@github.com:Noah-Huppert/funkyboy.zone.git
@@ -71,6 +72,40 @@ Make a secure admin password and store it in the `prometheus-secret` pillar.
 
 Then log into Grafana and add Prometheus as a data source with 
 default credentials.
+
+# Custom Cloud Image Creation
+One can create custom DigitalOcean Droplet images. These allow Droplets to run
+custom operating systems.
+
+To create a custom image complete the following steps:
+
+1. Download installation media ISO
+2. Create VirtualBox machine
+3. Install operating system on virtual machine
+4. Install Python 3
+5. Install Cloud Init
+    - Download latest 
+      [Cloud Init distribution](https://launchpad.net/cloud-init)
+    - Extract download:
+      ```
+      tar -xzvf cloud-init-x.x.x.tar.gz
+      ```
+    - Build:
+      ```
+      cd cloud-init-x.x.x
+      python3 setup.py build
+      ```
+    - Install:
+      ```
+      python3 setup.py install
+      ```
+    - Clean:
+      ```
+      cd ..
+      rm -rf cloud-init*
+      ```
+6. Upload the virtual machine's disk image file `.vdi` to DigitalOcean spaces
+7. Create a custom image on the DigitalOcean dashboard
 
 # Files
 - `server-scripts/` - Scripts to be run on the server
