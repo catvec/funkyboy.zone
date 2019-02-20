@@ -88,7 +88,7 @@ To create a custom image complete the following steps:
       [Cloud Init distribution](https://launchpad.net/cloud-init)
     - Extract download:
       ```
-      tar -xzvf cloud-init-x.x.x.tar.gz
+      tar -xzf cloud-init-x.x.x.tar.gz
       ```
     - Build:
       ```
