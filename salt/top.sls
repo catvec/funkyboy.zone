@@ -11,6 +11,8 @@ base:
     - crond
     - motd
     - xz
+    - make
+    - gcc
     - backup
     - email
     - neovim
