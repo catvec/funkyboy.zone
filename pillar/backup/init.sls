@@ -1,8 +1,14 @@
-{% set scripts_dir = '/opt/backup' %}
+{% set dir = '/opt/backup' %}
 
 backup:
   user: backup
   group: backup
   mode: 775
-  device: /dev/disk/by-id/scsi-0DO_Volume_funkyboy-zone-backup
-  mount_point: /backup
+  directory: {{ dir }}
+  script: {{ dir }}/backup.sh
+  cron_run_script: {{ dir }}/cron-run.sh
+  s3cmd_config: {{ dir }}/s3cmd-cfg
+  space: funkyboy-zone-backup
+  spaces_region: sfo2
+  success_status_file: {{ dir }}/successfully-ran
+  log_tag: backup
