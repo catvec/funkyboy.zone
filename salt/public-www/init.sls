@@ -22,7 +22,7 @@
 {% for user in pillar['users'] %}
 {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.public_www.www_dir }}/{{ user.name }}:
   file.directory:
-    - owner: {{ user.name }}
+    - user: {{ user.name }}
     - group: {{ pillar.caddy.files.group }}
     - dir_mode: 755
     - file_mode: 755
