@@ -8,8 +8,9 @@
 #
 # OPTIONS
 #
-#	-s SPACE    Name of Digital Ocean Space to upload backups
-#	-3 CFG_F    Location of s3cmd configuration file
+#	-s SPACE     Name of Digital Ocean Space to upload backups
+#	-3 CFG_F     Location of s3cmd configuration file
+#	-f FLAG_F    Flag file to touch when backup successfully completes
 #
 # BEHAVIOR
 #
@@ -88,7 +89,7 @@ fi
 
 # {{{1 Arguments
 # {{{2 Get
-while getopts "s:3:" opt; do
+while getopts "s:3:f:" opt; do
 	case "$opt" in
 		s)
 			space="$OPTARG"
@@ -96,6 +97,10 @@ while getopts "s:3:" opt; do
 
 		3)
 			s3cmd_cfg_f="$OPTARG"
+			;;
+
+		f)
+			status_flag_file="$OPTARG"
 			;;
 
 		'?')
@@ -115,6 +120,12 @@ fi
 # {{{3 s3cmd_cfg_f
 if [ -z "$s3cmd_cfg_f" ]; then
 	echo "Error: -3 CFG_F option required" >&2
+	exit 1
+fi
+
+# {{{3 status_flag_file
+if [ -z "$status_flag_file" ]; then
+	echo "Error: -f FLAG_F option required" >&2
 	exit 1
 fi
 
@@ -248,5 +259,11 @@ if ! s3cmd -c "$s3cmd_cfg_f" put "$compressed_backup_f_path" "s3://$space/"; the
 fi
 
 cleanup
+
+# {{{1 Indicate successfully ran
+if ! touch "$status_flag_file"; then
+	echo "Error: Failed to touch status flag file \"$status_flag_file\" to indicate ran successfully" >&2
+	exit 1
+fi
 
 echo "DONE"

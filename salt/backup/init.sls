@@ -51,3 +51,15 @@ s3cmd:
     - require:
       - file: {{ pillar.backup.directory }}
 
+# Cron
+{{ pillar.backup.cron_run_script }}:
+  file.managed:
+    - source: salt://backup/cron-run.sh
+    - template: jinja
+    - mode: 755
+
+{{ pillar.crond.config_dir }}/backup:
+  file.managed:
+    - source: salt://backup/crontab
+    - template: jinja
+    - mode: 755
