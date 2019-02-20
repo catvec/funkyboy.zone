@@ -25,6 +25,7 @@ base:
     - prometheus
     - alertmanager
     - grafana
+    - node-exporter
     - caddy
     - scripts-repo
     - void-scripts

@@ -10,6 +10,7 @@ base:
     - prometheus
     - alertmanager
     - grafana
+    - node-exporter
     - caddy
     - caddy-secret
     - void-scripts
