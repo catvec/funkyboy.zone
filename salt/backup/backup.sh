@@ -8,9 +8,14 @@
 #
 # OPTIONS
 #
-#	-s SPACE     Name of Digital Ocean Space to upload backups
-#	-3 CFG_F     Location of s3cmd configuration file
-#	-f FLAG_F    Flag file to touch when backup successfully completes
+#	-s SPACE        Name of Digital Ocean Space to upload backups
+#	-c CFG_F        Location of s3cmd configuration file
+#	-r FLAG_F       Flag file to touch when backup successfully runs
+#	-b FILE         File / directory to backup, can be specified 
+#	                multiple times
+#	-e EXCLUDE_F    Files to exclude from backup
+#	-f              Force backup occur even if program determines it is
+#	                too soon for another backup
 #
 # BEHAVIOR
 #
@@ -36,17 +41,25 @@
 # {{{1 Exit on any error
 set -e
 
+# {{{1 Load shared functions file
+prog_dir=$(realpath $(dirname "$0"))
+
+. "$prog_dir/lib-backup.sh"
+
 # {{{1 Configuration
 out_dir="/var/tmp"
 
 backup_f_date_fmt="+%Y-%m-%d-%H:%M:%S"
-backup_f_targets=("/public" "/home")
+#backup_f_targets=("/public" "/home")
 
 oldest_backup=2592000 # 1 month
 oldest_backup_txt="1 month"
 
 earliest_backup=43200 # 12 hours
 earliest_backup_txt="12 hours"
+
+backup_f_targets=()
+backup_f_exclude=()
 
 # {{{1 Software requirements
 # {{{2 GNU Date 
@@ -89,18 +102,30 @@ fi
 
 # {{{1 Arguments
 # {{{2 Get
-while getopts "s:3:f:" opt; do
+while getopts "s:c:r:b:e:f" opt; do
 	case "$opt" in
 		s)
 			space="$OPTARG"
 			;;
 
-		3)
+		c)
 			s3cmd_cfg_f="$OPTARG"
 			;;
 
-		f)
+		r)
 			status_flag_file="$OPTARG"
+			;;
+
+		b)
+			backup_f_targets+=("$OPTARG")
+			;;
+
+		e)
+			backup_f_exclude+=("$OPTARG")
+			;;
+
+		f)
+			force_backup="true"
 			;;
 
 		'?')
@@ -119,21 +144,36 @@ fi
 
 # {{{3 s3cmd_cfg_f
 if [ -z "$s3cmd_cfg_f" ]; then
-	echo "Error: -3 CFG_F option required" >&2
+	echo "Error: -c CFG_F option required" >&2
 	exit 1
 fi
 
 # {{{3 status_flag_file
 if [ -z "$status_flag_file" ]; then
-	echo "Error: -f FLAG_F option required" >&2
+	echo "Error: -r FLAG_F option required" >&2
+	exit 1
+fi
+
+# {{{3 backup_f_targets
+if [[ "${#backup_f_targets[@]}" == "0" ]]; then
+	echo "Error: -b FILE option must be specified at least once" >&2
 	exit 1
 fi
 
 # {{{2 Validate
+# {{{3 s3cmd_cfg_f
 if [ ! -f "$s3cmd_cfg_f" ]; then
 	echo "Error: s3cmd configuration file \"$s3cmd_cfg_f\" does not exist" >&2
 	exit 1
 fi
+
+# {{{3 backup_f_targets
+for f in "${backup_f_targets[@]}"; do
+	if [ ! -f "$f" ] && [ ! -e "$f" ] && [ ! -d "$f" ]; then
+		echo "Error: Backup target file \"$f\" does not exist" >&2
+		exit 1
+	fi
+done
 
 # {{{1 Create backup file format
 backup_f_date=$(date "$backup_f_date_fmt")
@@ -148,38 +188,12 @@ backup_f_path="$out_dir/backup-$backup_f_date.tar"
 echo "===== Backup file name will be $backup_f_path"
 
 # {{{1 Check if backup made recently
-# {{{2 Date conversion helper
-function file_date_to_epoch() { # ( date )
-	# {{{2 Arguments
-	if [ -z "$1" ]; then
-		echo "Error: file_date_to_epoch(): date argument required" >&2
-		exit 1
-	fi
-	date="$1"
-
-	# {{{2 Convert to GNU date default format
-	# 2019-02-20-15:42:13
-	year=$(echo "$date" | awk -F '-' '{ print $1 }')
-	month=$(echo "$date" | awk -F '-' '{ print $2 }')
-	day=$(echo "$date" | awk -F '-' '{ print $3 }')
-	time_part=$(echo "$date" | sed 's/.*-.*-\(.*\)/\1/g')
-
-	gnu_formatted_date="$month/$day/$year $time_part"
-
-	# {{{2 Get as epoch
-	epoch=$(date -d "$gnu_formatted_date" +%s)
-	if [[ "$?" != "0" ]]; then
-		echo "Error: file_date_to_epoch($date): Failed to convert to epoch" >&2
-		exit 1
-	fi
-
-	echo "$epoch"
-}
-
-# {{{2 Get existing backups
 echo "===== Performing maintenance on existing backups"
 while read file_info; do
-	# {{{3 Get epoch backup was created
+	if [ -z "$file_info" ]; then
+		continue
+	fi
+	# {{{2 Get epoch backup was created
 	# file_info format
 	#
 	#	date time size f_s3_path
@@ -190,18 +204,23 @@ while read file_info; do
 	f_date_day=$(echo "$f_date" | awk -F '-' '{ print $3 }')
 	f_date_epoch=$(file_date_to_epoch "$f_date")
 
-	# {{{3 Figure out how long ago backup was made
+	# {{{2 Figure out how long ago backup was made
 	now=$(date +%s)
 	dt=$(("$now - $f_date_epoch"))
 
-	# {{{3 Determine if backup was created too recently
+	# {{{2 Determine if backup was created too recently
 	if (( "$dt" < "$earliest_backup" )); then
-		echo "Error: Backup created within the last $earliest_backup_txt, wait until 12 hours from $f_date" >&2
-		exit 1
+		# Check if force argument is provided
+		if [ ! -z "$force_backup" ]; then
+			echo "Backup created within the last $earliest_backup_txt but -f argument provided"
+		else
+			echo "Error: Backup created within the last $earliest_backup_txt, wait until 12 hours from $f_date" >&2
+			exit 1
+		fi
 	fi
 
-	# {{{3 Determine if a backup should be deleted
-	if (( "$dt" < "$oldest_backup" )); then
+	# {{{2 Determine if a backup should be deleted
+	if (( "$dt" > "$oldest_backup" )); then
 		# Keep every backup on the 30th day of a month no matter the age
 		if [[ "$(($f_date_day % 30))" == "0" ]]; then
 			echo "Keeping old backup on 30th day of month $f_date"
@@ -231,7 +250,17 @@ echo "===== Creating archive"
 for target in "${backup_f_targets[@]}"; do
 	echo "----- Backing up $target"
 
-	if ! tar -huvf "$backup_f_path" "$target"; then
+	# {{{2 Build exclude arguments
+	tar_exclude_args=""
+
+	for f in "${backup_f_exclude[@]}"; do
+		tar_exclude_args="$tar_exclude_args --exclude=$f"
+	done
+
+	echo "tar exclude args: $tar_exclude_args"
+
+	# {{{2 Archive
+	if ! tar -huvf "$backup_f_path" $tar_exclude_args "$target"; then
 		echo "Error: Failed to create backup tar ball for $target" >&2
 		cleanup
 		exit 1

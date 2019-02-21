@@ -42,9 +42,27 @@ s3cmd:
       - file: {{ pillar.backup.directory }}
 
 # Backup script
+{{ pillar.backup.directory }}/lib-backup.sh:
+  file.managed:
+    - source: salt://backup/lib-backup.sh
+    - user: {{ pillar.backup.user }}
+    - group: {{ pillar.backup.group }}
+    - mode: {{ pillar.backup.mode }}
+    - require:
+      - file: {{ pillar.backup.directory }}
+
 {{ pillar.backup.script }}:
   file.managed:
     - source: salt://backup/backup.sh
+    - user: {{ pillar.backup.user }}
+    - group: {{ pillar.backup.group }}
+    - mode: {{ pillar.backup.mode }}
+    - require:
+      - file: {{ pillar.backup.directory }}
+
+{{ pillar.backup.restore_script }}:
+  file.managed:
+    - source: salt://backup/restore.sh
     - user: {{ pillar.backup.user }}
     - group: {{ pillar.backup.group }}
     - mode: {{ pillar.backup.mode }}
