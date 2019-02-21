@@ -23,8 +23,8 @@ base:
     - go
     - prometheus
     - alertmanager
-    - grafana
     - caddy
+    - grafana # Must come after caddy, reverse proxy setup requires caddy
     - scripts-repo
     - void-scripts
     - znc-secret
