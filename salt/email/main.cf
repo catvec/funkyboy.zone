@@ -683,5 +683,5 @@ shlib_directory = no
 # MAIL FILTER
 #milter_protocol = 6
 milter_default_action = accept
-smtpd_milters = inet:[127.0.0.1]:12301
-non_smtpd_milters = inet:[127.0.0.1]:12301
+#smtpd_milters = inet:[127.0.0.1]:12301
+#non_smtpd_milters = inet:[127.0.0.1]:12301
