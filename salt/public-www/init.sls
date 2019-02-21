@@ -2,6 +2,7 @@
 
 {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.public_www.www_dir }}:
   file.directory:
+    - makedirs: True
     - dir_mode: 755
     - file_mode: 755
 
