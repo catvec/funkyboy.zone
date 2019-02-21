@@ -1,5 +1,6 @@
 base:
   '*':
+    - system-config
     - zsh
     - users
     - crond

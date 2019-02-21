@@ -2,6 +2,7 @@ base:
   '*':
     - salt-config
     - salt-dir-perms
+    - system-config
     - srv-dir-perms
     - syslog
     - sshd-config
