@@ -16,3 +16,4 @@ email:
   hosts:
     - funkyboy.zone
   aliases_file: /etc/aliases
+  root_forward_file: /root/.forward
