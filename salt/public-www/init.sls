@@ -21,6 +21,7 @@
       - file: {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.public_www.www_dir }}
 
 {% for user in pillar['users'] %}
+{% if user.name not in pillar['public_www']['excluded_users'] %}
 {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.public_www.www_dir }}/{{ user.name }}:
   file.directory:
     - user: {{ user.name }}
@@ -29,4 +30,5 @@
     - file_mode: 755
     - require:
       - file: {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.public_www.www_dir }}
+{% endif %}
 {% endfor %}
