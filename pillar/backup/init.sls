@@ -12,3 +12,8 @@ backup:
   spaces_region: sfo2
   success_status_file: {{ dir }}/successfully-ran
   log_tag: backup
+  backup_targets:
+    - /public
+    - /home
+  backup_exclude:
+    - '/home/*/.*'
