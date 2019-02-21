@@ -38,3 +38,8 @@ name my Linux server: Funky Boy.
    ```
    ./client-scripts/init.sh
    ```
+4. (Optional) Restore data from a backup, ssh into the server and run:
+   ```
+   sudo su
+   /opt/backup/run-restore.sh
+   ```
