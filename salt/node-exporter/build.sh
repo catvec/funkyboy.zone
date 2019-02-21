@@ -52,4 +52,9 @@ if ! mv "$GOPATH/bin/node_exporter" /usr/bin; then
 	exit 1
 fi
 
+if ! chmod 755 $(which node_exporter); then
+	echo "Error: Failed to chmod" >&2
+	exit 1
+fi
+
 echo "OK"

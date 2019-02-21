@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+exec chpst -u {{ pillar.prometheus.user }}:{{ pillar.prometheus.group }} node_exporter
