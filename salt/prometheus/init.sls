@@ -53,6 +53,7 @@
     - watch:
       - file: {{ pillar.prometheus.config_file }}
       - file: {{ pillar.prometheus.rules_file }}
+      - file: {{ pillar.prometheus.svc_file }}
     - require:
       - service: {{ svc }}-enabled
       - file: {{ pillar.prometheus.config_file }}

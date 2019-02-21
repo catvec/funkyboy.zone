@@ -6,4 +6,4 @@
 
 cd "${WRKDIR}"
 
-exec chpst -u {{ pillar.prometheus.user }}:{{ pillar.prometheus.group }} prometheus --config.file=/etc/prometheus/prometheus.yml $ARGS
+exec chpst -u {{ pillar.prometheus.user }}:{{ pillar.prometheus.group }} prometheus --config.file={{ pillar.prometheus.config_file }} --web.listen-address="127.0.0.1:9090"
