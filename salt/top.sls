@@ -23,11 +23,11 @@ base:
     - lnav
     - python
     - go
+    - caddy
     - prometheus
     - alertmanager
     - node-exporter
-    - caddy
-    - grafana # Must come after caddy, reverse proxy setup requires caddy
+    - grafana
     - scripts-repo
     - void-scripts
     - znc-secret

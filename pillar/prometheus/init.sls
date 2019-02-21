@@ -4,3 +4,5 @@ prometheus:
   svc_file: /etc/sv/prometheus/run
   user: _prometheus
   group: prometheus
+  hosts: https://prometheus.funkyboy.zone
+  caddy_cfg: prometheus

@@ -9,11 +9,12 @@ base:
     - email
     - email-secret
     - prometheus
+    - prometheus-secret
     - alertmanager
     - node-exporter
     - caddy
     - caddy-secret
-    - grafana # Must come after caddy, reverse proxy setup requires caddy
+    - grafana 
     - void-scripts
     - znc-secret
     - znc

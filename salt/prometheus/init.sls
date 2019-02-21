@@ -26,6 +26,7 @@
 {{ pillar.prometheus.config_file }}:
   file.managed:
     - source: salt://prometheus/prometheus.yml
+    - template: jinja
     - group: {{ pillar.prometheus.group }}
     - mode: 755
     - require:
@@ -56,3 +57,13 @@
       - service: {{ svc }}-enabled
       - file: {{ pillar.prometheus.config_file }}
       - file: {{ pillar.prometheus.rules_file }}
+
+# Caddy
+{{ pillar.caddy.config_dir }}/{{ pillar.prometheus.caddy_cfg }}:
+  file.managed:
+    - source: salt://prometheus/Caddyfile
+    - template: jinja
+    - user: {{ pillar.caddy.files.user }}
+    - group: {{ pillar.caddy.files.group }}
+    - mode: {{ pillar.caddy.files.mode }}
+

@@ -1,0 +1,9 @@
+{{ pillar.prometheus.hosts }} {
+	proxy / localhost:9090
+
+	tls {
+		dns digitalocean
+	}
+
+	basicauth / prometheus {{ pillar.prometheus.caddy_password }}
+}
