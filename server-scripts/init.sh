@@ -44,23 +44,6 @@ else
 	echo "Will not set root password"
 fi
 
-# Delete misc files in /root
-echo "===== Deleting misc files in /root"
-
-if [ -f /root/*.tar.gz ]; then
-	if ! rm /root/*.tar.gz; then
-		echo "Error: Failed to delete .tar.gz files" >&2
-		exit 1
-	fi
-fi
-
-if [ -d /root/* ]; then
-	if ! rm -rf /root/*; then
-		echo "Error: Failed to delete directories" >&2
-		exit 1
-	fi
-fi
-
 # Install Salt
 echo "===== Installing Salt"
 

@@ -32,6 +32,7 @@ prog_dir=$(realpath $(dirname "$0"))
 
 # {{{1 Configuration
 tf_state_file=$(realpath "$prog_dir/../secret/terraform.tfstate")
+tf_plan_file=/tmp/funkyboy-zone-tf-plan
 
 # {{{1 Arguments
 while getopts "tdih" opt; do
@@ -78,27 +79,66 @@ if ! terraform init; then
 	exit 1
 fi
 
-# {{{1 Run
-terraform_mode="apply"
-terraform_args="$terraform_args -var do_token=$DO_API_TOKEN -state $tf_state_file"
+# {{{1 Plan
+# {{{2 Check for existing plan
+if [ -f "$tf_plan_file" ]; then
+	# {{{3 Check if we should delete plan
+	echo "Existing plan ($tf_plan_file) found, overwrite? [y/N] "
+	read plan_overwrite
 
-if [ ! -z "$arg_test" ]; then
-	terraform_mode="plan"
+	if [[ "$plan_overwrite" == "y" || "$plan_overwrite" == "Y" ]]; then
+		# Delete existing plan
+		if ! rm "$tf_plan_file"; then
+			echo "Error: Failed to delete existing plan: \"$tf_plan_file\"" >&2
+			exit 1
+		fi
+
+		echo "Delete plan ($tf_plan_file)"
+	fi
 fi
 
+# {{{2 Run plan
+if [ ! -f "$tf_plan_file" ]; then
+	terraform_plan_args="$terraform_plan_args -var do_token=$DO_API_TOKEN -state $tf_state_file -out $tf_plan_file"
+
+	if [ ! -z "$arg_destroy" ]; then
+		terraform_plan_args="$terraform_plan_args -destroy"
+	fi
+
+	if ! terraform plan $terraform_plan_args; then
+		echo "Error: Failed to plan" >&2
+		exit 1
+	fi
+fi
+
+# {{{2 Check if we are only planning
+if [ ! -z "$arg_test" ]; then
+	echo "Test mode complete"
+	exit 0
+fi
+
+# {{{1 Apply
+# {{{2 If destroying resources, confirm
 if [ ! -z "$arg_destroy" ]; then
-	terraform_args="$terraform_args -d"
-	
 	echo "Destroy resources? [y/N]"
 	read destroy_confirm
-	if [[ "$destroy_confirm" == "y" ]]; then
+
+	if [[ "$destroy_confirm" != "y" && "$destroy_confirm" != "Y" ]]; then
 		echo "Failed to confirm destroy" >&2
 		exit 1
 	fi
 fi
 
-
-if ! terraform "$terraform_mode" $terraform_args; then
+# {{{2 Apply
+if ! terraform apply "$tf_plan_file"; then
 	echo "Error: Failed to run terraform $terraform_mode" >&2
 	exit 1
 fi
+
+# {{{2 Remove plan
+if ! rm "$tf_plan_file"; then
+	echo "Error: Failed to delete applied plan: \"$tf_plan_file\"" >&2
+	exit 1
+fi
+
+echo "DONE"

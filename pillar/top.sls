@@ -1,5 +1,6 @@
 base:
   '*':
+    - system-config
     - zsh
     - users
     - crond
@@ -9,14 +10,15 @@ base:
     - email-secret
     - prometheus
     - alertmanager
-    - grafana
     - node-exporter
     - caddy
     - caddy-secret
+    - grafana # Must come after caddy, reverse proxy setup requires caddy
     - void-scripts
     - znc-secret
     - znc
     - factorio
     - factorio-secret
     - backup
+    - backup-secret
     - public-www

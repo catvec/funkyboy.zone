@@ -2,6 +2,7 @@ base:
   '*':
     - salt-config
     - salt-dir-perms
+    - system-config
     - srv-dir-perms
     - syslog
     - sshd-config
@@ -24,9 +25,9 @@ base:
     - go
     - prometheus
     - alertmanager
-    - grafana
     - node-exporter
     - caddy
+    - grafana # Must come after caddy, reverse proxy setup requires caddy
     - scripts-repo
     - void-scripts
     - znc-secret

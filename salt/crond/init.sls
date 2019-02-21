@@ -15,5 +15,7 @@
 {{ svc }}-running:
   service.running:
     - name: {{ svc }}
+    - watch:
+      - file: {{ pillar.crond.config_dir }}/*
     - require:
       - service: {{ svc }}-enabled

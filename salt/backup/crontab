@@ -1,0 +1,1 @@
+0 0 * * * {{ pillar.backup.cron_run_script }}

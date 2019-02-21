@@ -65,7 +65,7 @@ fi
 # Install rsync
 echo "===== Installing rsync on server if needed"
 
-if ! ssh "$address" 'which rsync &> /dev/null || xbps-install -Sy rsync'; then
+if ! ssh "$address" 'which rsync || xbps-install -Sy rsync'; then
 	echo "Error: Failed to install rsync on server" >&2
 	exit 1
 fi

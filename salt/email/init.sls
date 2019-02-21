@@ -31,6 +31,11 @@ newaliases:
     - onchanges:
       - file: {{ pillar.email.aliases_file }}
 
+{{ pillar.email.root_forward_file }}:
+  file.managed:
+    - source: salt://email/root_forward
+    - template: jinja
+
 # OpenDKIM user
 {{ pillar.email.opendkim.group }}-group:
   group.present:
