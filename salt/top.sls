@@ -12,6 +12,8 @@ base:
     - crond
     - motd
     - xz
+    - make
+    - gcc
     - backup
     - email
     - neovim
@@ -23,6 +25,7 @@ base:
     - go
     - prometheus
     - alertmanager
+    - node-exporter
     - caddy
     - grafana # Must come after caddy, reverse proxy setup requires caddy
     - scripts-repo

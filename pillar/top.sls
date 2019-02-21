@@ -10,6 +10,7 @@ base:
     - email-secret
     - prometheus
     - alertmanager
+    - node-exporter
     - caddy
     - caddy-secret
     - grafana # Must come after caddy, reverse proxy setup requires caddy
