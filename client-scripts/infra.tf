@@ -11,7 +11,7 @@ variable "do_token" {
 
 # {{{1 Find manually created resources
 data "digitalocean_image" "void-linux" {
-	name = "Void-Linux"
+	name = "Void-Linux-GLIBC"
 }
 
 data "digitalocean_ssh_key" "katla" {
