@@ -46,4 +46,10 @@ if ! make; then
 	exit 1
 fi
 
+# {{{2 Install
+if ! mv "$GOPATH/bin/node_exporter" /usr/bin; then
+	echo "Error: Failed to install" >&2
+	exit 1
+fi
+
 echo "OK"
