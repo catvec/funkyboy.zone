@@ -52,6 +52,9 @@ out_dir="/var/tmp"
 backup_f_date_fmt="+%Y-%m-%d-%H:%M:%S"
 #backup_f_targets=("/public" "/home")
 
+always_delete_backup=31557600 # 1 year
+always_delete_backup_txt="1 year"
+
 oldest_backup=2592000 # 1 month
 oldest_backup_txt="1 month"
 
@@ -220,10 +223,16 @@ while read file_info; do
 	fi
 
 	# {{{2 Determine if a backup should be deleted
-	if (( "$dt" > "$oldest_backup" )); then
-		# Keep every backup on the 30th day of a month no matter the age
+	if (( "$dt" > "$always_delete_backup" )); then
+		echo "Deleting backup older than $always_delete_backup_txt, all backups of this age are always deleted, date: $f_date"
+		if ! s3cmd -c "$s3cmd_cfg_f" rm "$f_s3_path"; then
+			echo "Error: Failed to delete old backup $f_s3_path" >&2
+			exit 1
+		fi
+	elif (( "$dt" > "$oldest_backup" )); then
+		# Keep every backup on the 30th day of a month unless older than a year
 		if [[ "$(($f_date_day % 30))" == "0" ]]; then
-			echo "Keeping old backup on 30th day of month $f_date"
+			echo "Keeping old backup on 30th day of month, date: $f_date"
 			continue
 		else
 			echo "Deleting backup older than $oldest_backup_txt, date: $f_date"
