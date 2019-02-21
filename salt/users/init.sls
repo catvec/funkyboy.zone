@@ -5,13 +5,19 @@
 
 {% for user in pillar['users'] %}
 
-{% set zsh_units_dir = '/home/' + user['name'] + '/.zprofile.d' %}
+{% if user.name != 'root' %}
+{% set home_dir = '/home/' + user.name %}
+{% else %}
+{% set home_dir = '/root' %}
+{% endif %}
+
+{% set zsh_units_dir = home_dir + '/.zprofile.d' %}
 
 # Create user
 {{ user.name }}:
   user.present:
     - shell: /bin/zsh
-    {% if user.groups %}
+    {% if user.groups is defined %}
     - groups:
       {% for group in user.groups %}
       - {{ group }}
@@ -19,7 +25,8 @@
     {% endif %}
 
 #  Add user's SSH key to authorized_keys
-/home/{{ user.name }}/.ssh:
+{% if user.public_key is defined %}
+{{ home_dir }}/.ssh:
   file.directory:
     - makedirs: True
     - user: {{ user.name }}
@@ -27,7 +34,7 @@
     - require:
       - user: {{ user.name }}
 
-/home/{{ user.name}}/.ssh/authorized_keys:
+{{ home_dir }}/.ssh/authorized_keys:
   file.managed:
     - contents: |
         {{ user.public_key }}
@@ -36,9 +43,10 @@
     - mode: 600
     - require:
       - file: /home/{{ user.name }}/.ssh
+{% endif %}
 
 # Load Zsh profile which loads Zsh units
-/home/{{ user.name }}/.zshrc:
+{{ home_dir }}/.zshrc:
   file.managed:
     - source: salt://users/zshrc
     - user: {{ user.name }}

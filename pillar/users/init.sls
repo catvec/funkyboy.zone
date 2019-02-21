@@ -17,6 +17,8 @@
 #                           the files.
 #
 users:
+  - name: root
+    zsh_units: all
   - name: noah
     groups:
       - wheel
