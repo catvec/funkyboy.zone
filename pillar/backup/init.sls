@@ -26,3 +26,4 @@ backup:
     - /home
   backup_exclude:
     - '/home/*/.*'
+    - '/public/index.html'
