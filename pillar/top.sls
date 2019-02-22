@@ -15,8 +15,9 @@ base:
     - prometheus
     - prometheus-secret
     - alertmanager
-    - node-exporter
     - grafana 
+    - node-exporter
+    - pushgateway
     - void-scripts
     - znc-secret
     - znc

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+exec chpst -u {{ pillar.prometheus.user }}:{{ pillar.prometheus.group }}:{{ pillar.docker.group }} docker run \
+	-it \
+	--net host \
+	--name {{ pillar.pushgateway.docker_container_name }} \
+	-p {{ pillar.pushgateway.port }}:{{ pillar.pushgateway.port }} \
+	{{ pillar.pushgateway.docker_image }}

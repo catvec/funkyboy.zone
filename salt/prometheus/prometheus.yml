@@ -29,3 +29,4 @@ scrape_configs:
     static_configs:
     - targets: ['localhost:9090'] # Prometheus self metrics
     - targets: ['{{ pillar.node_exporter.metrics_host }}'] # Node exporter
+    - targets: ['{{ pillar.pushgateway.host }}'] # Push gateway

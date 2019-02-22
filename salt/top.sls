@@ -28,8 +28,9 @@ base:
     - caddy
     - prometheus
     - alertmanager
-    - node-exporter
     - grafana
+    - node-exporter
+    - pushgateway
     - scripts-repo
     - void-scripts
     - znc-secret
