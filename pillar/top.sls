@@ -3,6 +3,7 @@ base:
     - system-config
     - hostname
     - zsh
+    - docker
     - users
     - crond
     - syslog
