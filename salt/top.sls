@@ -13,6 +13,7 @@ base:
     - crond
     - motd
     - xz
+    - tree
     - make
     - gcc
     - backup
