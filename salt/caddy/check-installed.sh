@@ -4,31 +4,79 @@
 #
 # USAGE
 #
-# 	check-installed.sh BUILD_DIR
+# 	check-installed.sh OPTIONS
 #
-# ARGUMENTS
+# OPTIONS
 #
-#	BUILD_DIR    Directory where Caddy is built
+#	-d BUILD_DIR       Directory of Caddy repository
+#	-f PLUGINS_FILE    File in which to place plugins, should be 
+#	                   relative to BUILD_DIR
+#	-h HISTORY_FILE    File which will contain the names of the plugins
+#	                   injected during the build process
+#	-p PLUGIN          (Optional) Plugin to check is installed, can be 
+#	                   specified multiple times
 #
 # BEHAVIOR
 #
-# 	Determines if Caddy is installed and if the latest version 
-#	is installed.
+# 	Determines if Caddy is installed, if the latest version 
+#	is installed, and if all the required plugins are installed.
 #
-#	If it is not installed, or the latest version is not installed the
-#	script exits with a non-zero exit code
+#	If any of the above conditions are not met the script exits with a 
+#	non-zero exit code.
 #
 #?
 
 # {{{1 Exit on any error
 set -e
 
-# {{{1 Arguments
-if [ -z "$1" ]; then
-	echo "Error: BUILD_DIR argument is required" >&2
+# {{{1 Configuration
+plugins=()
+
+# {{{1 Arugments
+# {{{2 Get
+while getopts "d:f:h:p:" opt; do
+	case "$opt" in 
+		d)
+			build_dir="$OPTARG"
+			;;
+
+		f)
+			plugins_file="$OPTARG"
+			;;
+
+		p)
+			plugins+=("$OPTARG")
+			;;
+
+		h)
+			plugins_history_file="$OPTARG"
+			;;
+
+		'?')
+			echo "Error: Unknown option \"$opt\"" >&2
+			exit 1
+			;;
+	esac
+done
+
+# {{{2 Check
+# {{{3 Build directory
+if [ -z "$build_dir" ]; then
+	echo "Error: -d BUILD_DIR option required" >&2
 	exit 1
 fi
-build_dir="$1"
+
+# {{{3 Plugins file
+if [ -z "$plugins_file" ]; then
+	echo "Error: -f PLUGINS_FILE option is required" >&2
+	exit 1
+fi
+
+# {{{3 Plugins history file
+if [ -z "$plugins_history_file" ]; then
+	echo "Error: -h HISTORY_FILE option is required" >&2
+	exit 1
+fi
 
 # {{{1 Check if installed at all
 if ! which caddy &> /dev/null; then
@@ -45,7 +93,7 @@ if [[ "$?" != "0" ]]; then
 fi
 
 # {{{2 Get latest tag of cloned down version on server
-if ! cd "$build_dir/build-gopath/src/github.com/mholt/caddy"; then
+if ! cd "$build_dir"; then
 	echo "Error: Failed to cd into Caddy repository" >&2
 	exit 1
 fi
@@ -62,4 +110,45 @@ if [[ "$latest_tag" != "$current_tag" ]]; then
 	exit 100
 fi
 
-echo "Installed"
+# {{{1 Check for plugins
+tmp_plugins_history_f="/tmp/caddy-check-plugins-history"
+abc_plugins_history_f="/tmp/caddy-abc-plugins-history"
+
+function cleanup() {
+	rm "$tmp_plugins_history_f" || true
+	rm "$abc_plugins_history_f" || true
+}
+
+# {{{2 Create temporary file with all plugin names
+for plugin in "${plugins[@]}"; do
+	if ! echo "$plugin" >> "$tmp_plugins_history_f"; then
+		echo "Error: Failed to add \"$plugin\" plugin to temporary plugins history file: $tmp_plugins_history_f" >&2
+		cleanup
+		exit 1
+	fi
+done
+
+# {{{2 Alphabetize both files
+# {{{3 Plugins history file in build directory
+if ! {cat "$plugins_history_file" | sort -d | tee "$abc_plugins_history_f"} ; then
+	echo "Error: Failed to alphabetize plugins history file in build directory: $plugins_history_file" >&2
+	cleanup
+	exit 1
+fi
+
+# {{{3 Temp history file
+if ! cat "$tmp_plugins_history_f" | sort -d | tee "$tmp_plugins_history_f"; then
+	echo "Error: Failed to alphabetize temporary plugins history file: $tmp_plugins_history_f" >&2
+	cleanup
+	exit 1
+fi
+
+# {{{2 Compare
+if ! diff "$tmp_plugins_history_f" "$abc_plugins_history_f"; then
+	echo "Plugins are not the same"
+	cleanup
+	exit 100
+fi
+
+cleanup
+echo "Installed and up to date"

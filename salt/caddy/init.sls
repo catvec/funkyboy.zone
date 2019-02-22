@@ -1,8 +1,5 @@
 # Installs Caddy Server (https://caddyserver.com)
 
-{% set build_dir = '/opt/caddy' %}
-{% set build_script = build_dir + '/build.sh' %}
-{% set install_check_script = build_dir + '/check-installed.sh' %}
 {% set svc_file = '/etc/sv/caddy/run' %}
 {% set svc = 'caddy' %}
 
@@ -20,33 +17,50 @@
     - require:
       - group: {{ pillar.caddy.files.group }}-group
 
-{{ build_dir }}:
+{{ pillar.caddy.build.directory }}:
   file.directory
 
-{{ install_check_script }}:
+{{ pillar.caddy.build.check_script }}:
   file.managed:
-    - name: {{ install_check_script }}
     - source: salt://caddy/check-installed.sh
     - mode: 755
     - require:
-      - file: {{ build_dir }}
+      - file: {{ pillar.caddy.build.directory }}
 
-{{ build_script }}-present:
+{{ pillar.caddy.build.run_check_script }}:
   file.managed:
-    - name: {{ build_script }}
+    - source: salt://caddy/run-check-installed.sh
+    - template: jinja
+    - mode: 755
+    - require:
+      - file: {{ pillar.caddy.build.directory }}
+
+{{ pillar.caddy.build.build_script }}:
+  file.managed:
     - source: salt://caddy/build.sh
     - mode: 775
     - require:
-      - file: {{ build_dir }}
-    
-{{ build_script }}-run:
-  cmd.run:
-    - name: {{ build_script }}
-    - cwd: {{ build_dir }}
-    - unless: {{ install_check_script }} {{ build_dir }}
+      - file: {{ pillar.caddy.build.directory }}
+
+{{ pillar.caddy.build.run_build_script }}-present:
+  file.managed:
+    - name: {{ pillar.caddy.build.run_build_script }}
+    - source: salt://caddy/run-build.sh
+    - template: jinja
+    - mode: 775
     - require:
-      - file: {{ install_check_script }}
-      - file: {{ build_script }}-present
+      - file: {{ pillar.caddy.build.directory }}
+    
+{{ pillar.caddy.build.run_build_script }}-run:
+  cmd.run:
+    - name: {{ pillar.caddy.build.run_build_script }}
+    - cwd: {{ pillar.caddy.build.directory }}
+    - unless: {{ pillar.caddy.build.run_check_script }}
+    - require:
+      - file: {{ pillar.caddy.build.build_script }}
+      - file: {{ pillar.caddy.build.run_build_script }}-present
+      - file: {{ pillar.caddy.build.check_script }}
+      - file: {{ pillar.caddy.build.run_check_script }}
       
 {{ svc_file }}:
   file.managed:
@@ -55,7 +69,7 @@
     - template: jinja
     - mode: 775
     - require:
-      - cmd: {{ build_script }}-run
+      - cmd: {{ pillar.caddy.build.run_build_script }}-run
 
 # Setup HTTP directory
 {{ pillar.caddy.serve_dir }}:
