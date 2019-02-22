@@ -67,4 +67,3 @@
     - user: {{ pillar.caddy.files.user }}
     - group: {{ pillar.caddy.files.group }}
     - mode: {{ pillar.caddy.files.mode }}
-

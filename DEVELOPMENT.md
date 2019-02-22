@@ -10,6 +10,18 @@ Instructions for developing Funky Boy setup files.
 This section contains one time setup steps which were manually run to create 
 files in states.
 
+## Prometheus
+A GitHub OAuth application is used to authenticate users when accessing 
+Prometheus. Authentication is performed by Caddy.
+
+Create a GitHub application and store the credentials:
+
+Set `Authorization callback URL` to 
+`https://prometheus.funkyboy.zone/login/github`.  
+
+Save the client ID and secret values in the `prometheus-secret` pillar under 
+the `github.client_id` and `github.client_secret` keys.
+
 ## ZNC
 The configuration file in the `znc` state was initially generated with 
 the command:

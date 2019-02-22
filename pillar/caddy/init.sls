@@ -45,6 +45,9 @@ caddy:
       # Digital Ocean DNS-01 Let's Encrypt
       - 'github.com/caddyserver/dnsproviders/digitalocean'
 
+      # JWT support
+      - "github.com/BTBurke/caddy-jwt"
+
       # OAuth & htpasswd resource authentication
       - 'github.com/tarent/loginsrv/caddy'
 

@@ -1,9 +1,23 @@
 {{ pillar.prometheus.hosts }} {
-	proxy / localhost:9090
+	proxy / {{ pillar.prometheus.local_address }}
 
 	tls {
 		dns digitalocean
 	}
 
-	basicauth / prometheus {{ pillar.prometheus.caddy_password }}
+	header / Cache-Control "no-cache, no-store, must-revalidate"
+  
+	jwt {
+		path /
+		redirect /login
+
+		{% for user in pillar['prometheus']['authorized_users'] %}
+		allow sub {{ user }}
+		{% endfor %}
+	}
+
+	login {
+		success_url /graph
+		github client_id={{ pillar.prometheus.github.client_id }},client_secret={{ pillar.prometheus.github.client_secret }}
+	}
 }
