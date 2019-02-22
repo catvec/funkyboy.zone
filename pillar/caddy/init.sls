@@ -101,3 +101,9 @@ caddy:
       www_dir: public-www
       hosts:
         - public.funkyboy.zone
+
+    # System guide site
+    system_guide:
+      www_dir: system-guide
+      hosts:
+        - guide.funkyboy.zone

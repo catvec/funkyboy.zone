@@ -39,6 +39,7 @@ base:
     - file-modes-website
     - noahhuppert-website
     - workout-website
+    - system-guide-website
     - factorio
     - public-www
     - putsvl # Must always be last
