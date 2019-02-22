@@ -112,11 +112,13 @@ fi
 
 # {{{1 Check for plugins
 tmp_plugins_history_f="/tmp/caddy-check-plugins-history"
+abc_tmp_plugins_history_f="/tmp/caddy-abc-check-plugins-history"
 abc_plugins_history_f="/tmp/caddy-abc-plugins-history"
 
 function cleanup() {
 	rm "$tmp_plugins_history_f" || true
 	rm "$abc_plugins_history_f" || true
+	rm "$abc_tmp_plugins_history_f" || true
 }
 
 # {{{2 Create temporary file with all plugin names
@@ -130,21 +132,21 @@ done
 
 # {{{2 Alphabetize both files
 # {{{3 Plugins history file in build directory
-if ! {cat "$plugins_history_file" | sort -d | tee "$abc_plugins_history_f"} ; then
+if ! cat "$plugins_history_file" | sort -d | tee "$abc_plugins_history_f" ; then
 	echo "Error: Failed to alphabetize plugins history file in build directory: $plugins_history_file" >&2
 	cleanup
 	exit 1
 fi
 
 # {{{3 Temp history file
-if ! cat "$tmp_plugins_history_f" | sort -d | tee "$tmp_plugins_history_f"; then
+if ! cat "$tmp_plugins_history_f" | sort -d | tee "$abc_tmp_plugins_history_f"; then
 	echo "Error: Failed to alphabetize temporary plugins history file: $tmp_plugins_history_f" >&2
 	cleanup
 	exit 1
 fi
 
 # {{{2 Compare
-if ! diff "$tmp_plugins_history_f" "$abc_plugins_history_f"; then
+if ! diff "$abc_tmp_plugins_history_f" "$abc_plugins_history_f"; then
 	echo "Plugins are not the same"
 	cleanup
 	exit 100

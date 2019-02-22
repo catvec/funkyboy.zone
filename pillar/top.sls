@@ -10,12 +10,12 @@ base:
     - vsv
     - email
     - email-secret
+    - caddy
+    - caddy-secret
     - prometheus
     - prometheus-secret
     - alertmanager
     - node-exporter
-    - caddy
-    - caddy-secret
     - grafana 
     - void-scripts
     - znc-secret
