@@ -11,7 +11,7 @@ Server is setup using [Salt](https://saltstack.com).
 See [Cloud Setup](#cloud-setup) for instructions on how to setup Funky Boy.
 
 See [DEVELOPMENT.md](DEVELOPMENT.md) for instructions on how to develop setup
-file for Funky Boy.
+files for Funky Boy.
 
 **Why the name funkyboy.zone?**  
 In one of my favorite movies, 
