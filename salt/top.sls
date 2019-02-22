@@ -3,6 +3,7 @@ base:
     - salt-config
     - salt-dir-perms
     - system-config
+    - hostname
     - srv-dir-perms
     - syslog
     - sshd-config
