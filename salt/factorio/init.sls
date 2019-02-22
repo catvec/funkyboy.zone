@@ -23,6 +23,10 @@
     - require:
       - group: {{ pillar.factorio.group.name }}-group
 
+# Docker image
+{{ pillar.factorio.docker_image }}:
+  docker_image.present
+
 # Configuration
 {{ pillar.factorio.directory }}:
   file.directory:
@@ -118,6 +122,7 @@ all_mods_zip:
       - file: {{ svc_file }}
       - file: {{ config_file }}
       - file: {{ pillar.factorio.mods_directory }}
+      - docker_image: {{ pillar.factorio.docker_image }}
 
 # Caddy
 {{ pillar.caddy.config_dir }}/factorio:
