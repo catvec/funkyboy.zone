@@ -28,6 +28,7 @@ prog_dir=$(realpath $(dirname "$0"))
 # {{{1 Configuration
 wrking_dir="/var/tmp"
 extract_dir="$wrking_dir/out"
+escaped_extract_dir=$(echo "$extract_dir" | sed 's/\//\\\//g')
 
 # {{{1 Arguments
 # {{{2 Get
@@ -127,11 +128,11 @@ fi
 echo "===== Restoring files"
 
 while read f; do
-	restore_path=$(echo "$f" | sed 's/^out\(\/.*\)/\1/g')
+	restore_path=$(echo "$f" | sed "s/^$escaped_extract_dir\(\/.*\)/\1/g")
 
 	echo "----- Restoring $f to $restore_path"
 
-	if cp "$f" "$restore_path"; then
+	if ! cp "$f" "$restore_path"; then
 		echo "Error: Failed to restore" >&2
 		cleanup
 		exit 1
