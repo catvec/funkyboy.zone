@@ -10,12 +10,13 @@
 #
 #	-s SPACE        Name of Digital Ocean Space to upload backups
 #	-c CFG_F        Location of s3cmd configuration file
-#	-r FLAG_F       Flag file to touch when backup successfully runs
 #	-b FILE         File / directory to backup, can be specified 
 #	                multiple times
 #	-e EXCLUDE_F    Files to exclude from backup
 #	-f              Force backup occur even if program determines it is
 #	                too soon for another backup
+#	-p PUSHGTWAY    Prometheus Push Gateway host
+#	-m METRIC       Name of Prometheus success metric to public
 #
 # BEHAVIOR
 #
@@ -105,7 +106,7 @@ fi
 
 # {{{1 Arguments
 # {{{2 Get
-while getopts "s:c:r:b:e:f" opt; do
+while getopts "s:c:b:e:fp:m:" opt; do
 	case "$opt" in
 		s)
 			space="$OPTARG"
@@ -113,10 +114,6 @@ while getopts "s:c:r:b:e:f" opt; do
 
 		c)
 			s3cmd_cfg_f="$OPTARG"
-			;;
-
-		r)
-			status_flag_file="$OPTARG"
 			;;
 
 		b)
@@ -129,6 +126,14 @@ while getopts "s:c:r:b:e:f" opt; do
 
 		f)
 			force_backup="true"
+			;;
+
+		p)
+			prometheus_pushgateway_host="$OPTARG"
+			;;
+
+		m)
+			prometheus_metric="$OPTARG"
 			;;
 
 		'?')
@@ -151,15 +156,21 @@ if [ -z "$s3cmd_cfg_f" ]; then
 	exit 1
 fi
 
-# {{{3 status_flag_file
-if [ -z "$status_flag_file" ]; then
-	echo "Error: -r FLAG_F option required" >&2
-	exit 1
-fi
-
 # {{{3 backup_f_targets
 if [[ "${#backup_f_targets[@]}" == "0" ]]; then
 	echo "Error: -b FILE option must be specified at least once" >&2
+	exit 1
+fi
+
+# {{{3 prometheus_pushgateway_host
+if [ -z "$prometheus_pushgateway_host" ]; then
+	echo "Error: -p PUSHGTWAY option must be specified" >&2
+	exit 1
+fi
+
+# {{{3 prometheus_metric
+if [ -z "$prometheus_metric" ]; then
+	echo "Error: -m METRIC option must be specified" >&2
 	exit 1
 fi
 
@@ -299,8 +310,8 @@ fi
 cleanup
 
 # {{{1 Indicate successfully ran
-if ! touch "$status_flag_file"; then
-	echo "Error: Failed to touch status flag file \"$status_flag_file\" to indicate ran successfully" >&2
+if ! echo "$prometheus_metric 1" | curl --data-binary @- "$prometheus_pushgateway_host/metrics/job/backup"; then
+	echo "Error: Failed to publish status metric to Prometheus push gateway" >&2
 	exit 1
 fi
 

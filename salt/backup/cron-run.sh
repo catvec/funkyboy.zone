@@ -15,7 +15,8 @@
 {{ pillar.backup.script }} \
 	-s {{ pillar.backup.space }} \
 	-c {{ pillar.backup.s3cmd_config }} \
-	-r {{ pillar.backup.success_status_file }} \
+	-p {{ pillar.pushgateway.host }} \
+	-m {{ pillar.backup.success_prometheus_metric }} \
 	{% for f in pillar['backup']['backup_targets'] %} -b {{ f }} {% endfor %} \
 	{% for f in pillar['backup']['backup_exclude'] %} -e "{{ f }}" {% endfor %} \
 	$@ \

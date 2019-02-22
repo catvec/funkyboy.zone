@@ -14,10 +14,12 @@ backup:
   run_restore_script: {{ dir }}/run-restore.sh
   s3cmd_config: {{ dir }}/s3cmd-cfg
 
+  # Prometheus metric name
+  success_prometheus_metric: backup_success
+
   # Run argument details
   space: funkyboy-zone-backup
   spaces_region: sfo2
-  success_status_file: {{ dir }}/successfully-ran
   log_tag: backup
 
   # Backup targets
