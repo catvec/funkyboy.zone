@@ -14,6 +14,7 @@
 #	           to funkyboy.zone
 #	-n         Do not chown uploaded folders to Salt group
 #	-t         Run Salt state.apply in test mode
+#	-l         Run Salt state.apply with -l trace flag
 #
 # BEHAVIOR
 #
@@ -28,7 +29,7 @@ set -e
 prog_dir=$(realpath $(dirname "$0"))
 
 # {{{1 Arguments
-while getopts "u:h:nt" opt; do
+while getopts "u:h:ntl" opt; do
 	case "$opt" in
 		u)
 			user="$OPTARG"
@@ -44,6 +45,10 @@ while getopts "u:h:nt" opt; do
 
 		t)
 			salt_test="true"
+			;;
+
+		l)
+			salt_trace="true"
 			;;
 
 		'?')
@@ -80,6 +85,10 @@ echo "===== Applying Salt states"
 
 if [ ! -z "$salt_test" ]; then
 	salt_post_args="$salt_post_args test=true"
+fi
+
+if [ ! -z "$salt_trace" ]; then
+	salt_post_args="$salt_post_args -l trace"
 fi
 
 if ! ssh "$address" "sudo salt-call --local --force-color state.apply $salt_post_args"; then
