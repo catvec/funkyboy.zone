@@ -2,7 +2,7 @@ groups:
   - name: Cron
     rules:
       - alert: BackupFailed
-        expr: count(backup_success) < 0
+        expr: backup_success < 0
         labels:
           service: backup
           severity: critical
