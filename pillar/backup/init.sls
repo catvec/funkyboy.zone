@@ -12,20 +12,19 @@ backup:
   restore_script: {{ dir }}/restore.sh
   cron_run_script: {{ dir }}/cron-run.sh
   run_restore_script: {{ dir }}/run-restore.sh
-  s3cmd_config: {{ dir }}/s3cmd-cfg
 
   # Prometheus metric name
   success_prometheus_metric: backup_success
 
   # Run argument details
   space: funkyboy-zone-backup
-  spaces_region: sfo2
   log_tag: backup
 
   # Backup targets
   backup_targets:
     - /public
     - /home
+    - /opt/factorio/saves
   backup_exclude:
     - '/home/*/.*'
     - '/public/index.html'

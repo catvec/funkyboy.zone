@@ -46,6 +46,27 @@ These outputted `mail.private` and `mail.txt` files were renamed to
 The `funkyboy-zone-dkim` record in the `client-scripts/infra.tf` file is 
 sourced from the `funkyboy-zone.txt` file.
 
+## Backup
+System backups are saved in a Digtial Ocean Space.  
+
+Store a Digital Ocean Spaces API key in the `backup-secret` pillar under the 
+`backup.spaces_access_key_id` and `backup.spaces_secret_access_key` keys.
+
+## Factorio
+### Mods
+Factorio mods are stored in a DigitalOcean space.
+
+Store a Digital Ocean Spaces API key in the `factorio-secret` pillar under the
+`factorio.spaces_access_key_id` and `factorio.spaces_secret_access_key` keys.  
+
+### Save file
+Once a game save file is present the backup cron job will save it and restore 
+it if needed.
+
+To bootstrap the first save file rsync your file 
+to `/opt/factorio/saves/_autosave1.zip`. Ensure the `factorio` user and group
+can access this file.
+
 # Custom Cloud Image Creation
 One can create custom DigitalOcean Droplet images. These allow Droplets to run
 custom operating systems.

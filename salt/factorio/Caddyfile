@@ -15,7 +15,7 @@
 
 {% for host in pillar['factorio']['mods_hosts'] %}
 {{ host }} {
-	root {{ pillar.factorio.mods_download_directory }}
+	root {{ pillar.factorio.mods_directory }}
 	browse /
 
 	tls {
