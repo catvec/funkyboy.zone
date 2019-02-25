@@ -32,6 +32,7 @@ base:
     - grafana
     - node-exporter
     - pushgateway
+    - prometheus-push-cli
     - scripts-repo
     - void-scripts
     - znc-secret

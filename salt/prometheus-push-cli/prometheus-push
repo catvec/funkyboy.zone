@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+#?
+# prometheus-push - Push Prometheus metric to local Push Gateway
+#
+# USAGE
+#
+#	prometheus-push OPTIONS
+#
+# OPTIONS
+#
+#	-j JOB         Metric job annotation
+#	-m METRIC      Metric name
+#	-v VALUE       Metric value
+#	-h             Show help text
+#
+# BEHAVIOR
+#
+#	Uses the local Prometheus Push Gateway server's HTTP API to push a 
+#	metric to Prometheus.
+#
+#?
+
+# Check if help option
+while getopts ":h" opt; do
+	case "$opt" in
+		h)
+			show-help "$0"
+			exit 1
+			;;
+	esac
+done
+
+{{ pillar.prometheus_push_cli.any_push_script }} \
+	-s {{ pillar.pushgateway.host }} \
+	$@
