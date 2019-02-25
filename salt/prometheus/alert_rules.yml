@@ -1,1 +1,11 @@
-groups: []
+groups:
+  - name: Cron
+    rules:
+      - alert: BackupFailed
+        expr: backup_success < 0
+        for: 12h
+        labels:
+          service: backup
+          severity: critical
+        annotations:
+          summary: Backup cron failed to run
