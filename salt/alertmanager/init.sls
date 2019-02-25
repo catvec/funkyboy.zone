@@ -26,6 +26,7 @@
 {{ pillar.alertmanager.config_file }}:
   file.managed:
     - source: salt://alertmanager/alertmanager.yml
+    - template: jinja
     - group: {{ pillar.alertmanager.group }}
     - mode: 755
     - require:

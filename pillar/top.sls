@@ -17,6 +17,7 @@ base:
     - prometheus
     - prometheus-secret
     - alertmanager
+    - alertmanager-secret
     - grafana 
     - node-exporter
     - pushgateway
