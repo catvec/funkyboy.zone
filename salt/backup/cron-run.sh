@@ -12,11 +12,11 @@
 #
 #?
 
-su {{ pillar.backup.user }} -c "{{ pillar.backup.script }} \
+{{ pillar.backup.script }} \
 	-s {{ pillar.backup.space }} \
 	-p {{ pillar.pushgateway.host }} \
 	-m {{ pillar.backup.success_prometheus_metric }} \
 	{% for f in pillar['backup']['backup_targets'] %} -b {{ f }} {% endfor %} \
 	{% for f in pillar['backup']['backup_exclude'] %} -e "{{ f }}" {% endfor %} \
 	$@ \
-2>&1 | vlogger -t {{ pillar.backup.log_tag }}"
+2>&1 | vlogger -t {{ pillar.backup.log_tag }}

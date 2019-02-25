@@ -2,8 +2,6 @@
 
 backup:
   # Install
-  user: backup
-  group: backup
   mode: 775
 
   directory: {{ dir }}
