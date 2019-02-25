@@ -1,9 +1,5 @@
 # Install backup crond job.
 
-# Install s3cmd
-s3cmd:
-  pkg.installed
-
 # User
 {{ pillar.backup.group }}-group:
   group.present:
@@ -15,6 +11,7 @@ s3cmd:
     - createhome: False
     - groups:
       - {{ pillar.backup.group }}
+      - {{ pillar.s3cmd.group }}
     - require:
       - group: {{ pillar.backup.group }}-group
 
@@ -29,17 +26,6 @@ s3cmd:
     - require:
       - group: {{ pillar.backup.group }}-group
       - user: {{ pillar.backup.group }}-user
-
-# Configure s3cmd
-{{ pillar.backup.s3cmd_config }}:
-  file.managed:
-    - source: salt://backup/s3cmd-cfg
-    - template: jinja
-    - user: {{ pillar.backup.user }}
-    - group: {{ pillar.backup.group }}
-    - mode: {{ pillar.backup.mode }}
-    - require:
-      - file: {{ pillar.backup.directory }}
 
 # Backup script
 {{ pillar.backup.lib_backup_script }}:

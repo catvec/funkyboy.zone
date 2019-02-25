@@ -13,5 +13,4 @@
 #?
 
 {{ pillar.backup.restore_script }} \
-	-s {{ pillar.backup.space }} \
-	-c {{ pillar.backup.s3cmd_config }}
+	-s {{ pillar.backup.space }}

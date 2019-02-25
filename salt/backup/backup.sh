@@ -9,7 +9,6 @@
 # OPTIONS
 #
 #	-s SPACE        Name of Digital Ocean Space to upload backups
-#	-c CFG_F        Location of s3cmd configuration file
 #	-b FILE         File / directory to backup, can be specified 
 #	                multiple times
 #	-e EXCLUDE_F    Files to exclude from backup
@@ -106,14 +105,10 @@ fi
 
 # {{{1 Arguments
 # {{{2 Get
-while getopts "s:c:b:e:fp:m:" opt; do
+while getopts "s:b:e:fp:m:" opt; do
 	case "$opt" in
 		s)
 			space="$OPTARG"
-			;;
-
-		c)
-			s3cmd_cfg_f="$OPTARG"
 			;;
 
 		b)
@@ -150,12 +145,6 @@ if [ -z "$space" ]; then
 	exit 1
 fi
 
-# {{{3 s3cmd_cfg_f
-if [ -z "$s3cmd_cfg_f" ]; then
-	echo "Error: -c CFG_F option required" >&2
-	exit 1
-fi
-
 # {{{3 backup_f_targets
 if [[ "${#backup_f_targets[@]}" == "0" ]]; then
 	echo "Error: -b FILE option must be specified at least once" >&2
@@ -175,12 +164,6 @@ if [ -z "$prometheus_metric" ]; then
 fi
 
 # {{{2 Validate
-# {{{3 s3cmd_cfg_f
-if [ ! -f "$s3cmd_cfg_f" ]; then
-	echo "Error: s3cmd configuration file \"$s3cmd_cfg_f\" does not exist" >&2
-	exit 1
-fi
-
 # {{{3 backup_f_targets
 for f in "${backup_f_targets[@]}"; do
 	if [ ! -f "$f" ] && [ ! -e "$f" ] && [ ! -d "$f" ]; then
@@ -236,7 +219,7 @@ while read file_info; do
 	# {{{2 Determine if a backup should be deleted
 	if (( "$dt" > "$always_delete_backup" )); then
 		echo "Deleting backup older than $always_delete_backup_txt, all backups of this age are always deleted, date: $f_date"
-		if ! s3cmd -c "$s3cmd_cfg_f" rm "$f_s3_path"; then
+		if ! run-s3cmd rm "$f_s3_path"; then
 			echo "Error: Failed to delete old backup $f_s3_path" >&2
 			exit 1
 		fi
@@ -247,13 +230,13 @@ while read file_info; do
 			continue
 		else
 			echo "Deleting backup older than $oldest_backup_txt, date: $f_date"
-			if ! s3cmd -c "$s3cmd_cfg_f" rm "$f_s3_path"; then
+			if ! run-s3cmd rm "$f_s3_path"; then
 				echo "Error: Failed to delete old backup $f_s3_path" >&2
 				exit 1
 			fi
 		fi
 	fi
-done <<< $(s3cmd -c "$s3cmd_cfg_f" ls "s3://$space/")
+done <<< $(run-s3cmd ls "s3://$space/")
 
 # {{{1 Define cleanup function
 function cleanup() {
@@ -301,7 +284,7 @@ fi
 # {{{1 Upload to space
 echo "===== Uploading to Digital Ocean Space $space"
 
-if ! s3cmd -c "$s3cmd_cfg_f" put "$compressed_backup_f_path" "s3://$space/"; then
+if ! run-s3cmd put "$compressed_backup_f_path" "s3://$space/"; then
 	echo "Error: Failed to upload backup to space" >&2
 	cleanup
 	exit 1

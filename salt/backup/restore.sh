@@ -9,7 +9,6 @@
 # OPTIONS
 #
 #	-s SPACE        Name of Digital Ocean Space to upload backups
-#	-c CFG_F        Location of s3cmd configuration file
 #
 # BEHAVIOR
 #
@@ -32,14 +31,10 @@ escaped_extract_dir=$(echo "$extract_dir" | sed 's/\//\\\//g')
 
 # {{{1 Arguments
 # {{{2 Get
-while getopts "s:c:" opt; do
+while getopts "s:" opt; do
 	case "$opt" in
 		s)
 			space="$OPTARG"
-			;;
-
-		c)
-			s3cmd_cfg_f="$OPTARG"
 			;;
 
 		'?')
@@ -53,12 +48,6 @@ done
 # {{{3 space
 if [ -z "$space" ]; then
 	echo "Error: -s SPACE option is required" >&2
-	exit 1
-fi
-
-# {{{3 s3cmd_cfg_f
-if [ -z "$s3cmd_cfg_f" ]; then
-	echo "Error: -c CFG_F option is required" >&2
 	exit 1
 fi
 
@@ -81,7 +70,7 @@ while read file_info; do
 		latest_backup_epoch="$f_date_epoch"
 		latest_backup_s3_path="$f_s3_path"
 	fi
-done <<< $(s3cmd -c "$s3cmd_cfg_f" ls "s3://$space/")
+done <<< $(run-s3cmd ls "s3://$space/")
 
 if [ -z "$latest_backup_epoch" ]; then
 	echo "Error: Failed to find latest backup" >&2
@@ -98,7 +87,7 @@ function cleanup() {
 	rm -rf "$extract_dir" || true
 }
 
-if ! s3cmd -c "$s3cmd_cfg_f" get "$latest_backup_s3_path" "$wrking_dir"; then
+if ! run-s3cmd get "$latest_backup_s3_path" "$wrking_dir"; then
 	echo "Error: Failed to download latest backup" >&2
 	cleanup
 	exit 1
