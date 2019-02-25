@@ -14,8 +14,6 @@
 #	-e EXCLUDE_F    Files to exclude from backup
 #	-f              Force backup occur even if program determines it is
 #	                too soon for another backup
-#	-p PUSHGTWAY    Prometheus Push Gateway host
-#	-m METRIC       Name of Prometheus success metric to public
 #
 # BEHAVIOR
 #
@@ -105,7 +103,7 @@ fi
 
 # {{{1 Arguments
 # {{{2 Get
-while getopts "s:b:e:fp:m:" opt; do
+while getopts "s:b:e:f" opt; do
 	case "$opt" in
 		s)
 			space="$OPTARG"
@@ -121,14 +119,6 @@ while getopts "s:b:e:fp:m:" opt; do
 
 		f)
 			force_backup="true"
-			;;
-
-		p)
-			prometheus_pushgateway_host="$OPTARG"
-			;;
-
-		m)
-			prometheus_metric="$OPTARG"
 			;;
 
 		'?')
@@ -148,18 +138,6 @@ fi
 # {{{3 backup_f_targets
 if [[ "${#backup_f_targets[@]}" == "0" ]]; then
 	echo "Error: -b FILE option must be specified at least once" >&2
-	exit 1
-fi
-
-# {{{3 prometheus_pushgateway_host
-if [ -z "$prometheus_pushgateway_host" ]; then
-	echo "Error: -p PUSHGTWAY option must be specified" >&2
-	exit 1
-fi
-
-# {{{3 prometheus_metric
-if [ -z "$prometheus_metric" ]; then
-	echo "Error: -m METRIC option must be specified" >&2
 	exit 1
 fi
 
@@ -291,11 +269,5 @@ if ! run-s3cmd put "$compressed_backup_f_path" "s3://$space/"; then
 fi
 
 cleanup
-
-# {{{1 Indicate successfully ran
-if ! echo "$prometheus_metric 1" | curl --data-binary @- "$prometheus_pushgateway_host/metrics/job/backup"; then
-	echo "Error: Failed to publish status metric to Prometheus push gateway" >&2
-	exit 1
-fi
 
 echo "DONE"

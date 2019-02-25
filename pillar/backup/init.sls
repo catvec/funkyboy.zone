@@ -14,6 +14,9 @@ backup:
   # Prometheus metric name
   success_prometheus_metric: backup_success
 
+  # Backup job name in Prometheus
+  prometheus_job: backup
+
   # Run argument details
   space: funkyboy-zone-backup
   log_tag: backup
