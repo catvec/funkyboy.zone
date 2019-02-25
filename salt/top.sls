@@ -16,6 +16,7 @@ base:
     - tree
     - make
     - gcc
+    - s3cmd
     - backup
     - email
     - neovim

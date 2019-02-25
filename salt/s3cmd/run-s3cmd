@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+#?
+# run-s3cmd.sh - Runs s3cmd with path to configuration file
+#
+# USAGE
+#
+#	run-s3cmd.sh
+#
+# BEHAVIOR
+#
+#	Runs s3cmd with -c option pointing towards configuration file.
+#
+#?
+
+s3cmd -c {{ pillar.s3cmd.config_file }} $@

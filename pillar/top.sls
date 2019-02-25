@@ -3,6 +3,8 @@ base:
     - system-config
     - hostname
     - zsh
+    - s3cmd
+    - s3cmd-secret
     - docker
     - users
     - crond
@@ -24,5 +26,4 @@ base:
     - factorio
     - factorio-secret
     - backup
-    - backup-secret
     - public-www
