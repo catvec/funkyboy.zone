@@ -46,7 +46,7 @@ caddy:
       - 'github.com/caddyserver/dnsproviders/digitalocean'
 
       # JWT support
-      - "github.com/BTBurke/caddy-jwt"
+      - 'github.com/BTBurke/caddy-jwt'
 
       # OAuth & htpasswd resource authentication
       - 'github.com/tarent/loginsrv/caddy'
