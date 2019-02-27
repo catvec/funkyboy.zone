@@ -10,14 +10,17 @@ variable "do_token" {
 }
 
 # {{{1 Find manually created resources
+# {{{2 Droplet image
 data "digitalocean_image" "void-linux" {
 	name = "Void-Linux-GLIBC"
 }
 
+# {{{2 SSH Key
 data "digitalocean_ssh_key" "katla" {
 	name = "Katla"
 }
 
+# {{{2 Domains
 data "digitalocean_domain" "funkyboy-zone" {
 	name = "funkyboy.zone"
 }
@@ -28,6 +31,10 @@ data "digitalocean_domain" "noahh-io" {
 
 data "digitalocean_domain" "noahhuppert-com" {
 	name = "noahhuppert.com"
+}
+
+data "digitalocean_domain" "gondola-zone" {
+	name = "gondola.zone"
 }
 
 # {{{1 Create resources
@@ -106,6 +113,23 @@ resource "digitalocean_record" "noahhuppert-com-wildcard" {
 
 resource "digitalocean_record" "noahhuppert-com-apex" {
 	domain = "${data.digitalocean_domain.noahhuppert-com.name}"
+	type = "A"
+	ttl = "60" # seconds
+	name = "@"
+	value = "${digitalocean_droplet.funkyboy-zone.ipv4_address}"
+}
+
+# {{{3 gondola.zone
+resource "digitalocean_record" "gondola-zone-wildcard" {
+	domain = "${data.digitalocean_domain.gondola-zone.name}"
+	type = "A"
+	ttl = "60" # seconds
+	name = "*"
+	value = "${digitalocean_droplet.funkyboy-zone.ipv4_address}"
+}
+
+resource "digitalocean_record" "gondola-zone-apex" {
+	domain = "${data.digitalocean_domain.gondola-zone.name}"
 	type = "A"
 	ttl = "60" # seconds
 	name = "@"
