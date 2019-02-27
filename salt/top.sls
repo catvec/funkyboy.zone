@@ -42,6 +42,7 @@ base:
     - noahhuppert-website
     - workout-website
     - system-guide-website
+    - gondola-zone-website
     - factorio
     - public-www
     - putsvl # Must always be last

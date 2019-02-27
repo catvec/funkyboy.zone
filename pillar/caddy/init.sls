@@ -113,3 +113,10 @@ caddy:
       www_dir: system-guide
       hosts:
         - guide.funkyboy.zone
+
+    # gondola.zone site
+    gondola_zone:
+      www_dir: gondola-zone
+      hosts:
+        - gondola.zone
+        - '*.gondola.zone'
