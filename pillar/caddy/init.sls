@@ -51,6 +51,9 @@ caddy:
       # OAuth & htpasswd resource authentication
       - 'github.com/tarent/loginsrv/caddy'
 
+      # Prometheus metrics exporter
+      - 'github.com/miekg/caddy-prometheus'
+
   # Config
   serve_dir: /srv/caddy
   config_parent_dir: /etc/caddy
@@ -61,6 +64,9 @@ caddy:
     user: caddy
     group: caddy
     mode: 775
+
+  # Host which metrics for Prometheus will be available on
+  metrics_host: 'localhost:9180'
 
   # Sites
   tls: True
