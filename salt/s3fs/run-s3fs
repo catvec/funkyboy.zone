@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#?
+# run-s3fs - Run s3fs with the credentials file option
+#
+# USAGE
+#
+#	run-s3fs OPTIONS
+#
+# BEHAVIOR
+#
+#	Runs s3fs with the credentials file option.
+#
+#?
+
+exec s3fs \
+	-o passwd_file={{ pillar.s3fs.passwd_file }} \
+	-o url=https://{{ pillar.digitalocean_spaces.spaces_region }}.digitaloceanspaces.com \
+	$@

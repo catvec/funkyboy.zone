@@ -17,6 +17,7 @@ base:
     - make
     - gcc
     - s3cmd
+    - s3fs
     - backup
     - email
     - neovim
