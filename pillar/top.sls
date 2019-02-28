@@ -6,7 +6,6 @@ base:
     - digitalocean-spaces
     - digitalocean-spaces-secret
     - s3cmd
-    - s3cmd-secret
     - s3fs
     - docker
     - users
