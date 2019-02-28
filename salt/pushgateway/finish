@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-exec chpst -u {{ pillar.prometheus.user }}:{{ pillar.docker.group }} docker stop {{ pillar.pushgateway.docker_container_name }}
+exec chpst -u {{ pillar.prometheus.user }}:{{ pillar.docker.group }} rm-container -n {{ pillar.pushgateway.docker_container_name }}
