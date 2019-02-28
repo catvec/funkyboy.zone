@@ -9,6 +9,7 @@ base:
     - sshd-config
     - sudo-no-password
     - docker
+    - rm-container-script
     - users
     - crond
     - motd

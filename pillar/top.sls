@@ -8,6 +8,7 @@ base:
     - s3cmd
     - s3fs
     - docker
+    - rm-container-script
     - users
     - crond
     - syslog

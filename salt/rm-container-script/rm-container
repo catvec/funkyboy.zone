@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+#?
+# rm-container - Stops and removes a Docker container
+#
+# USAGE
+# 
+#	rm-container OPTIONS
+#
+# OPTIONS
+#
+#	-n NAME    Docker container name
+#	-h         Show help text
+#
+# BEHAVIOR
+#
+#	Stops and / or removes a Docker container.
+#
+#?
+
+# {{{1 Exit on any error
+set -e
+
+# {{{1 Options
+# {{{2 Get
+while getopts "n:h" opt; do
+	case "$opt" in
+		n)
+			name="$OPTARG"
+			;;
+
+		h)
+			show-help "$0"
+			exit 1
+			;;
+
+		'?')
+			echo "Error: Unknown option \"$opt\"" >&2
+			exit 1
+			;;
+	esac
+done
+
+# {{{2 Verify
+# {{{3 name
+if [ -z "$name" ]; then
+	echo "Error: -n NAME option required" >&2
+	exit 1
+fi
+
+# {{{1 Check if has access to Docker
+if ! docker version &> /dev/null; then
+	echo "Error: User program is running as does not have access to Docker" >&2
+	exit 1
+fi
+
+# {{{1 Check if running
+if docker ps --format "{{ .Names }}" | grep "$name"; then
+	echo "Found $name container running, stopping..."
+
+	if ! docker stop "$name"; then
+		echo "Error: Failed to stop $name container" >&2
+		exit 1
+	fi
+fi
+
+# {{{1 Check if stopped but still laying around
+if docker ps -a --format "{{ .Names }}" | grep "$name"; then
+	echo "Found $name is stopped but still exists, removing..."
+
+	if ! docker rm "$name"; then
+		echo "Error: Failed to remove $name container" >&2
+		exit 1
+	fi
+fi
+
+echo "DONE"
