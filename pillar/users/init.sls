@@ -25,6 +25,7 @@ users:
       - socklog
       - salt
       - docker
+      - factorio-mods
     public_key: >-
       ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH7worAdtOa+cq2AuyFBdvbX+8Zy4zcHRChFb4EerKGX noah@katla
     zsh_units: all
@@ -37,6 +38,7 @@ users:
   - name: zach
     groups:
       - socklog
+      - factorio-mods
     public_key: >-
       ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFqsP4F+7j3DPPezHqrAO6xmRzr7s9Wi6qYpuq3od/CrMkVl6oTrOmPvwn6H473YRyesDTW6lkfUR1k00InybeFiW8embKXsU5voqj9w7lTT+1yTnjyoLK95jkYwg9FK0eKeAZ9K8pkFOJE9owirWghDG74TgAmYIBMI4w62MGza30wALNrTClUIONdMeVPIL3djev+CsYT3UIjybXlwalYUtoWsoaOCgFkprs4GZ6JEb6CGMpgdDMDRWF6/yp9qrUx/5wcItwCdgp7H3QCVfzcLdHuTUINaOisRfF/MJ5etunhdEONQsOtbq+nAU2c3AbacJY7f0E4Rrc9wf2+18d Zacharie Day
     zsh_units: all
