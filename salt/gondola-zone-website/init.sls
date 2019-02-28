@@ -5,4 +5,5 @@
     - source: salt://gondola-zone-website/www
     - user: {{ pillar.caddy.files.user }}
     - group: {{ pillar.caddy.files.group }}
-    - mode: {{ pillar.caddy.files.mode }}
+    - dir_mode: {{ pillar.caddy.files.mode }}
+    - file_mode: {{ pillar.caddy.files.mode }}
