@@ -15,6 +15,7 @@
 #	-n         Do not chown uploaded folders to Salt group
 #	-t         Run Salt state.apply in test mode
 #	-l         Run Salt state.apply with -l trace flag
+#	-p         Plain text, no color
 #
 # BEHAVIOR
 #
@@ -29,7 +30,7 @@ set -e
 prog_dir=$(realpath $(dirname "$0"))
 
 # {{{1 Arguments
-while getopts "u:h:ntl" opt; do
+while getopts "u:h:ntlp" opt; do
 	case "$opt" in
 		u)
 			user="$OPTARG"
@@ -49,6 +50,10 @@ while getopts "u:h:ntl" opt; do
 
 		l)
 			salt_trace="true"
+			;;
+
+		p)
+			plain_text="true"
 			;;
 
 		'?')
@@ -91,7 +96,11 @@ if [ ! -z "$salt_trace" ]; then
 	salt_post_args="$salt_post_args -l trace"
 fi
 
-if ! ssh "$address" "sudo salt-call --local --force-color state.apply $salt_post_args"; then
+if [ -z "$plain_text" ]; then
+	salt_pre_args="$salt_pre_args --force-color"
+fi
+
+if ! ssh "$address" "sudo salt-call --local $salt_pre_args state.apply $salt_post_args"; then
 	echo "Error: Failed to apply Salt states" >&2
 	exit 1
 fi
