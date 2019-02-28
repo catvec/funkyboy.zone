@@ -12,6 +12,5 @@
 #
 #?
 
-{{ pillar.factorio.check_mods_script }} \
-	-d {{ pillar.factorio.mods_directory }} \
-	-s {{ pillar.factorio.mods_space.name }}
+exec {{ pillar.factorio.check_mods_script }} \
+	-d {{ pillar.factorio.mods_directory }}

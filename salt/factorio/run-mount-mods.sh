@@ -12,7 +12,9 @@
 #
 #?
 
-{{ pillar.factorio.copy_mods_script }} \
+exec {{ pillar.factorio.mount_mods_script }} \
 	-d {{ pillar.factorio.mods_directory }} \
 	-s {{ pillar.factorio.mods_space.name }} \
-	-r {{ pillar.factorio.factorio_service.name }}
+	-r {{ pillar.factorio.factorio_service.name }} \
+	-u {{ pillar.factorio.user.id }} \
+	-g {{ pillar.factorio.mods_access_group.id }}

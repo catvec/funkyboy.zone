@@ -8,6 +8,8 @@
 
 {% set factorio_cfg_dir = dir + '/config' %}
 
+{% set mods_dir = dir + '/mods' %}
+
 factorio:
   # User
   # User which runs factorio server
@@ -19,6 +21,10 @@ factorio:
   group:
     name: factorio
     id: 845
+
+  mods_access_group:
+    name: factorio-mods
+    id: 846
 
   # Mode of files to place
   mode: 775
@@ -43,7 +49,7 @@ factorio:
   saves_directory: {{ dir }}/saves
 
   # Factorio server docker image 
-  docker_image: dtandersen/factorio
+  docker_image: dtandersen/factorio:0.17
   docker_container_name: factorio
 
   # Hosts which factorio server will be accessible by
@@ -60,7 +66,8 @@ factorio:
 
   # Mods server
   # Directory factorio mods are stored in
-  mods_directory: {{ dir }}/mods
+  mods_directory: {{ mods_dir }}
+  mod_list_f: {{ mods_dir }}/mod-list.json
 
   # Hosts which factorio mods can be downloaded at
   mods_hosts:
@@ -70,13 +77,10 @@ factorio:
   caddy_cfg_file: factorio
 
   # s3 file system configuration for mods directory
-  s3fs_passwd_file: {{ dir }}/s3fs-passwd
   check_mods_script: {{ dir }}/check-mods.sh
   run_check_mods_script: {{ dir }}/run-check-mods.sh
-  copy_mods_script: {{ dir }}/copy-mods.sh
-  run_copy_mods_script: {{ dir }}/run-copy-mods.sh
+  mount_mods_script: {{ dir }}/mount-mods.sh
+  run_mount_mods_script: {{ dir }}/run-mount-mods.sh
 
   # Factorio mods Digital Ocean Space
-  mods_space:
-    region: sfo2
-    name: factorio-mods
+  mods_space: factorio-mods
