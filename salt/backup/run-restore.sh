@@ -12,5 +12,5 @@
 #
 #?
 
-{{ pillar.backup.restore_script }} \
+exec {{ pillar.backup.restore_script }} \
 	-s {{ pillar.backup.space }}
