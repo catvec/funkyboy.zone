@@ -3,6 +3,8 @@ base:
     - system-config
     - hostname
     - zsh
+    - digitalocean-spaces
+    - digitalocean-spaces-secret
     - s3cmd
     - s3cmd-secret
     - docker
