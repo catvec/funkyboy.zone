@@ -12,7 +12,7 @@
 #
 #?
 
-{{ pillar.caddy.build.check_script }} \
+exec {{ pillar.caddy.build.check_script }} \
 	-d {{ pillar.caddy.build.gopath }}/src/{{ pillar.caddy.build.repo }} \
 	-f {{ pillar.caddy.build.plugins_file }} \
 	-h {{ pillar.caddy.build.plugins_history_file }} \
