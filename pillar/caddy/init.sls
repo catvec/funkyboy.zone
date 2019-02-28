@@ -52,7 +52,7 @@ caddy:
       - 'github.com/tarent/loginsrv/caddy'
 
       # Prometheus metrics exporter
-      - 'github.com/miekg/caddy-prometheus'
+      #- 'github.com/miekg/caddy-prometheus'
 
   # Config
   serve_dir: /srv/caddy
