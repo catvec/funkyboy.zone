@@ -44,6 +44,7 @@ factorio:
 
   # Factorio server docker image 
   docker_image: dtandersen/factorio
+  docker_container_name: factorio
 
   # Hosts which factorio server will be accessible by
   hosts:

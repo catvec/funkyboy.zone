@@ -2,7 +2,7 @@
 exec chpst -u {{ pillar.factorio.user.name}}:{{ pillar.factorio.group.name}}:docker docker run \
 	-it \
 	--rm \
-	--name factorio \
+	--name {{ pillar.factorio.docker_container_name }} \
 	--net host \
 	-p {{ pillar.factorio.ports.game }}:{{ pillar.factorio.ports.game }}/udp \
 	-p {{ pillar.factorio.ports.rcon }}:{{ pillar.factorio.ports.rcon }}/tcp \
