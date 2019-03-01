@@ -60,7 +60,7 @@
     - template: jinja
     - user: {{ pillar.factorio.user.name }}
     - group: {{ pillar.factorio.group.name }}
-    - mode: {{ pillar.factorio.mode }}
+    - mode: 750
     - require:
       - file: {{ pillar.factorio.factorio_config.directory }}
 
@@ -115,7 +115,6 @@
       - file: {{ pillar.factorio.factorio_service.run_file }}
       - user: {{ pillar.factorio.user.name }}-user
       - file: {{ pillar.factorio.factorio_config.file }}
-#     - file: {{ pillar.factorio.mods_directory }}
 
 {{ pillar.factorio.factorio_service.name }}-running:
   service.running:
