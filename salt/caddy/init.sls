@@ -86,6 +86,10 @@
     - group: {{ pillar.caddy.files.group }}
     - dir_mode: 770
     - file_mode: 770
+    - recurse:
+      - user
+      - group
+      - mode
 
 # Setup configuration 
 {{ pillar.caddy.config_parent_dir }}:
