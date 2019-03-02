@@ -75,8 +75,19 @@
     - device: {{ pillar.factorio.mods_space }}
     - fstype: fuse.s3fs
     - mkmnt: True
-    - opts: passwd_file={{ pillar.s3fs.passwd_file }},use_path_request_style,url=https://{{ pillar.digitalocean_spaces.spaces_region }}.digitaloceanspaces.com,uid={{ pillar.factorio.user.id }},gid={{ pillar.factorio.mods_access_group.id }},umask=002,mp_umask=002,allow_other
-    - hidden_opts:
+    - device_name_regex:
+      - s3fs
+      - {{ pillar.factorio.mods_space }}
+    - opts:
+      - allow_other
+      - passwd_file={{ pillar.s3fs.passwd_file }}
+      - use_path_request_style
+      - url=https://{{ pillar.digitalocean_spaces.spaces_region }}.digitaloceanspaces.com
+      - uid={{ pillar.factorio.user.id }}
+      - gid={{ pillar.factorio.mods_access_group.id }}
+      - umask=002
+      - mp_umask=002
+    - extra_mount_invisible_keys:
       - passwd_file
       - use_path_request_style
       - url
