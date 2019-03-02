@@ -10,6 +10,15 @@
 {{ pkg }}:
   pkg.installed
 
+# Configuration
+{{ znc_conf_f }}:
+  file.managed:
+    - source: salt://znc/znc.conf
+    - template: jinja
+    - makedirs: True
+    - mode: 775
+    - dir_mode: 775
+
 {{ pillar.znc.directory }}:
   file.directory:
     - user: znc
@@ -21,16 +30,8 @@
       - mode
     - require:
       - file: {{ znc_conf_f }}
-      - file: {{ pillar.znc.directory }}/{{ pillar.znc.pem_file }}
 
-{{ znc_conf_f }}:
-  file.managed:
-    - source: salt://znc/znc.conf
-    - template: jinja
-    - makedirs: True
-    - mode: 775
-    - dir_mode: 775
-
+# Service
 {{ svc_run_f }}:
   file.managed:
     - source: salt://znc/run
@@ -53,3 +54,12 @@
     - watch:
       - file: {{ svc_run_f }}
       - file: {{ znc_conf_f }}
+
+# Caddy
+{{ pillar.caddy.config_dir }}/{{ pillar.znc.caddy.config_file }}:
+  file.managed:
+    - source: salt://znc/Caddyfile
+    - template: jinja
+    - user: {{ pillar.caddy.files.user }}
+    - group: {{ pillar.caddy.files.group }}
+    - mode: {{ pillar.caddy.files.mode }}

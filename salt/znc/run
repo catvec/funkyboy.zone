@@ -1,2 +1,11 @@
 #!/usr/bin/env bash
-exec chpst -u znc:znc znc --foreground --no-color --datadir {{ pillar.znc.directory }} 2>&1
+# Wait for certs to be placed by Caddy
+crt_dir="{{ pillar.caddy.caddy_path }}/acme/acme-v02.api.letsencrypt.org/sites/{{ pillar.znc.caddy.host }}"
+
+while [ ! -d "$crt_dir" ]; do
+	echo "Certificate directory does not exists, waiting..."
+	sleep 1
+done
+
+# Run
+exec chpst -u znc:znc:caddy znc --foreground --no-color --datadir {{ pillar.znc.directory }} 2>&1

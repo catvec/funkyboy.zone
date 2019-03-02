@@ -1,0 +1,3 @@
+{{ pillar.znc.caddy.host }} {
+	proxy / localhost:{{ pillar.znc.ports.internal_web }}
+}
