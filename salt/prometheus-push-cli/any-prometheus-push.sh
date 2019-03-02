@@ -76,7 +76,9 @@ if [ -z "$value" ]; then
 fi
 
 # {{{1 Push
-if ! echo "$metric $value" | curl --data-binary @- "$push_srv/metrics/job/$job"; then
+# --fail --silent --show-error taken from https://stackoverflow.com/a/18284752
+# to stop curl from outputting progress to stderr
+if ! echo "$metric $value" | curl --fail --silent --show-error --data-binary @- "$push_srv/metrics/job/$job"; then
 	echo "Error: Failed to push $metric to $push_srv for $job" >&2
 	exit 1
 fi
