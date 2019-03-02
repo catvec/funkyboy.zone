@@ -37,7 +37,6 @@ base:
     - prometheus-push-cli
     - scripts-repo
     - void-scripts
-    - znc-secret
     - znc
     - funkyboy-website
     - file-modes-website
