@@ -15,6 +15,7 @@ base:
     - motd
     - xz
     - tree
+    - xtools
     - make
     - gcc
     - s3cmd
