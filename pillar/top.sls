@@ -32,3 +32,4 @@ base:
     - factorio-secret
     - backup
     - public-www
+    - linux-install-repo

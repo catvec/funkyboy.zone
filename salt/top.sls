@@ -46,4 +46,5 @@ base:
     - gondola-zone-website
     - factorio
     - public-www
+    - linux-install-repo
     - putsvl # Must always be last
