@@ -8,6 +8,10 @@ import {{ pillar.caddy.config_dir }}/*
 
 	gzip
 
+	{% if 'browse' in static_site and static_site.browse %}
+	browse /
+	{% endif %}
+
 	{% if pillar['caddy']['tls'] %}
 	tls {
 		dns digitalocean

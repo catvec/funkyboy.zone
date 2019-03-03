@@ -7,6 +7,7 @@
 #                       will be served out of
 #   - hosts (String[]): List of hosts which content will be served out of,
 #                       should not include a scheme
+#   - browse (Boolean): (Optional) If true makes Caddy show file listing page
 
 {% set build_dir = '/opt/caddy' %}
 
@@ -105,6 +106,7 @@ caddy:
     # Public content
     public_www:
       www_dir: public-www
+      browse: True
       hosts:
         - public.funkyboy.zone
 
