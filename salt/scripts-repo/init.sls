@@ -15,8 +15,17 @@
 {{ repo }}:
   git.latest:
     - target: {{ dir }}
+    - force_reset: True
     - require:
       - file: {{ dir }}
+
+{{ repo }}-ignore-file-mods:
+  cmd.run:
+    - name: git config core.fileMode false
+    - unless: git config core.fileMode | grep true
+    - cwd: {{ dir }}
+    - require:
+      - git: {{ repo }}
 
 {{ pillar.zsh.zprofiled_path }}/scripts-repo:
   file.managed:
