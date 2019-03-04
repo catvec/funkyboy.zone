@@ -15,6 +15,8 @@
 #	                   injected during the build process
 #	-p PLUGIN          (Optional) Plugin to check is installed, can be 
 #	                   specified multiple times
+#	-n NOBUILD_FILE    If file is present script will always say caddy
+#	                   should not be built
 #
 # BEHAVIOR
 #
@@ -34,7 +36,7 @@ plugins=()
 
 # {{{1 Arugments
 # {{{2 Get
-while getopts "d:f:h:p:" opt; do
+while getopts "d:f:h:p:n:" opt; do
 	case "$opt" in 
 		d)
 			build_dir="$OPTARG"
@@ -50,6 +52,10 @@ while getopts "d:f:h:p:" opt; do
 
 		h)
 			plugins_history_file="$OPTARG"
+			;;
+
+		n)
+			nobuild_file="$OPTARG"
 			;;
 
 		'?')
@@ -76,6 +82,12 @@ fi
 if [ -z "$plugins_history_file" ]; then
 	echo "Error: -h HISTORY_FILE option is required" >&2
 	exit 1
+fi
+
+# {{{3 nobuild_file
+if [ -f "$nobuild_file" ]; then
+	echo "Nobuild file is present, will not build caddy"
+	exit 0
 fi
 
 # {{{1 Check if installed at all
