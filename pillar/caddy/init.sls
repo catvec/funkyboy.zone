@@ -53,7 +53,7 @@ caddy:
       - 'github.com/tarent/loginsrv/caddy'
 
       # Prometheus metrics exporter
-      #- 'github.com/miekg/caddy-prometheus'
+      - 'github.com/miekg/caddy-prometheus'
 
     # If file is present the check build script will always say caddy is up to
     # date even if it is not. Used to prevent building caddy when the process
