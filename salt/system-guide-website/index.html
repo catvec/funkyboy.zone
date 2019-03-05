@@ -8,31 +8,51 @@
 
 	<body>
 	<h1>Funky Boy Guide</h1>
-	<section>
-		<h2>Overview</h2>
+	<ol>
+		<li><a href="#installation-and-configuration">Installation and Configuration</a></li>
+		<li><a href="backups">Backups</a></li>
+	</ol>
+
+	<section id="installation-and-configuration">
+		<h2>Installation and Configuration</h2>
 
 		<p>
-		The Funky Boy Linux server is setup using a configuration 
-		management tool named 
+		Configuration files and package installation is managed by 
+		a tool named 
 		<a href="https://www.saltstack.com/">Salt</a>.<br>
 		<br>
-		If you would like to install a package or edit a configuration 
-		file you must do so via Salt.<br>
+		If you would like to change configuration or install a package
+		you must do so via Salt. If you do not then it is possible 
+		that your changes will be lost if the server is re-setup 
+		with Salt<br>
 		<br>
-		If you do not then there is a strong chance that the server 
-		will be re-setup with Salt, and you manual changes will be erased.<br>
+		Salt configuration files are stored in the 
+		<a href="https://github.com/Noah-Huppert/funkyboy.zone">Funky 
+		Boy GitHub repository</a>. See instructions in this repository 
+		for more information.
 		</p>
 	</section>
 
-	<section>
-		<h2>Instructions</h2>
+	<section id="backups">
+		<h2>Backups</h2>
 
 		<p>
-		Salt configuration files are stored in the 
-		<a href="https://github.com/Noah-Huppert/funkyboy.zone">Funky 
-		Boy GitHub repository</a>.<br>
-		<br>
-		See instructions in this repository for more information.
+			Backups are made every day at midnight. Backups older 
+			than a month are deleted unless they were made on the 
+			28th of a month. Backups older than a year are deleted.
+			<br>
+			<br>
+			User home and 
+			<a href="https://public.funkyboy.zone">public</a> 
+			directories are backed up. Files and directories who's 
+			names start with a dot (Glob: <code>.*</code>) are 
+			not backed up.<br>
+			<br>
+			State data for the following services is also backed up:
+
+			<ul>
+				<li>Factorio Saves</li>
+			</ul>
 		</p>
 	</section>
 	</body>
