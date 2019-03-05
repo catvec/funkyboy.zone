@@ -59,6 +59,9 @@ oldest_backup_txt="1 month"
 earliest_backup=43200 # 12 hours
 earliest_backup_txt="12 hours"
 
+monthly_backup_keep_day=28
+monthly_backup_keepy_day_text="28th"
+
 backup_f_targets=()
 backup_f_exclude=()
 
@@ -202,9 +205,9 @@ while read file_info; do
 			exit 1
 		fi
 	elif (( "$dt" > "$oldest_backup" )); then
-		# Keep every backup on the 30th day of a month unless older than a year
-		if [[ "$(($f_date_day % 30))" == "0" ]]; then
-			echo "Keeping old backup on 30th day of month, date: $f_date"
+		# Keep 1 backup from each month unless older than a year
+		if [[ "$(($f_date_day % $monthly_backup_keep_day))" == "0" ]]; then
+			echo "Keeping old backup on $monthly_backup_keepy_day_txt day of month, date: $f_date"
 			continue
 		else
 			echo "Deleting backup older than $oldest_backup_txt, date: $f_date"
