@@ -1,4 +1,6 @@
 {{ pillar.prometheus.hosts }} {
+	prometheus
+
 	proxy / {{ pillar.prometheus.local_address }}
 
 	tls {
