@@ -1,6 +1,8 @@
 {{ pillar.grafana.hosts }} {
-	proxy / localhost:3000
+	prometheus
 
+	proxy / localhost:3000
+	
 	tls {
 		dns digitalocean
 	}
