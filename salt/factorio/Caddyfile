@@ -3,7 +3,7 @@
 
 {% for host in pillar['factorio']['hosts'] %}
 {{ host }} {
-	#prometheus
+	prometheus
 
 	proxy {{ host }}:80 localhost:{{ game_port }} {
 		transparent
@@ -17,7 +17,7 @@
 
 {% for host in pillar['factorio']['mods_hosts'] %}
 {{ host }} {
-	#prometheus
+	prometheus
 
 	root {{ pillar.factorio.mods_directory }}
 	browse /
