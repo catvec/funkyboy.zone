@@ -29,6 +29,7 @@ base:
     - lnav
     - python
     - go
+    - go-dep
     - caddy
     - prometheus
     - alertmanager
