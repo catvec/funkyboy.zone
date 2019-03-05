@@ -33,4 +33,3 @@ base:
     - backup
     - public-www
     - linux-install-repo
-    - void-packages-repo

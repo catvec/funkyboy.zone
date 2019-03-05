@@ -49,5 +49,4 @@ base:
     - factorio
     - public-www
     - linux-install-repo
-    - void-packages-repo
     - putsvl # Must always be last
