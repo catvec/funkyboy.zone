@@ -127,3 +127,10 @@ caddy:
       hosts:
         - gondola.zone
         - '*.gondola.zone'
+
+    # goldblum.zone site
+    goldblum_zone:
+      www_dir: goldblum-zone
+      hosts:
+        - goldblum.zone
+        - '*.goldblum.zone'

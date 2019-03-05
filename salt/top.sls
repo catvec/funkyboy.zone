@@ -49,4 +49,5 @@ base:
     - factorio
     - public-www
     - linux-install-repo
+    - goldblum-zone-website
     - putsvl # Must always be last
