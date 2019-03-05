@@ -2,7 +2,7 @@ import {{ pillar.caddy.config_dir }}/*
 
 {% for site_name, static_site in pillar['caddy']['static_sites'].items() %}
 {{ static_site.hosts | join(", ") }} {
-	#prometheus
+	prometheus
 
 	root {{ pillar.caddy.serve_dir }}/{{ static_site.www_dir }}
 
