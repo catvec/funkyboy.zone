@@ -18,6 +18,7 @@ base:
     - xtools
     - make
     - gcc
+    - net-tools
     - s3cmd
     - s3fs
     - backup
