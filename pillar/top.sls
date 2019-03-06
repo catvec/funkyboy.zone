@@ -3,6 +3,7 @@ base:
     # Low level system configuration
     - system-config
     - hostname
+    - kernel
 
     # System daemons
     - syslog

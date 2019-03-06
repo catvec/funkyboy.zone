@@ -8,6 +8,7 @@ base:
     - system-config
     - hostname
     - sudo-no-password
+    - kernel
 
     # Higher level system configuration
     - motd
