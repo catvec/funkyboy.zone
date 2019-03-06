@@ -2,6 +2,7 @@ base:
   '*':
     - system-config
     - hostname
+    - ufw
     - zsh
     - digitalocean-spaces
     - digitalocean-spaces-secret

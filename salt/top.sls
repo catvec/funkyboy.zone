@@ -8,6 +8,7 @@ base:
     - syslog
     - sshd-config
     - sudo-no-password
+    - ufw
     - docker
     - rm-container-script
     - users
