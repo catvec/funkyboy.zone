@@ -17,4 +17,3 @@ znc:
         - "#salt"
         - "#voidlinux"
         - "#xbps"
-        - "#znc"

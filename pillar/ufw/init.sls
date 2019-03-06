@@ -3,6 +3,8 @@
 
 ufw:
   directory: {{ dir }}
+  package: ufw
+  service: ufw
   rules_ip4_file: {{ dir }}/user.rules
   rules_ip6_file: {{ dir }}/user6.rules
   rules:

@@ -1,15 +1,17 @@
-# Installs ufw
+# Installs and configures ufw
 
-ufw:
+# Package
+{{ pillar.ufw.package }}:
   pkg.installed
 
+# Configuration
 {{ pillar.ufw.rules_ip4_file }}:
   file.managed:
     - source: salt://ufw/user.rules
     - mode: 640
     - template: jinja
     - require:
-      - pkg: ufw
+      - pkg: {{ pillar.ufw.package }}
 
 {{ pillar.ufw.rules_ip6_file }}:
   file.managed:
@@ -17,15 +19,21 @@ ufw:
     - mode: 640
     - template: jinja
     - require:
-      - pkg: ufw
+      - pkg: {{ pillar.ufw.package }}
 
-enable:
-  cmd.run:
-    - name: ufw enable
-    - unless: "ufw status | grep 'Status: active'"
+# Service
+{{ pillar.ufw.service }}-enabled:
+  service.enabled:
+    - name: {{ pillar.ufw.service }}
     - require:
       - file: {{ pillar.ufw.rules_ip4_file }}
       - file: {{ pillar.ufw.rules_ip6_file }}
+
+{{ pillar.ufw.service }}-running:
+  service.running:
+    - name: {{ pillar.ufw.service }}
+    - require:
+      - service: {{ pillar.ufw.service }}-enabled
 
 reload:
   cmd.run:
@@ -33,3 +41,5 @@ reload:
     - onchanges:
       - file: {{ pillar.ufw.rules_ip4_file }}
       - file: {{ pillar.ufw.rules_ip6_file }}
+    - require:
+      - service: {{ pillar.ufw.service }}-running
