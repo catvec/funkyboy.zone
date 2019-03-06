@@ -60,13 +60,13 @@ base:
     - scripts-repo
     - void-scripts
     - znc
+    - factorio
     - funkyboy-website
     - file-modes-website
     - noahhuppert-website
     - workout-website
     - system-guide-website
     - gondola-zone-website
-    - factorio
     - public-www
     - linux-install-repo
     - goldblum-zone-website
