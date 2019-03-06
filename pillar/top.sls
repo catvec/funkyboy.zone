@@ -1,19 +1,30 @@
 base:
   '*':
+    # Low level system configuration
     - system-config
     - hostname
+
+    # System daemons
+    - syslog
     - ufw
+    - crond
+
+    # User setup
     - zsh
+    - docker
+    - users
+
+    # Tools
+    - rm-container-script
     - digitalocean-spaces
     - digitalocean-spaces-secret
     - s3cmd
     - s3fs
-    - docker
-    - rm-container-script
-    - users
-    - crond
-    - syslog
     - vsv
+    - prometheus-push-cli
+
+    # Services
+    - backup
     - email
     - email-secret
     - caddy
@@ -25,12 +36,10 @@ base:
     - grafana 
     - node-exporter
     - pushgateway
-    - prometheus-push-cli
     - void-scripts
     - znc-secret
     - znc
     - factorio
     - factorio-secret
-    - backup
     - public-www
     - linux-install-repo
