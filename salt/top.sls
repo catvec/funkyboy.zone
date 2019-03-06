@@ -1,19 +1,34 @@
 base:
   '*':
+    # Salt self configuration
     - salt-config
     - salt-dir-perms
+
+    # Low level system configuration
     - system-config
     - hostname
-    - srv-dir-perms
+    - sudo-no-password
+
+    # Higher level system configuration
+    - motd
+
+    # System daemons
     - syslog
     - sshd-config
-    - sudo-no-password
     - ufw
-    - docker
-    - rm-container-script
-    - users
     - crond
-    - motd
+
+    # User setup
+    # Docker before users so users can be added to group docker makes
+    #
+    # Zsh before users so user's default shell can be zsh
+    - zsh
+    - docker
+    - users
+
+    # Tools
+    - srv-dir-perms
+    - rm-container-script
     - xz
     - tree
     - xtools
@@ -23,23 +38,24 @@ base:
     - nmap
     - s3cmd
     - s3fs
-    - backup
-    - email
     - neovim
-    - zsh
     - git
     - vsv
     - lnav
     - python
     - go
     - go-dep
+    - prometheus-push-cli
+
+    # Services
+    - backup
+    - email
     - caddy
     - prometheus
     - alertmanager
     - grafana
     - node-exporter
     - pushgateway
-    - prometheus-push-cli
     - scripts-repo
     - void-scripts
     - znc
@@ -53,4 +69,8 @@ base:
     - public-www
     - linux-install-repo
     - goldblum-zone-website
-    - putsvl # Must always be last
+
+    # Service logging
+    # Placed last so putsvl can modify any services created by any state 
+    # before it
+    - putsvl
