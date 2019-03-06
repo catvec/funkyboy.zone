@@ -20,6 +20,7 @@ base:
     - make
     - gcc
     - net-tools
+    - nmap
     - s3cmd
     - s3fs
     - backup
