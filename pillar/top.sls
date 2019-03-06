@@ -28,6 +28,7 @@ base:
     - backup
     - email
     - email-secret
+    - wireguard
     - caddy
     - caddy-secret
     - prometheus

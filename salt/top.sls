@@ -51,6 +51,7 @@ base:
     # Services
     - backup
     - email
+    - wireguard
     - caddy
     - prometheus
     - alertmanager

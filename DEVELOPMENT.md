@@ -10,6 +10,13 @@ Instructions for developing Funky Boy setup files.
 This section contains one time setup steps which were manually run to create 
 files in states.
 
+## Wireguard
+Generate a private key:
+
+```
+wg genkey > secret/salt/wireguard-secret/server.private
+```
+
 ## Prometheus
 A GitHub OAuth application is used to authenticate users when accessing 
 Prometheus. Authentication is performed by Caddy.
