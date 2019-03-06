@@ -5,12 +5,13 @@ wireguard:
   package: wireguard
   kernel_module: wireguard
   directory: {{ dir }}
+  config_file: {{ dir }}/wg0.conf
 
   # Interface configuration
-  private_key_file: {{ dir }}/server.private
   interface:
     name: wg0
     address: 10.0.0.1/24
+  port: 57964
 
   # Scripts
   setup_script: {{ dir }}/setup.sh

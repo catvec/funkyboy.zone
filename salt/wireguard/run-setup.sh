@@ -15,4 +15,4 @@
 exec {{ pillar.wireguard.setup_script }} \
 	-i {{ pillar.wireguard.interface.name }} \
 	-a {{ pillar.wireguard.interface.address }} \
-	-k {{ pillar.wireguard.private_key_file }}
+	-c {{ pillar.wireguard.config_file }}

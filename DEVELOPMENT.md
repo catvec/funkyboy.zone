@@ -14,8 +14,11 @@ files in states.
 Generate a private key:
 
 ```
-wg genkey > secret/salt/wireguard-secret/server.private
+wg genkey
 ```
+
+Save this value in the `wireguard.private_key` key of the 
+`wireguard-secret` pillar.
 
 ## Prometheus
 A GitHub OAuth application is used to authenticate users when accessing 

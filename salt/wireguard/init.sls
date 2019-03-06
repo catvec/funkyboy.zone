@@ -15,10 +15,11 @@
     - makedirs: True
     - dir_mode: 700
 
-{{ pillar.wireguard.private_key_file }}:
+{{ pillar.wireguard.config_file }}:
   file.managed:
-    - source: salt://wireguard-secret/server.private
+    - source: salt://wireguard/wg0.conf
     - mode: 600
+    - template: jinja
     - require:
       - file: {{ pillar.wireguard.directory }}
 

@@ -8,9 +8,9 @@
 #
 # OPTIONS
 #
-#	-i I_NAME          Name of interface to create
-#	-a I_ADDR          Address to attach to Wireguard interface
-#	-k PRIVATE_KEY_F   Wireguard private key file
+#	-i I_NAME      Name of interface to create
+#	-a I_ADDR      Address to attach to Wireguard interface
+#	-c I_CONF_F    Wireguard configuration file
 #
 # BEHAVIOR
 #
@@ -23,7 +23,7 @@ set -e
 
 # {{{1 Options
 # {{{2 Get
-while getopts "i:a:k:" opt; do
+while getopts "i:a:c:" opt; do
 	case "$opt" in
 		i)
 			interface_name="$OPTARG"
@@ -33,8 +33,8 @@ while getopts "i:a:k:" opt; do
 			interface_address="$OPTARG"
 			;;
 
-		k)
-			private_key_file="$OPTARG"
+		c)
+			interface_config_file="$OPTARG"
 			;;
 
 		'?')
@@ -57,9 +57,9 @@ if [ -z "$interface_address" ]; then
 	exit 1
 fi
 
-# {{{3 private_key_file
-if [ -z "$private_key_file" ]; then
-	echo "Error: -k PRIVATE_KEY_F option required" >&2
+# {{{3 interface_config_file
+if [ -z "$interface_config_file" ]; then
+	echo "Error: -c I_CONF_F option required" >&2
 	exit 1
 fi
 
@@ -75,9 +75,9 @@ if ! ip addr add "$interface_address" dev "$interface_name"; then
 	exit 1
 fi
 
-# {{{1 Set private key for interface
-if ! wg set "$interface_name" private-key "$private_key_file"; then
-	echo "Error: Failed to set private key for $interface_name" >&2
+# {{{1 Set configuration for interface
+if ! wg setconf "$interface_name" "$interface_config_file"; then
+	echo "Error: Failed to set configuration file $interface_config_file for $interface_name" >&2
 	exit 1
 fi
 
