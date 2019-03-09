@@ -134,3 +134,9 @@ caddy:
       hosts:
         - goldblum.zone
         - '*.goldblum.zone'
+
+    # Wireguard public key site
+    wireguard_public_key:
+      www_dir: wireguard-guide
+      hosts:
+        - wireguard.funkyboy.zone
