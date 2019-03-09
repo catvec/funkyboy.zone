@@ -84,7 +84,7 @@ configure:
 # Public key website
 {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.wireguard_public_key.www_dir }}:
   file.recurse:
-    - source: salt://wireguard/public-key-www
+    - source: salt://wireguard/guide-website-www
     - template: jinja
     - dir_mode: 755
     - file_mode: 755
