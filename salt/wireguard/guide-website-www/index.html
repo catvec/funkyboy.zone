@@ -18,7 +18,7 @@
 			<a href="https://www.wireguard.com/">WireGuard</a>
 			VPN.<br>
 			<br>
-			The VPN can provide access to the Funky Boy private 
+			The VPN provides access to the Funky Boy private 
 			network. Additionally it allows you to route personal 
 			internet traffic through Funky Boy.
 		</section>
@@ -35,12 +35,19 @@
 						wg pubkey < private.key > public.key<br>
 					</code>
 				</li>
-				<li>Contact the Funky 
+				<li>
+					Add an item to the <code>wireguard.peers</code> array inside the <a href="https://github.com/Noah-Huppert/funkyboy.zone/blob/master/pillar/wireguard/init.sls#L28">Funky Boy WireGuard Salt configuration file</a>. Submit a pull request.
+					<ul>
+						<li>Place your public key from above in the <code>public_key</code> field</li>
+						<li>Add the next available IP in the <code>10.0.0.0/24</code> block to the <code>ips</code> field</li>
+						<li>If your client will be behind a NAT or any other funky network setup add a <code>keepalive</code> field. With the value being the number of seconds between keep alive requests</li>
+					</ul>
+				</li>
 				<li>
 					Make a configuration file named <code>wg0.conf</code>:<br>
 					<code>
 						[Interface]<br>
-						Address = 10.0.0.2/24<br>
+						Address = IP FROM ABOVE<br>
 						PrivateKey = YOUR PRIVATE KEY<br>
 						<br>
 						[Peer]<br>
