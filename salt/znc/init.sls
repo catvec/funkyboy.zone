@@ -53,7 +53,7 @@
       - service: {{ svc }}-enabled
     - watch:
       - file: {{ svc_run_f }}
-      - file: {{ znc_conf_f }}
+      #      - file: {{ znc_conf_f }}
 
 # Caddy
 {{ pillar.caddy.config_dir }}/{{ pillar.znc.caddy.config_file }}:

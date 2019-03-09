@@ -13,7 +13,9 @@ znc:
       nick: noah_h
       quit_msg: o/
       real_name: n/a
-      channels:
-        - "#salt"
-        - "#voidlinux"
-        - "#xbps"
+      networks:
+        - server: chat.freenode.net +6697
+          channels:
+            - "#salt"
+            - "#voidlinux"
+            - "#xbps"
