@@ -27,6 +27,13 @@ ufw:
         - udp
       deny: []
 
+    # Wireguard
+    - port: 51820
+      allow:
+        - tcp
+        - udp
+      deny: []
+
     # IRC
     - port: 6697
       allow:
