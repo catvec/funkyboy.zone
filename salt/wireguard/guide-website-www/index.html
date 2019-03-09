@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<title>WireGuard Guide</title>
+	</head>
+	<body>
+		<h1>Table Of Contents</h1>
+		<ul>
+			<li><a href="#overview">Overview</a></li>
+			<li><a href="#setup">Setup</a></li>
+		</ul>
+
+		<section id="overview">
+			<h1>Overview</h1>
+			Funky Boy provides a 
+			<a href="https://www.wireguard.com/">WireGuard</a>
+			VPN.<br>
+			<br>
+			The VPN can provide access to the Funky Boy private 
+			network. Additionally it allows you to route personal 
+			internet traffic through Funky Boy.
+		</section>
+
+		<section id="setup">
+			<h1>Setup</h1>
+			<ol>
+				<li>Install WireGuard</li>
+				<li>
+					Generate Keys:<br>
+					<code>
+						wg genkey > private.key<br>
+						chmod 600 private.key<br>
+						wg pubkey < private.key > public.key<br>
+					</code>
+				</li>
+				<li>Contact the Funky 
+				<li>
+					Make a configuration file named <code>wg0.conf</code>:<br>
+					<code>
+						[Interface]<br>
+						Address = 10.0.0.2/24<br>
+						PrivateKey = YOUR PRIVATE KEY<br>
+						<br>
+						[Peer]<br>
+						PublicKey = {{ pillar.wireguard.public_key }}<br>
+						Endpoint = funkyboy.zone:{{ pillar.wireguard.interface.port }}<br>
+						AllowedIPs = 0.0.0.0/0<br>
+						PersistentKeepalive = 25<br>
+					</code>
+				</li>
+				<li>
+					Start WireGuard:<br>
+					<code>
+						wg-quick up wg0.conf
+					</code>
+				</li>
+
+			</ol>
+		</section>
+	</body>
+</html>
