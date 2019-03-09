@@ -20,6 +20,14 @@ wg genkey
 Save this value in the `wireguard.private_key` key of the 
 `wireguard-secret` pillar.
 
+Derive the public key by running:
+
+```
+echo "PRIVATE KEY" | wg pubkey
+```
+
+Save this value in the `wireguard.public_key` key of the `wireguard` pillar.
+
 ## Prometheus
 A GitHub OAuth application is used to authenticate users when accessing 
 Prometheus. Authentication is performed by Caddy.
