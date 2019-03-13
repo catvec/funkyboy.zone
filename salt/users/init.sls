@@ -75,7 +75,14 @@
 {{ zsh_units_dir }}:
   file.recurse:
     - source: salt://users/zprofile.d
+    - template: jinja
     - user: {{ user.name }}
+    - group: {{ user.name }}
+    - dir_mode: 755
+    - recurse:
+      - user
+      - group
+      - mode
 
 {% else %}
 # ... If we should load a few specific units
@@ -85,7 +92,10 @@
 {{ zsh_units_dir }}/{{ zsh_unit }}:
   file.managed:
     - source: salt://users/zprofile.d/{{ zsh_unit }}
+    - template: jinja
     - user: {{ user.name }}
+    - group: {{ user.name }}
+    - mode: 655
 
 {% endfor %}
 {% endif %}
