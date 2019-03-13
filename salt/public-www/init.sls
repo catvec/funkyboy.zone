@@ -1,5 +1,6 @@
 # Creates shared directory which users can put content in.
 
+# Directory
 {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.public_www.www_dir }}:
   file.directory:
     - makedirs: True
@@ -32,3 +33,25 @@
       - file: {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.public_www.www_dir }}
 {% endif %}
 {% endfor %}
+
+# Ensure access
+{{ pillar.public_www.ensure_access.service_directory }}/run:
+  file.managed:
+    - source: salt://public-www/ensure-access-run
+    - template: jinja
+    - mode: 775
+    - makedirs: True
+
+{{ pillar.public_www.ensure_access.service }}-enabled:
+  service.enabled:
+    - name: {{ pillar.public_www.ensure_access.service }}
+    - require:
+      - file: {{ pillar.public_www.ensure_access.service_directory }}/run
+
+{{ pillar.public_www.ensure_access.service }}-running:
+  service.running:
+    - name: {{ pillar.public_www.ensure_access.service }}
+    - watch:
+      - file: {{ pillar.public_www.ensure_access.service_directory }}/run
+    - require:
+      - service: {{ pillar.public_www.ensure_access.service }}-enabled

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Ensure caddy can access the /public directory
+
+exec $(which ensure-access) \
+	-path {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.public_www.www_dir }} \
+	-mode {{ pillar.public_www.ensure_access.mode }} \
+	-poll {{ pillar.public_www.ensure_access.poll }} 1>&2
