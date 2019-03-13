@@ -48,6 +48,7 @@ base:
     - go-dep
     - prometheus-push-cli
     - gpg
+    - ensure-access
 
     # Services
     - backup
