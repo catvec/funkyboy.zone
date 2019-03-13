@@ -20,11 +20,15 @@ base:
     - crond
 
     # User setup
-    # Docker before users so users can be added to group docker makes
+    # s3cmd and docker before users state so users can be added to groups these 
+    # states make
     #
     # Zsh before users so user's default shell can be zsh
     - zsh
+
     - docker
+    - s3cmd
+
     - users
 
     # Tools
@@ -37,7 +41,6 @@ base:
     - gcc
     - net-tools
     - nmap
-    - s3cmd
     - s3fs
     - neovim
     - git
