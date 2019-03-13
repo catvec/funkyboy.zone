@@ -23,6 +23,7 @@ base:
     - s3fs
     - vsv
     - prometheus-push-cli
+    - git-secret
 
     # Services
     - backup
