@@ -47,6 +47,7 @@ base:
     - go
     - go-dep
     - prometheus-push-cli
+    - gpg
 
     # Services
     - backup

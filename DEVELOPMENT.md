@@ -85,6 +85,20 @@ To bootstrap the first save file rsync your file
 to `/opt/factorio/saves/_autosave1.zip`. Ensure the `factorio` user and group
 can access this file.
 
+## GPG
+Users can place their GPG keys on the server.  
+
+Create a directory named `secret/salt/gpg-secret/$USER`. Inside the
+directory run:
+
+```
+gpg --armor --export KEY_ID > pub.asc
+gpg --armor --export-secret-keys KEY_ID > priv.asc
+gpg --armor --export-ownertrust > trust.asc
+```
+
+Then add the user's name to the `gpg.user_keys` list in the `gpg` Pillar.
+
 # Custom Cloud Image Creation
 One can create custom DigitalOcean Droplet images. These allow Droplets to run
 custom operating systems.

@@ -24,6 +24,7 @@ base:
     - vsv
     - prometheus-push-cli
     - git-secret
+    - gpg
 
     # Services
     - backup
