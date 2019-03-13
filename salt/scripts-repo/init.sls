@@ -4,6 +4,11 @@
 {% set dir = '/opt/scripts' %}
 {% set repo = 'https://github.com/Noah-Huppert/scripts.git' %}
 
+{{ repo }}:
+  git.latest:
+    - target: {{ dir }}
+    - force_reset: True
+
 {{ dir }}:
   file.directory:
     - makedirs: True
@@ -11,13 +16,8 @@
     - file_mode: 775
     - recurse:
       - mode
-
-{{ repo }}:
-  git.latest:
-    - target: {{ dir }}
-    - force_reset: True
     - require:
-      - file: {{ dir }}
+      - git: {{ repo }}
 
 {{ repo }}-ignore-file-mods:
   cmd.run:
