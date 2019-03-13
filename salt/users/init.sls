@@ -25,7 +25,7 @@
     {% endif %}
 
 #  Add user's SSH key to authorized_keys
-{% if user.public_key is defined %}
+{% if 'authorized_keys' in user %}
 {{ home_dir }}/.ssh:
   file.directory:
     - makedirs: True
@@ -37,12 +37,29 @@
 {{ home_dir }}/.ssh/authorized_keys:
   file.managed:
     - contents: |
-        {{ user.public_key }}
+        {{ user.authorized_keys }}
     - create: True
     - user: {{ user.name }}
     - mode: 600
     - require:
-      - file: /home/{{ user.name }}/.ssh
+      - file: {{ home_dir }}/.ssh
+{% endif %}
+
+# Place SSH keys
+{% if 'ssh_key' in user %}
+{{ home_dir }}/.ssh/{{ user.ssh_key }}:
+  file.managed:
+    - source: salt://ssh-secret/keys/{{ user.name }}/{{ user.ssh_key }}
+    - user: {{ user.name }}
+    - group: {{ user.name }}
+    - mode: 600
+
+{{ home_dir }}/.ssh/{{ user.ssh_key }}.pub:
+  file.managed:
+    - source: salt://ssh-secret/keys/{{ user.name }}/{{ user.ssh_key }}.pub
+    - user: {{ user.name }}
+    - group: {{ user.name }}
+    - mode: 644
 {% endif %}
 
 # Load Zsh profile which loads Zsh units

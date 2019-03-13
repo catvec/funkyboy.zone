@@ -5,8 +5,11 @@
 #   - name (String): Login name
 #   - groups (String[]): List of group names which user should be added to
 #       - wheel: Group allows users to run sudo
-#   - public_key (String): User's public key which will be added to their 
-#                          accounts authorized_keys file
+#   - authorized_keys (String): Public keys which can SSH into account
+#   - ssh_key (String): (Optional) Name of SSH key file without extension. 
+#                       Files with name ~/.ssh/ssh_key{,.pub} will placed on
+#                       the server. These files will be sourced from the 
+#                       keys/name directory in the ssh-secret state.
 #   - zsh_units (String[]): Names of Zsh profile files which will be copied to
 #                           a user's ~/.zprofile.d directory. These files will
 #                           be sourced when the user starts a Zsh shell.
@@ -26,19 +29,20 @@ users:
       - salt
       - docker
       - factorio-mods
-    public_key: >-
+    authorized_keys: >-
       ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH7worAdtOa+cq2AuyFBdvbX+8Zy4zcHRChFb4EerKGX noah@katla
+    ssh_key: id_ed25519
     zsh_units: all
   - name: jeff
     groups:
       - socklog
-    public_key: >-
+    authorized_keys: >-
       ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMi4PzldEs2YCb1kZFiEeTcC5Ck4VBXHHJQVr0UanZ3L jeff@jeff-pc
     zsh_units: all
   - name: zach
     groups:
       - socklog
       - factorio-mods
-    public_key: >-
+    authorized_keys: >-
       ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFqsP4F+7j3DPPezHqrAO6xmRzr7s9Wi6qYpuq3od/CrMkVl6oTrOmPvwn6H473YRyesDTW6lkfUR1k00InybeFiW8embKXsU5voqj9w7lTT+1yTnjyoLK95jkYwg9FK0eKeAZ9K8pkFOJE9owirWghDG74TgAmYIBMI4w62MGza30wALNrTClUIONdMeVPIL3djev+CsYT3UIjybXlwalYUtoWsoaOCgFkprs4GZ6JEb6CGMpgdDMDRWF6/yp9qrUx/5wcItwCdgp7H3QCVfzcLdHuTUINaOisRfF/MJ5etunhdEONQsOtbq+nAU2c3AbacJY7f0E4Rrc9wf2+18d Zacharie Day
     zsh_units: all
