@@ -29,6 +29,7 @@ users:
       - salt
       - docker
       - factorio-mods
+      - s3cmd
     authorized_keys: >-
       ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH7worAdtOa+cq2AuyFBdvbX+8Zy4zcHRChFb4EerKGX noah@katla
     ssh_key: id_ed25519
