@@ -13,6 +13,8 @@ s3cmd:
   user.present:
     - name: {{ pillar.s3cmd.user }}
     - createhome: False
+    - home: /
+    - shell: {{ pillar.users_nologin_shell }}
     - groups:
       - {{ pillar.s3cmd.group }}
 

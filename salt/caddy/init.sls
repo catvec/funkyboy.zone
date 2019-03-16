@@ -12,6 +12,8 @@
   user.present:
     - name: {{ pillar.caddy.files.user }}
     - createhome: False
+    - home: /
+    - shell: {{ pillar.users_nologin_shell }}
     - groups:
       - {{ pillar.caddy.files.group }}
     - require:

@@ -49,6 +49,8 @@ newaliases:
   user.present:
     - name: {{ pillar.email.opendkim.user }}
     - createhome: False
+    - home: /
+    - shell: {{ pillar.users_nologin_shell }}
     - groups:
       - {{ pillar.email.opendkim.group }}
     - require:

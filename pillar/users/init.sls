@@ -19,6 +19,7 @@
 #                           Or write 'all' instead of a list to include all of 
 #                           the files.
 #
+users_nologin_shell: /sbin/nologin
 users:
   - name: root
     zsh_units: all

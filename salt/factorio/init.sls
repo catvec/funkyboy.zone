@@ -21,6 +21,8 @@
   user.present:
     - name: {{ pillar.factorio.user.name }}
     - createhome: False
+    - home: /
+    - shell: {{ pillar.users_nologin_shell }}
     - uid: {{ pillar.factorio.user.id }}
     - gid: {{ pillar.factorio.group.id }}
     - groups:
