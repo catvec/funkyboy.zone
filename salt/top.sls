@@ -76,6 +76,7 @@ base:
     - public-www
     - linux-install-repo
     - goldblum-zone-website
+    - wiki-website
 
     # Service logging
     # Placed last so putsvl can modify any services created by any state 

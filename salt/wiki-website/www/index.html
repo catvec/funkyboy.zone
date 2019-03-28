@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+
+		<title>Wiki</title>
+	</head>
+	<body>
+		<h1>Wiki</h1>
+
+		<h2>Table Of Contents</h2>
+		<ol>
+			<li><a href="#bash-script-dir">Bash Script Directory</a></li>
+		</ol>
+
+		<section id="bash-script-dir">
+			<h2>Bash Script Directory</h2>
+
+			Determine the directory in which a bash script is located:<br>
+			<br>
+			<code>
+				prog_dir=$(realpath $(dirname "$0"))
+			</code>
+		</section>
+	</body>
+</html>

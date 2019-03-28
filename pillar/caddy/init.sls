@@ -140,3 +140,9 @@ caddy:
       www_dir: wireguard-guide
       hosts:
         - wireguard.funkyboy.zone
+
+    # Wiki site
+    wiki:
+      www_dir: wiki
+      hosts:
+        - wiki.funkyboy.zone
