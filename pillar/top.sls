@@ -47,4 +47,3 @@ base:
     - factorio
     - factorio-secret
     - public-www
-    - linux-install-repo

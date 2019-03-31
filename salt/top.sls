@@ -74,7 +74,6 @@ base:
     - system-guide-website
     - gondola-zone-website
     - public-www
-    - linux-install-repo
     - goldblum-zone-website
     - wiki-website
 
