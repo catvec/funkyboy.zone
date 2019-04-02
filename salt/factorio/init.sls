@@ -89,6 +89,7 @@
       - gid={{ pillar.factorio.mods_access_group.id }}
       - umask=002
       - mp_umask=002
+      - nonempty
     - extra_mount_invisible_keys:
       - passwd_file
       - use_path_request_style
@@ -97,6 +98,7 @@
       - gid
       - umask
       - mp_umask
+      - nonempty
     - persist: True
 
 # Save directory
