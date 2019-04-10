@@ -34,6 +34,6 @@ wireguard:
 
     # Apollo
     - public_key: "Ae855QtE5mvxgzq6hga87SiwSRSnUr+Dmu6ryfLsvkk="
-      ip:
+      ips:
         - 10.0.0.1/24
       keepalive: 25
