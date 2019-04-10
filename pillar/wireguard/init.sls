@@ -26,7 +26,14 @@ wireguard:
 
   # Peers
   peers:
-    - public_key: "ciQ65Q5lbV2aHPW8c+/mchvNk7XwiZwKZ3mLU+1HtWQ=" # Katla
+    # Katla
+    - public_key: "ciQ65Q5lbV2aHPW8c+/mchvNk7XwiZwKZ3mLU+1HtWQ="
       ips:
         - 10.0.0.0/24
+      keepalive: 25
+
+    # Apollo
+    - public_key: "Ae855QtE5mvxgzq6hga87SiwSRSnUr+Dmu6ryfLsvkk="
+      ip:
+        - 10.0.0.1/24
       keepalive: 25
