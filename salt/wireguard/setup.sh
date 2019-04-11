@@ -4,85 +4,112 @@
 #
 # USAGE
 #
-#	setup.sh OPTIONS
+#    setup.sh OPTIONS
 #
 # OPTIONS
 #
-#	-i I_NAME      Name of interface to create
-#	-a I_ADDR      Address to attach to Wireguard interface
-#	-c I_CONF_F    Wireguard configuration file
+#    -i IFACE    Name of interface
+#    -c CFG      Configuration file
+#    -u          Check if running interface's configuration is up to date
 #
 # BEHAVIOR
 #
-#	Sets up a Wireguard interface.
+#    Set up Wireguard interface from configuration file.
+#
+#    If the -u option is provided will exit with non-zero exit code if
+#    the interface is not up to date
 #
 #?
 
-# {{{1 Exit on any error
-set -e
+# {{{1 Helpers
+function die() {
+    echo "Error: $@" >&2
+    exit 1
+}
 
 # {{{1 Options
 # {{{2 Get
-while getopts "i:a:c:" opt; do
-	case "$opt" in
-		i)
-			interface_name="$OPTARG"
-			;;
-
-		a)
-			interface_address="$OPTARG"
-			;;
-
-		c)
-			interface_config_file="$OPTARG"
-			;;
-
-		'?')
-			echo "Error: Unknown option \"$opt\"" >&2
-			exit 1
-			;;
-	esac
+while getopts "i:c:u" opt; do
+    case "$opt" in
+	i) interface="$OPTARG" ;;
+	c) config_file="$OPTARG" ;;
+	u) up_to_date_mode="true" ;;
+	'?') die "Unknown option"
+    esac
 done
 
 # {{{2 Verify
-# {{{3 interface_name
-if [ -z "$interface_name" ]; then
-	echo "Error: -i I_NAME option required" >&2
-	exit 1
+# {{{3 interface
+if [ -z "$interface" ]; then
+    die "-i IFACE option required"
 fi
 
-# {{{3 interface_address
-if [ -z "$interface_address" ]; then
-	echo "Error: -a I_ADDR option required" >&2
-	exit 1
+# {{{3 config_file
+if [ -z "$config_file" ]; then
+    die "-c CFG option required"
 fi
 
-# {{{3 interface_config_file
-if [ -z "$interface_config_file" ]; then
-	echo "Error: -c I_CONF_F option required" >&2
-	exit 1
+if [ ! -f "$config_file" ]; then
+    die "-c CFG file does not exist"
 fi
 
-# {{{1 Create interface
-if ! ip link add "$interface_name" type wireguard; then
-	echo "Error: Failed to create $interface_name interface" >&2
+# {{{1 Up to date mode
+if [ -n "$up_to_date_mode" ]; then
+    echo "up to date mode"
+    
+    # {{{2 Check if interface is running
+    if ! wg show "$interface" &> /dev/null; then
+	echo "interface does not exist"
 	exit 1
+    fi
+
+    # {{{2 Get existing configuration
+    existing_conf_file="/tmp/existing.$interface.conf"
+    expected_conf_file="/tmp/expected.$interface.conf"
+    cleanup_files=("$existing_conf_file" "$expected_conf_file")
+
+    function cleanup() {
+	for f in "${cleanup_files[@]}"; do
+	    if [ ! -f "$f" ]; then
+		continue
+	    fi
+
+	    if ! rm "$f"; then
+		die "Failed to cleanup $f file"
+	    fi
+        done
+    }
+    trap cleanup EXIT
+
+    if ! wg showconf "$interface" | sed '/\(Address\|AllowedIPs\|Endpoint\).*/d' | sed '/^$/d' | tee "$existing_conf_file" &> /dev/null; then
+	die "Failed to get $interface configuration"
+    fi
+
+    if ! cat "$config_file" | sed '/\(Address\|AllowedIPs\|Endpoint\).*/d' | sed '/^$/d' | tee "$expected_conf_file" &> /dev/null; then
+	die "Failed to clean $conf_file configuration file"
+    fi
+
+    # {{{2 Compare configuration
+    if ! git diff --no-index "$existing_conf_file" "$expected_conf_file"; then
+	echo "configuration does not match"
+	exit 1
+    fi
+
+    echo "interface $interface is up to date"
+    exit 0
 fi
 
-# {{{1 Attach address to interface
-if ! ip addr add "$interface_address" dev "$interface_name"; then
-	echo "Error: Failed to attach $interface_address to $interface_name interface" >&2
-	exit 1
+# {{{1 Regular mode
+# {{{2 Delete interface if already exists
+if wg show "$interface" &> /dev/null; then
+    if ! wg-quick down "$interface"; then
+	die "Failed to bring existing inteface $interface down"
+    fi
 fi
 
-# {{{1 Set configuration for interface
-if ! wg setconf "$interface_name" "$interface_config_file"; then
-	echo "Error: Failed to set configuration file $interface_config_file for $interface_name" >&2
-	exit 1
+# {{{2 Bring interface up
+if ! wg-quick up "$config_file"; then
+    die "Failed to bring interface $interface up"
 fi
 
-# {{{1 Set interface up
-if ! ip link set "$interface_name" up; then
-	echo "Error: Failed to set $interface_name to up" >&2
-	exit 1
-fi
+echo "brought up interface $interface"

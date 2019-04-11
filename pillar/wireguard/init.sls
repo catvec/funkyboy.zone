@@ -14,12 +14,8 @@ wireguard:
       - 10.0.0.1/24
     port: 51820
 
-  # Scripts
+  # Setup script
   setup_script: {{ dir }}/setup.sh
-  run_setup_script: {{ dir }}/run-setup.sh
-
-  check_setup_script: {{ dir }}/check-setup.sh
-  run_check_setup_script: {{ dir }}/run-check-setup.sh
 
   # Public key website
   public_key: "7wQ1mXzgFDan86NOSNHgMisL9GfUJQabyhVWzj6w2jw="
@@ -35,5 +31,5 @@ wireguard:
     # Apollo
     - public_key: "Ae855QtE5mvxgzq6hga87SiwSRSnUr+Dmu6ryfLsvkk="
       ips:
-        - 10.0.0.1/24
+        - 10.0.0.0/24
       keepalive: 25
