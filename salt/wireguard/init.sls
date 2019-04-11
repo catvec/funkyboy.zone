@@ -31,13 +31,21 @@
     - require:
       - file: {{ pillar.wireguard.directory }}
 
-configure:
+delete:
   cmd.run:
-    - name: {{ pillar.wireguard.setup_script }} -i {{ pillar.wireguard.interface.name }} -c {{ pillar.wireguard.config_file }}
-    - unless: {{ pillar.wireguard.setup_script }} -i {{ pillar.wireguard.interface.name }} -c {{ pillar.wireguard.config_file }} -u
+    - name: wg-quick down {{ pillar.wireguard.interface.name }} || true
     - require:
       - file: {{ pillar.wireguard.config_file }}
-      - file: {{ pillar.wireguard.setup_script }}
+    - onchanges:
+      - file: {{ pillar.wireguard.config_file }}
+
+configure:
+  cmd.run:
+    - name: wg-quick up {{ pillar.wireguard.interface.name }}
+    - require:
+      - cmd: delete
+    - onchanges:
+      - file: {{ pillar.wireguard.config_file }}
 
 # Public key website
 {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.wireguard_public_key.www_dir }}:
