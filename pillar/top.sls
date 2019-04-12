@@ -41,7 +41,6 @@ base:
     - grafana 
     - node-exporter
     - pushgateway
-    - void-scripts
     - znc-secret
     - znc
     - factorio

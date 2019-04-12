@@ -64,7 +64,6 @@ base:
     - node-exporter
     - pushgateway
     - scripts-repo
-    - void-scripts
     - znc
     - factorio
     - funkyboy-website
