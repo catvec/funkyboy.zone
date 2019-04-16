@@ -131,7 +131,7 @@ fi
 
 # {{{2 Apply
 if ! terraform apply "$tf_plan_file"; then
-	echo "Error: Failed to run terraform $terraform_mode" >&2
+	echo "Error: Failed to run terraform" >&2
 	exit 1
 fi
 

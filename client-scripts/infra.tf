@@ -105,6 +105,13 @@ resource "digitalocean_record" "noahh-io-apex" {
 	value = "${digitalocean_droplet.funkyboy-zone.ipv4_address}"
 }
 
+resource "digitalocean_record" "noahh-io-keybase" {
+	domain = "${data.digitalocean_domain.noahh-io.name}"
+	type = "TXT"
+	ttl = "60" # seconds
+	name = "_keybase.noahh.io"
+	value = "keybase-site-verification=qLC-aj3hDn591K3qx2EX-aiZTb09QLlk2IY4BmuOBmI"
+}
 
 # {{{3 noahhuppert.com
 resource "digitalocean_record" "noahhuppert-com-wildcard" {
@@ -121,6 +128,14 @@ resource "digitalocean_record" "noahhuppert-com-apex" {
 	ttl = "60" # seconds
 	name = "@"
 	value = "${digitalocean_droplet.funkyboy-zone.ipv4_address}"
+}
+
+resource "digitalocean_record" "noahhuppert-com-keybase" {
+	domain = "${data.digitalocean_domain.noahhuppert-com.name}"
+	type = "TXT"
+	ttl = "60" # seconds
+	name = "_keybase.noahh.io"
+	value = "keybase-site-verification=JLTh13lgHP5frw5NRtWBWquFyy2GHCaVHXhph2g6qbQ"
 }
 
 # {{{3 gondola.zone
