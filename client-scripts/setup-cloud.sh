@@ -79,6 +79,12 @@ if ! terraform plan \
     die "Failed to plan"
 fi
 
+# {{{2 Exit if plan only given
+if [ -n "$plan_only" ]; then
+    echo "DONE"
+    exit 0
+fi
+
 # {{{2 Confirm plan
 echo "OK? [y/N]"
 
