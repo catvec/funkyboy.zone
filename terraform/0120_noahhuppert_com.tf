@@ -22,6 +22,6 @@ resource "digitalocean_record" "noahhuppert-com-keybase" {
 	domain = "${data.digitalocean_domain.noahhuppert-com.name}"
 	type = "TXT"
 	ttl = "60" # seconds
-	name = "_keybase.noahhuppert.com"
+	name = "_keybase"
 	value = "keybase-site-verification=JLTh13lgHP5frw5NRtWBWquFyy2GHCaVHXhph2g6qbQ"
 }
