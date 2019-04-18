@@ -22,6 +22,6 @@ resource "digitalocean_record" "noahh-io-keybase" {
 	domain = "${data.digitalocean_domain.noahh-io.name}"
 	type = "TXT"
 	ttl = "60" # seconds
-	name = "_keybase.noahh.io"
+	name = "_keybase"
 	value = "keybase-site-verification=qLC-aj3hDn591K3qx2EX-aiZTb09QLlk2IY4BmuOBmI"
 }
