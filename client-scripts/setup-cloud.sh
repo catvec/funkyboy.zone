@@ -1,144 +1,98 @@
 #!/usr/bin/env bash
 #?
-# setup-cloud.sh - Sets up cloud resources on Digital Ocean
+# setup-cloud.sh - Setup cloud resources
 #
 # USAGE
 #
-#	setup-cloud.sh [-t] [-d] [-i] [-h]
+#    setup-cloud.sh [-p]
 #
 # OPTIONS
 #
-#	-t    Show plan for creation of resources instead of creating resources
-#	-d    Destroy resources
-#	-h    Show help text
+#    -p    (Optional) Run in plan mode
 #
 # BEHAVIOR
 #
-#	Sets up a droplet and domain entries.
+#    Setup cloud resources with Terraform.
 #
-# DEPENDENCIES
+# ENVIRONMENT VARIABLEs
 #
-#	Terraform must be installed.
-#
-#	The DO_API_TOKEN environment variable must be set.
+#    DO_API_TOKEN    Digital Ocean API token
 #
 #?
 
-# {{{1 Exit on any error
-set -e
-
-# {{{1 Get script directory
+# {{{1 Configuration
 prog_dir=$(realpath $(dirname "$0"))
 
-# {{{1 Configuration
-tf_state_file=$(realpath "$prog_dir/../secret/terraform.tfstate")
-tf_plan_file=/tmp/funkyboy-zone-tf-plan
+terraform=terraform
 
-# {{{1 Arguments
-while getopts "tdih" opt; do
-	case "$opt" in
-		t)
-			arg_test="true"
-			;;
+configuration_dir=$(realpath "$prog_dir/../terraform")
+plan_file=/tmp/funkyboy-zone.tf.plan
+state_file=$(realpath "$prog_dir/../secret/terraform.tfstate")
 
-		d)
-			arg_destroy="true"
-			;;
+# {{{1 Helpers
+function die() {
+    echo "Error: $@" >&2
+    exit 1
+}
 
-		h)
-			show-help "$0"
-			exit 1
-			;;
+# {{{1 Check for terraform CLI
+if ! which $terraform &> /dev/null; then
+    die "terraform must be installed"
+fi
 
-		'?')
-			show-help "$0"
-			exit 1
-			;;
-	esac
+# {{{1 Options
+while getopts "p" opt; do
+    case "$opt" in
+	p) plan_only="true" ;;
+	'?') die "Unknown option" ;;
+    esac
 done
 
-# {{{1 Dependencies
-# {{{2 Check for terraform
-if ! which terraform &> /dev/null; then
-	echo "Error: Terraform must be installed: terraform.io" >&2
-	exit 1
-fi
-
-# {{{2 Check fo DO_API_TOKEN
+# {{{1 Environment variables
 if [ -z "$DO_API_TOKEN" ]; then
-	echo "Error: DO_API_TOKEN environment variable must be set" >&2
-	exit 1
+    die "DO_API_TOKEN must be set"
 fi
-
-# {{{1 Switch to terraform working directory
-cd "$prog_dir"
 
 # {{{1 Initialize terraform
-if ! terraform init; then
-	echo "Error: Failed to initialize terraform" >&2
-	exit 1
+if [ ! -d "$configuration_dir/.terraform" ]; then
+    if ! terraform init "$configuration_dir"; then
+	die "Failed to initialize terraform"
+    fi
 fi
 
 # {{{1 Plan
-# {{{2 Check for existing plan
-if [ -f "$tf_plan_file" ]; then
-	# {{{3 Check if we should delete plan
-	echo "Existing plan ($tf_plan_file) found, overwrite? [y/N] "
-	read plan_overwrite
+# {{{2 Delete plan file if exists
+if [ -f "$plan_file" ]; then
+    echo "Deleting existing plan file"
 
-	if [[ "$plan_overwrite" == "y" || "$plan_overwrite" == "Y" ]]; then
-		# Delete existing plan
-		if ! rm "$tf_plan_file"; then
-			echo "Error: Failed to delete existing plan: \"$tf_plan_file\"" >&2
-			exit 1
-		fi
-
-		echo "Delete plan ($tf_plan_file)"
-	fi
+    if ! rm "$plan_file"; then
+	die "Failed to delete existing plan file"
+    fi
 fi
 
-# {{{2 Run plan
-if [ ! -f "$tf_plan_file" ]; then
-	terraform_plan_args="$terraform_plan_args -var do_token=$DO_API_TOKEN -state $tf_state_file -out $tf_plan_file"
-
-	if [ ! -z "$arg_destroy" ]; then
-		terraform_plan_args="$terraform_plan_args -destroy"
-	fi
-
-	if ! terraform plan $terraform_plan_args; then
-		echo "Error: Failed to plan" >&2
-		exit 1
-	fi
+# {{{2 Plan
+if ! terraform plan \
+     -out "$plan_file" \
+     -var "do_token=$DO_API_TOKEN" \
+     -state "$state_file" \
+     "$configuration_dir"; then
+    die "Failed to plan"
 fi
 
-# {{{2 Check if we are only planning
-if [ ! -z "$arg_test" ]; then
-	echo "Test mode complete"
-	exit 0
+# {{{2 Confirm plan
+echo "OK? [y/N]"
+
+read plan_confirm
+
+if [[ ! "$plan_confirm" =~ ^y|Y$ ]]; then
+    die "Did not confirm"
 fi
 
-# {{{1 Apply
-# {{{2 If destroying resources, confirm
-if [ ! -z "$arg_destroy" ]; then
-	echo "Destroy resources? [y/N]"
-	read destroy_confirm
-
-	if [[ "$destroy_confirm" != "y" && "$destroy_confirm" != "Y" ]]; then
-		echo "Failed to confirm destroy" >&2
-		exit 1
-	fi
-fi
-
-# {{{2 Apply
-if ! terraform apply "$tf_plan_file"; then
-	echo "Error: Failed to run terraform" >&2
-	exit 1
-fi
-
-# {{{2 Remove plan
-if ! rm "$tf_plan_file"; then
-	echo "Error: Failed to delete applied plan: \"$tf_plan_file\"" >&2
-	exit 1
+# {{{1 Apply plan
+if ! terraform apply \
+     -state-out "$state_file" \
+     "$plan_file"; then
+    die "Failed to apply"
 fi
 
 echo "DONE"

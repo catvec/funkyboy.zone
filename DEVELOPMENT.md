@@ -141,3 +141,4 @@ To create a custom image complete the following steps:
 - `server-scripts/` - Scripts to be run on the server
 - `client-scripts/` - Scripts to be run on a client
 - `{salt,pillar}/` - Salt files
+- `terraform/` - Terraform configuration
