@@ -146,3 +146,9 @@ caddy:
       www_dir: wiki
       hosts:
         - wiki.funkyboy.zone
+
+    # Game deals website
+    game_deals:
+      www_dir: game-deals
+      hosts:
+        - '*.oliversgame.deals'

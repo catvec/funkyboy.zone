@@ -46,3 +46,4 @@ base:
     - factorio
     - factorio-secret
     - public-www
+    - game-deals-website
