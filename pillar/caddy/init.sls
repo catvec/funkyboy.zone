@@ -151,4 +151,5 @@ caddy:
     game_deals:
       www_dir: game-deals
       hosts:
+        - oliversgame.deals
         - '*.oliversgame.deals'
