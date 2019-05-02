@@ -14,9 +14,11 @@
 #
 #    Setup cloud resources with Terraform.
 #
-# ENVIRONMENT VARIABLEs
+# ENVIRONMENT VARIABLES
 #
-#    DO_API_TOKEN    Digital Ocean API token
+#    DO_API_TOKEN             Digital Ocean API token
+#    AWS_ACCESS_KEY_ID        AWS API access key ID
+#    AWS_SECRET_ACCESS_KEY    AWS API secret access key
 #
 #?
 
@@ -49,9 +51,23 @@ while getopts "p" opt; do
 done
 
 # {{{1 Environment variables
+# {{{2 Check
 if [ -z "$DO_API_TOKEN" ]; then
     die "DO_API_TOKEN must be set"
 fi
+
+if [ -z "$AWS_ACCESS_KEY_ID" ]; then
+    die "AWS_ACCESS_KEY_ID must be set"
+fi
+
+if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
+    die "AWS_SECRET_ACCESS_KEY must be set"
+fi
+
+# {{{2 Set TF_VAR environment variables
+export TF_VAR_do_token="$DO_API_TOKEN"
+export TF_VAR_aws_access_key_id="$AWS_ACCESS_KEY_ID"
+export TF_VAR_aws_secret_access_key="$AWS_SECRET_ACCESS_KEY"
 
 # {{{1 Initialize terraform
 if [ ! -d "$configuration_dir/.terraform" ]; then
@@ -73,7 +89,6 @@ fi
 # {{{2 Plan
 if ! terraform plan \
      -out "$plan_file" \
-     -var "do_token=$DO_API_TOKEN" \
      -state "$state_file" \
      "$configuration_dir"; then
     die "Failed to plan"
