@@ -66,8 +66,6 @@ fi
 
 # {{{2 Set TF_VAR environment variables
 export TF_VAR_do_token="$DO_API_TOKEN"
-export TF_VAR_aws_access_key_id="$AWS_ACCESS_KEY_ID"
-export TF_VAR_aws_secret_access_key="$AWS_SECRET_ACCESS_KEY"
 
 # {{{1 Initialize terraform
 if [ ! -d "$configuration_dir/.terraform" ]; then
