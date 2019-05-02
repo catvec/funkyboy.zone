@@ -4,9 +4,20 @@
 
 {{ repo }}:
   git.latest:
-    - target: {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.noahhuppert.www_parent_dir }}
+    - target: {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.noahhuppert.clone_dir }}
+    - force_clone: True
+    - force_fetch: True
+    - force_reset: True
+    - force_checkout: True
 
-{{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.noahhuppert.www_parent_dir }}:
+build_noahhuppert_com:
+  cmd.run:
+    - name: bash -c "npm install && npm run prod"
+    - cwd: {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.noahhuppert.src_dir }}
+    - onchanges:
+      - git: {{ repo }}
+
+{{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.noahhuppert.clone_dir }}:
   file.directory:
     - user: {{ pillar.caddy.files.user }}
     - group: {{ pillar.caddy.files.group }}
@@ -16,4 +27,4 @@
       - group
       - mode
     - require:
-      - git: {{ repo }}
+      - cmd: build_noahhuppert_com

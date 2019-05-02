@@ -87,8 +87,9 @@ caddy:
 
     # Personal website
     noahhuppert:
-      www_parent_dir: noahhuppert
-      www_dir: noahhuppert/www
+      clone_dir: noahhuppert
+      src_dir: noahhuppert/www
+      www_dir: noahhuppert/www/dist
       hosts:
         {% for host in [ 'noahh.io', 'noahhuppert.com' ] %}
         {% for subdomain in [ '', '*.' ] %}

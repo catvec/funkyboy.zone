@@ -49,6 +49,7 @@ base:
     - python
     - go
     - go-dep
+    - nodejs
     - prometheus-push-cli
     - gpg
     - ensure-access
