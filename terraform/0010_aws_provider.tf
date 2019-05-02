@@ -1,15 +1,15 @@
 # Variables
-variable "aws_access_key" {
+variable "aws_access_key_id" {
   type = "string"
-  description = "AWS API access key"
+  description = "AWS API access key ID"
 }
 
-variable "aws_secret_key" {
+variable "aws_secret_access_key" {
   type = "string"
   description = "AWS API secret access key"
 }
 
-variable "aws_region" {
+variable "aws_default_region" {
   type = "string"
   description = "AWS region"
   default = "us-east-1"
@@ -17,7 +17,7 @@ variable "aws_region" {
 
 # Setup provider
 provider "aws" {
-  access_key = "${var.aws_access_key}"
-  secret_key = "${var.aws_secret_key}"
-  region = "${var.aws_region}"
+  access_key = "${var.aws_access_key_id}"
+  secret_key = "${var.aws_secret_access_key}"
+  region = "${var.aws_default_region}"
 }
