@@ -2,7 +2,8 @@
 resource "aws_acm_certificate" "personal-website" {
   domain_name = "${aws_route53_zone.4e48-dev.name}"
   subject_alternative_names = [
-    "${aws_route53_zone.noahh-io.name}"
+    "${aws_route53_zone.noahh-io.name}",
+    "${aws_route53_zone.noahhuppert-com.name}"
   ]
   
   validation_method = "DNS"
@@ -32,6 +33,16 @@ resource "aws_route53_record" "noahh-io-personal-website-acm-proof" {
   ttl = "60"
 }
 
+resource "aws_route53_record" "noahhuppert-com-personal-website-acm-proof" {
+  zone_id = "${aws_route53_zone.noahhuppert-com.id}"
+  name = "${aws_acm_certificate.personal-website.domain_validation_options.2.resource_record_name}"
+  type = "${aws_acm_certificate.personal-website.domain_validation_options.2.resource_record_type}"
+  records = [
+    "${aws_acm_certificate.personal-website.domain_validation_options.2.resource_record_value}" 
+  ]
+  ttl = "60"
+}
+
 # Distribution
 variable "personal_website_content_bucket_prefix" {
   type = "string"
@@ -52,7 +63,8 @@ resource "aws_cloudfront_distribution" "personal-website" {
 
   aliases = [
     "${var.domain_4e48_dev_name}",
-    "${var.domain_noahh_io_name}"
+    "${var.domain_noahh_io_name}",
+    "${var.domain_noahhuppert_com_name}"
   ]
 
   default_cache_behavior {
