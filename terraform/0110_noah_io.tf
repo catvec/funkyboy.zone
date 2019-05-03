@@ -50,7 +50,6 @@ resource "aws_route53_record" "noahh-io-apex-txt" {
   ]
 }
 
-
 # ... Keybase
 resource "aws_route53_record" "noahh-io-keybase" {
   zone_id = "${aws_route53_zone.noahh-io.id}"
@@ -78,7 +77,7 @@ resource "aws_route53_record" "noahh-io-protonmail-dkim" {
   zone_id = "${aws_route53_zone.noahh-io.id}"
   type = "TXT"
   ttl = "3600"
-  name = "protonmail._domainkey.noahh.io"
+  name = "protonmail._domainkey.${aws_route53_zone.noahh-io.name}"
   records = [
     "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDNDdmnmb+9FGSMvNNzW6S1ZgwLl9BT7FTqvk3/HmvQHxOPir3f+m14BzOEE2kON2GW7pmERxY/+RUGghGj/WD+Uj3JP+RQY/cmFdZ+pjiVZZe3759uFaj3pHnnf9sjXjp5rWunMThuA+buS1pBxRTMVIytWVHuSvEdl0pNOiEaZQIDAQAB"
   ]
@@ -88,7 +87,7 @@ resource "aws_route53_record" "noahh-io-protonmail-dmarc" {
   zone_id = "${aws_route53_zone.noahh-io.id}"
   type = "TXT"
   ttl = "3600"
-  name = "_dmarc.noahh.io"
+  name = "_dmarc.${aws_route53_zone.noahh-io.name}"
   records = [
     "v=DMARC1; p=none; rua=mailto:contact@noahh.io"
   ]
