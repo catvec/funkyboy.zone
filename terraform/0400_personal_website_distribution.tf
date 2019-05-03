@@ -1,8 +1,8 @@
 # SSL Certificate
 resource "aws_acm_certificate" "personal-website" {
-  domain_name = "*.${aws_route53_zone.4e48-dev.name}"
+  domain_name = "${aws_route53_zone.4e48-dev.name}"
   subject_alternative_names = [
-    "*.${aws_route53_zone.noahh-io.name}"
+    "${aws_route53_zone.noahh-io.name}"
   ]
   
   validation_method = "DNS"
@@ -51,8 +51,8 @@ resource "aws_cloudfront_distribution" "personal-website" {
   default_root_object = "index.html"
 
   aliases = [
-    "*.${var.domain_4e48_dev_name}",
-    "*.${var.domain_noahh_io_name}"
+    "${var.domain_4e48_dev_name}",
+    "${var.domain_noahh_io_name}"
   ]
 
   default_cache_behavior {
