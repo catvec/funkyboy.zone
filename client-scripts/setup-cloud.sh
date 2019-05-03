@@ -4,11 +4,12 @@
 #
 # USAGE
 #
-#    setup-cloud.sh [-p]
+#    setup-cloud.sh [-p,-y]
 #
 # OPTIONS
 #
-#    -p    (Optional) Run in plan mode
+#    -p    Run in plan mode
+#    -y    Do not confirm
 #
 # BEHAVIOR
 #
@@ -43,9 +44,10 @@ if ! which $terraform &> /dev/null; then
 fi
 
 # {{{1 Options
-while getopts "p" opt; do
+while getopts "py" opt; do
     case "$opt" in
 	p) plan_only="true" ;;
+	y) noconfirm="true" ;;
 	'?') die "Unknown option" ;;
     esac
 done
@@ -99,12 +101,14 @@ if [ -n "$plan_only" ]; then
 fi
 
 # {{{2 Confirm plan
-echo "OK? [y/N]"
+if [ -z "$noconfirm" ]; then
+    echo "OK? [y/N]"
 
-read plan_confirm
+    read plan_confirm
 
-if [[ ! "$plan_confirm" =~ ^y|Y$ ]]; then
-    die "Did not confirm"
+    if [[ ! "$plan_confirm" =~ ^y|Y$ ]]; then
+	die "Did not confirm"
+    fi
 fi
 
 # {{{1 Apply plan
