@@ -4,19 +4,22 @@
 #
 # USAGE
 #
-#    setup-cloud.sh [-p]
+#    setup-cloud.sh [-p,-y]
 #
 # OPTIONS
 #
-#    -p    (Optional) Run in plan mode
+#    -p    Run in plan mode
+#    -y    Do not confirm
 #
 # BEHAVIOR
 #
 #    Setup cloud resources with Terraform.
 #
-# ENVIRONMENT VARIABLEs
+# ENVIRONMENT VARIABLES
 #
-#    DO_API_TOKEN    Digital Ocean API token
+#    DO_API_TOKEN             Digital Ocean API token
+#    AWS_ACCESS_KEY_ID        AWS API access key ID
+#    AWS_SECRET_ACCESS_KEY    AWS API secret access key
 #
 #?
 
@@ -41,17 +44,30 @@ if ! which $terraform &> /dev/null; then
 fi
 
 # {{{1 Options
-while getopts "p" opt; do
+while getopts "py" opt; do
     case "$opt" in
 	p) plan_only="true" ;;
+	y) noconfirm="true" ;;
 	'?') die "Unknown option" ;;
     esac
 done
 
 # {{{1 Environment variables
+# {{{2 Check
 if [ -z "$DO_API_TOKEN" ]; then
     die "DO_API_TOKEN must be set"
 fi
+
+if [ -z "$AWS_ACCESS_KEY_ID" ]; then
+    die "AWS_ACCESS_KEY_ID must be set"
+fi
+
+if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
+    die "AWS_SECRET_ACCESS_KEY must be set"
+fi
+
+# {{{2 Set TF_VAR environment variables
+export TF_VAR_do_token="$DO_API_TOKEN"
 
 # {{{1 Initialize terraform
 if [ ! -d "$configuration_dir/.terraform" ]; then
@@ -73,7 +89,6 @@ fi
 # {{{2 Plan
 if ! terraform plan \
      -out "$plan_file" \
-     -var "do_token=$DO_API_TOKEN" \
      -state "$state_file" \
      "$configuration_dir"; then
     die "Failed to plan"
@@ -86,12 +101,14 @@ if [ -n "$plan_only" ]; then
 fi
 
 # {{{2 Confirm plan
-echo "OK? [y/N]"
+if [ -z "$noconfirm" ]; then
+    echo "OK? [y/N]"
 
-read plan_confirm
+    read plan_confirm
 
-if [[ ! "$plan_confirm" =~ ^y|Y$ ]]; then
-    die "Did not confirm"
+    if [[ ! "$plan_confirm" =~ ^y|Y$ ]]; then
+	die "Did not confirm"
+    fi
 fi
 
 # {{{1 Apply plan

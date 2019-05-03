@@ -1,0 +1,2 @@
+# Setup provider
+provider "aws" {}
