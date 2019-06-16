@@ -13,7 +13,7 @@ resource "aws_acm_certificate" "personal-website" {
   }
 }
 
-resource "aws_route53_record" "4e48-dev-personal-website-acm-proof" {
+resource "aws_route53_record" "record-4e48-dev-personal-website-acm-proof" {
   zone_id = "${aws_route53_zone.4e48-dev.id}"
   name = "${aws_acm_certificate.personal-website.domain_validation_options.0.resource_record_name}"
   type = "${aws_acm_certificate.personal-website.domain_validation_options.0.resource_record_type}"
