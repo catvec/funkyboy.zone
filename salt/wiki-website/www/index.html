@@ -1,26 +1,59 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-		<title>Wiki</title>
-	</head>
-	<body>
-		<h1>Wiki</h1>
+    <title>Wiki</title>
+  </head>
+  <body>
+    <h1>Wiki</h1>
 
-		<h2>Table Of Contents</h2>
-		<ol>
-			<li><a href="#bash-script-dir">Bash Script Directory</a></li>
-		</ol>
+    <h2>Table Of Contents</h2>
+    <ol>
+      <li>
+	<a href="#bash">Bash</a>
+	<ol>
+	  <li><a href="#bash-script-dir">Script Directory</a></li>
+	  <li><a href="#bash-bold-echo">Bold Echo</a></li>
+	  <li><a href="#bash-die">Die</a></li>
+	</ol>
+      </li>
+    </ol>
 
-		<section id="bash-script-dir">
-			<h2>Bash Script Directory</h2>
+    <h1 id="bash">Bash</h1>
+    <section id="bash-script-dir">
+      <h2>Script Directory</h2>
 
-			Determine the directory in which a bash script is located:<br>
-			<br>
-			<code>
-				prog_dir=$(realpath $(dirname "$0"))
-			</code>
-		</section>
-	</body>
+      Determine the directory in which a bash script is located:<br>
+      <br>
+      <code>
+	prog_dir=$(realpath $(dirname "$0"))
+      </code>
+    </section>
+
+    <section id="bash-bold-echo">
+      <h2>Bold Echo</h2>
+
+      Print bold text:<br>
+      <br>
+      <code>
+	function bold() {<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;echo "$(tput bold)$@$(tput sgr0)"<br>
+	}
+      </code>
+    </section>
+
+    <section id="bash-die">
+      <h2>Die</h2>
+
+      Print error to <code>stderr</code> and exit:<br>
+      <br>
+      <code>
+	function die() {<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;echo "Error: $@" >&2<br>
+	&nbsp;&nbsp;&nbsp;&nbsp;exit 1<br>
+	}
+      </code>
+    </section>
+  </body>
 </html>
