@@ -7,4 +7,5 @@ variable "do_token" {
 # Setup provider
 provider "digitalocean" {
   token = "${var.do_token}"
+  version = 4
 }
