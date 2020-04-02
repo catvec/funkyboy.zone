@@ -179,7 +179,7 @@ while read file_info; do
 	f_s3_path=$(echo "$file_info" | awk '{ print $4 }')
 
 	f_date=$(echo "$f_s3_path" | sed 's/.*backup-\(.*\)\.tar\.gz/\1/g')
-	f_date_day=$(echo "$f_date" | awk -F '-' '{ print $3 }')
+	f_date_day=$(echo "$f_date" | awk -F '-' '{ print $3 }' | sed 's/^0*//')
 	f_date_epoch=$(file_date_to_epoch "$f_date")
 
 	# {{{2 Figure out how long ago backup was made
