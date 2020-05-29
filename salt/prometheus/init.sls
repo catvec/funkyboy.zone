@@ -29,6 +29,7 @@
     - template: jinja
     - group: {{ pillar.prometheus.group }}
     - mode: 755
+    - makedirs: True
     - require:
       - group: {{ pillar.prometheus.group }}-group
 
@@ -67,3 +68,4 @@
     - user: {{ pillar.caddy.files.user }}
     - group: {{ pillar.caddy.files.group }}
     - mode: {{ pillar.caddy.files.mode }}
+    - makedirs: True
