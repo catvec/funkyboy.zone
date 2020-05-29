@@ -76,7 +76,6 @@ base:
     - public-www
     - goldblum-zone-website
     - wiki-website
-    - game-deals-website
 
     # Service logging
     # Placed last so putsvl can modify any services created by any state 
