@@ -69,7 +69,6 @@ base:
     - factorio
     - funkyboy-website
     - file-modes-website
-    - noahhuppert-website
     - workout-website
     - system-guide-website
     - gondola-zone-website
