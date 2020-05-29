@@ -16,6 +16,7 @@
 	  <li><a href="#bash-script-dir">Script Directory</a></li>
 	  <li><a href="#bash-bold-echo">Bold Echo</a></li>
 	  <li><a href="#bash-die">Die</a></li>
+	  <li><a href="#bash-getopts-shift"><code>getopts</code> Shift</a></li>
 	</ol>
       </li>
     </ol>
@@ -53,6 +54,16 @@
 	&nbsp;&nbsp;&nbsp;&nbsp;echo "Error: $@" >&2<br>
 	&nbsp;&nbsp;&nbsp;&nbsp;exit 1<br>
 	}
+      </code>
+    </section>
+
+    <section id="bash-getopts-shift">
+      <h2><code>getopts</code> Shift</h2>
+
+      Shift after <code>getopts</code>:<br>
+      <br>
+      <code>
+	shift $((OPTIND-1))
       </code>
     </section>
   </body>
