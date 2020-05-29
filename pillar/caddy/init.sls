@@ -12,53 +12,30 @@
 {% set build_dir = '/opt/caddy' %}
 
 caddy:
-  # Build
-  build:
-    # Directory to build in
-    directory: {{ build_dir }}
+  # List of plugins to import into plugins_file
+  plugins:
+    # Digital Ocean DNS-01 Let's Encrypt
+    - 'github.com/caddyserver/dnsproviders/digitalocean'
 
-    # Script to build with
-    build_script: {{ build_dir }}/build.sh
+    # JWT support
+    - 'github.com/BTBurke/caddy-jwt'
 
-    # Script which runs build.sh with correct options
-    run_build_script: {{ build_dir }}/run-build.sh
+    # OAuth & htpasswd resource authentication
+    - 'github.com/tarent/loginsrv/caddy'
 
-    # Script used to check if Caddy is already built and installed
-    check_script: {{ build_dir }}/check-installed.sh
+    # Prometheus metrics exporter
+    - 'github.com/miekg/caddy-prometheus'
 
-    # Script which runs check-installed.sh with correct options
-    run_check_script: {{ build_dir }}/run-check-installed.sh
+  # Install location
+  install_file: /usr/local/bin/caddy
 
-    # GOPATH to build in
-    gopath: {{ build_dir }}/build-gopath
+  build_main: {{ build_dir }}/main.go
 
-    # Caddy repo to build
-    repo: github.com/mholt/caddy/caddy
+  build_dir: {{ build_dir }}
+  build_script: {{ build_dir }}/build.sh
 
-    # File in repo to add plugin imports to
-    plugins_file: caddymain/run.go
-
-    # File to record names of plugins which were installed during last build
-    plugins_history_file: {{ build_dir }}/plugins-history
-
-    # List of plugins to import into plugins_file
-    plugins:
-      # Digital Ocean DNS-01 Let's Encrypt
-      - 'github.com/caddyserver/dnsproviders/digitalocean'
-
-      # JWT support
-      - 'github.com/BTBurke/caddy-jwt'
-
-      # OAuth & htpasswd resource authentication
-      - 'github.com/tarent/loginsrv/caddy'
-
-      # Prometheus metrics exporter
-      - 'github.com/miekg/caddy-prometheus'
-
-    # If file is present the check build script will always say caddy is up to
-    # date even if it is not. Used to prevent building caddy when the process
-    # is broken
-    nobuild_file: {{ build_dir }}/nobuild
+  svc: caddy
+  svc_file: /etc/sv/caddy/run
 
   # Config
   serve_dir: /srv/caddy
@@ -74,6 +51,10 @@ caddy:
   # Host which metrics for Prometheus will be available on
   metrics_host: 'localhost:9180'
 
+  # Let's Encrypt endpoint
+  # staging: https://acme-staging-v02.api.letsencrypt.org/directory
+  lets_encrypt_endpoint: https://acme-v02.api.letsencrypt.org/directory
+
   # Sites
   tls: True
   static_sites:
@@ -83,18 +64,6 @@ caddy:
       hosts:
         {% for subdomain in [ '', '*.' ] %}
         - '{{ subdomain }}funkyboy.zone'
-        {% endfor %}
-
-    # Personal website
-    noahhuppert:
-      clone_dir: noahhuppert
-      src_dir: noahhuppert/www
-      www_dir: noahhuppert/www/dist
-      hosts:
-        {% for host in [ 'noahh.io', 'noahhuppert.com' ] %}
-        {% for subdomain in [ '', '*.' ] %}
-        - '{{ subdomain }}{{ host }}'
-        {% endfor %}
         {% endfor %}
 
     # Linux file mode permissions cheat sheet site
@@ -147,10 +116,3 @@ caddy:
       www_dir: wiki
       hosts:
         - wiki.funkyboy.zone
-
-    # Game deals website
-    game_deals:
-      www_dir: game-deals
-      hosts:
-        - oliversgame.deals
-        - '*.oliversgame.deals'

@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
-# Exit on any error
-set -e
+# Check Caddy is installed
+caddy={{ pillar.caddy.install_file }}
+if [ ! -f "$caddy" ]; then
+    echo "Error: Caddy binary not found at \"$caddy\""
+    exit 1
+fi
 
 # Configuration
 last_run_file="/run/caddy_svc_last_run"
@@ -20,7 +24,7 @@ export DO_AUTH_TOKEN={{ pillar.caddy.do_auth_token }}
 cd /etc/caddy
 
 # Check configuration file
-if ! caddy -validate; then
+if ! $caddy -validate; then
 	echo "Error: Failed to validate configuration"
 	exit 1
 fi
@@ -46,4 +50,7 @@ fi
 touch "$last_run_file"
 
 # Run
-exec chpst -o 8192 -u caddy caddy -agree -email {{ pillar.caddy.email }}
+exec chpst -o 8192 -u caddy $caddy \
+     -ca {{ pillar.caddy.lets_encrypt_endpoint }} \
+     -agree \
+     -email {{ pillar.caddy.email }}

@@ -1,6 +1,7 @@
 FROM alpine:latest
 
 RUN apk add go git
+RUN apk update && apk add ca-certificates && rm -rf /var/cache/apk/*
 
 RUN adduser -h /home/caddy caddy
 RUN chgrp -R /home/caddy caddy
