@@ -2,8 +2,11 @@
 resource "aws_acm_certificate" "personal-website" {
   domain_name = "${aws_route53_zone.4e48-dev.name}"
   subject_alternative_names = [
+    "www.${aws_route53_zone.4e48-dev.name}",
     "${aws_route53_zone.noahh-io.name}",
-    "${aws_route53_zone.noahhuppert-com.name}"
+    "www.${aws_route53_zone.noahh-io.name}",
+    "${aws_route53_zone.noahhuppert-com.name}",
+    "www.${aws_route53_zone.noahhuppert-com.name}"
   ]
   
   validation_method = "DNS"
