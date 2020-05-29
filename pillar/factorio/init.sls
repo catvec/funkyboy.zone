@@ -49,7 +49,7 @@ factorio:
   saves_directory: {{ dir }}/saves
 
   # Factorio server docker image 
-  docker_image: noahhuppert/factorio:0.17.14
+  docker_image: noahhuppert/factorio:0.17.79
   docker_container_name: factorio
 
   # Hosts which factorio server will be accessible by
