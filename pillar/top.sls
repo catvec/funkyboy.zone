@@ -26,6 +26,7 @@ base:
     - git-secret
     - gpg
     - redis
+    - podman
 
     # Services
     - backup

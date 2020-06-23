@@ -54,6 +54,7 @@ base:
     - gpg
     - ensure-access
     - redis
+    - podman
 
     # Services
     - backup
