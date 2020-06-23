@@ -19,19 +19,12 @@ function check() {
 cd "$install_dir"
 check "Failed to change to bot directory"
 
-# Install NPM depdencies
-npm install
-check "Failed to install NPM dependencies"
-
-# Start Redis
+# Check if Redis is running
 export CONTAINER_NAME="{{ pillar.valorant_discord_bot.redis_container_name }}"
 redis_status=$("$install_dir/redis" status)
 check "Failed to get Redis status"
 
-if [[ "$redis_status" != "running" ]]; then
-    "$install_dir/redis" start
-    check "Failed to start Redis"
+if [ "$redis_status" -eq "running" ]; then
+    "$install_dir/redis" stop
+    check "Failed to stop Redis"
 fi
-
-# Start bot
-exec node "$install_dir/src/index.js"

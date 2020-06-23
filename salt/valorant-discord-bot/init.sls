@@ -12,9 +12,16 @@
     - require:
       - git: {{ pillar.valorant_discord_bot.git_uri }}
 
-{{ pillar.valorant_discord_bot.svc_file }}:
+{{ pillar.valorant_discord_bot.svc_run_file }}:
   file.managed:
     - source: salt://valorant-discord-bot/run
+    - template: jinja
+    - mode: 755
+    - makedirs: True
+
+{{ pillar.valorant_discord_bot.svc_finish_file }}:
+  file.managed:
+    - source: salt://valorant-discord-bot/finish
     - template: jinja
     - mode: 755
     - makedirs: True
@@ -23,11 +30,16 @@
   service.enabled:
     - name: {{ pillar.valorant_discord_bot.svc_name }}
     - require:
-      - file: {{ pillar.valorant_discord_bot.svc_file }}
+      - file: {{ pillar.valorant_discord_bot.svc_run_file }}
+      - file: {{ pillar.valorant_discord_bot.svc_finish_file }}
       - file: {{ pillar.valorant_discord_bot.secret_config_file }}
 
 {{ pillar.valorant_discord_bot.svc_name }}-running:
   service.running:
     - name: {{ pillar.valorant_discord_bot.svc_name }}
+    - reload: True
     - require:
       - service: {{ pillar.valorant_discord_bot.svc_name }}-enabled
+    - watch:
+      - git: {{ pillar.valorant_discord_bot.git_uri }}
+      - file: {{ pillar.valorant_discord_bot.secret_config_file }}
