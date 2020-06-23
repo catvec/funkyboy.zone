@@ -1,15 +1,12 @@
 # Downloads the scripts repository onto the server and adds its files to 
 # the PATH.
 
-{% set dir = '/opt/scripts' %}
-{% set repo = 'https://github.com/Noah-Huppert/scripts.git' %}
-
-{{ repo }}:
+{{ pillar.scripts_repo.repo }}:
   git.latest:
-    - target: {{ dir }}
+    - target: {{ pillar.scripts_repo.dir }}
     - force_reset: True
 
-{{ dir }}:
+{{ pillar.scripts_repo.dir }}:
   file.directory:
     - makedirs: True
     - dir_mode: 775
@@ -17,15 +14,15 @@
     - recurse:
       - mode
     - require:
-      - git: {{ repo }}
+      - git: {{ pillar.scripts_repo.repo }}
 
-{{ repo }}-ignore-file-mods:
+{{ pillar.scripts_repo.repo }}-ignore-file-mods:
   cmd.run:
     - name: git config core.fileMode false
     - unless: git config core.fileMode | grep true
-    - cwd: {{ dir }}
+    - cwd: {{ pillar.scripts_repo.dir }}
     - require:
-      - git: {{ repo }}
+      - git: {{ pillar.scripts_repo.repo }}
 
 {{ pillar.zsh.zprofiled_path }}/scripts-repo:
   file.managed:
