@@ -25,6 +25,7 @@ base:
     - prometheus-push-cli
     - git-secret
     - gpg
+    - redis
 
     # Services
     - backup
@@ -47,3 +48,5 @@ base:
     - factorio
     - factorio-secret
     - public-www
+    - valorant-discord-bot
+    - valorant-discord-bot-secret

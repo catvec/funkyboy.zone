@@ -53,6 +53,7 @@ base:
     - prometheus-push-cli
     - gpg
     - ensure-access
+    - redis
 
     # Services
     - backup
@@ -75,6 +76,7 @@ base:
     - public-www
     - goldblum-zone-website
     - wiki-website
+    - valorant-discord-bot
 
     # Service logging
     # Placed last so putsvl can modify any services created by any state 

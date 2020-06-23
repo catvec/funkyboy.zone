@@ -1,0 +1,2 @@
+redis:
+  pkg: redis
