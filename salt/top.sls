@@ -78,6 +78,7 @@ base:
     - goldblum-zone-website
     - wiki-website
     - valorant-discord-bot
+    - activism-website
 
     # Service logging
     # Placed last so putsvl can modify any services created by any state 

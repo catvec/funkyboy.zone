@@ -116,3 +116,9 @@ caddy:
       www_dir: wiki
       hosts:
         - wiki.funkyboy.zone
+
+    # Activism website
+    activism:
+      www_dir: activism
+      hosts:
+        - act.funkyboy.zone
