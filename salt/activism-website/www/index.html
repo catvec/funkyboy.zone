@@ -145,19 +145,24 @@
 		   flex-direction: column;
 	    }
 
-	    h1, h2 {
+	    h1 {
 		   text-align: center;
 	    }
 
 	    section {
 		   max-width: 40rem;
+		   /* 4rem bc 2rem of padding on each side */
+		   width: calc(100% - 4rem);
 		   display: flex;
 		   flex-direction: column;
 		   align-self: center;
+		   padding-left: 2rem;
+		   padding-right: 2rem;
 	    }
 
 	    img {
 		   max-width: 30rem;
+		   width: 100%;
 		   align-self: center;
 	    }
 
