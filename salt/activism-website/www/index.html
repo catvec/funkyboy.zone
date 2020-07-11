@@ -1,29 +1,183 @@
 <!DOCTYPE HTML>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head>
+	   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Act Against Hate</title>
-  </head>
-  <body>
-    <h1>Act Against Hate</h1>
+	   <title>Act Against Hate</title>
 
-    <h2 id="bash">Make UMass an anti-racism campus</h2>
-    <section>
-	   <h3><a href="https://bit.ly/umassracialjustice">
-		  Petition for UMass students
-	   </a></h3>
+	   <style>
+	    @font-face{
+		   font-family: 'Zilla Slab';
+		   src: url('fonts/zilla-slab/woff/ZillaSlab-Light.woff');
+		   src: url('fonts/zilla-slab/woff2/ZillaSlab-Light.woff2') format('woff2'),
+		   url('fonts/zilla-slab/woff/ZillaSlab-Light.woff') format('woff'),
+		   url('fonts/zilla-slab/otf/ZillaSlab(-Light).otf') format('opentype'),
+		   url('fonts/zilla-slab/ttf/ZillaSlab-Light.ttf') format('truetype');
+		   font-weight: 300;
+		   font-style: normal;
+	    }
 
-	   <h3><a href="https://bit.ly/rjc-support">
-		  Petition for non UMass students
-	   </a></h3>
+	    @font-face{
+		   font-family: 'Zilla Slab';
+		   src: url('fonts/zilla-slab/woff/ZillaSlab-LightItalic.woff');
+		   src: url('fonts/zilla-slab/woff2/ZillaSlab-LightItalic.woff2') format('woff2'),
+		   url('fonts/zilla-slab/woff/ZillaSlab-LightItalic.woff') format('woff'),
+		   url('fonts/zilla-slab/otf/ZillaSlab(-LightItalic).otf') format('opentype'),
+		   url('fonts/zilla-slab/ttf/ZillaSlab-LightItalic.ttf') format('truetype');
+		   font-weight: 300;
+		   font-style: italic;
+	    }
 
-	   <p>
-		  This petition from the UMass Racial Justice Coalition is asking UMass to
-		  commit to becoming an anti racism institution. The petition asks for
-		  better responses to acts of hate, academic equity, racism prevention
-		  measures, and divestment from the UMass Police Department.
-	   </p>
-    </section>
-  </body>
+	    @font-face{
+		   font-family: 'Zilla Slab';
+		   src: url('fonts/zilla-slab/woff/ZillaSlab-Regular.woff');
+		   src: url('fonts/zilla-slab/woff2/ZillaSlab-Regular.woff2') format('woff2'),
+		   url('fonts/zilla-slab/woff/ZillaSlab-Regular.woff') format('woff'),
+		   url('fonts/zilla-slab/otf/ZillaSlab(-Regular).otf') format('opentype'),
+		   url('fonts/zilla-slab/ttf/ZillaSlab-Regular.ttf') format('truetype');
+		   font-weight: 400;
+		   font-style: normal;
+	    }
+
+	    @font-face{
+		   font-family: 'Zilla Slab';
+		   src: url('fonts/zilla-slab/woff/ZillaSlab-RegularItalic.woff');
+		   src: url('fonts/zilla-slab/woff2/ZillaSlab-RegularItalic.woff2') format('woff2'),
+		   url('fonts/zilla-slab/woff/ZillaSlab-RegularItalic.woff') format('woff'),
+		   url('fonts/zilla-slab/otf/ZillaSlab(-RegularItalic).otf') format('opentype'),
+		   url('fonts/zilla-slab/ttf/ZillaSlab-RegularItalic.ttf') format('truetype');
+		   font-weight: 400;
+		   font-style: italic;
+	    }
+
+	    @font-face{
+		   font-family: 'Zilla Slab';
+		   src: url('fonts/zilla-slab/woff/ZillaSlab-Medium.woff');
+		   src: url('fonts/zilla-slab/woff2/ZillaSlab-Medium.woff2') format('woff2'),
+		   url('fonts/zilla-slab/woff/ZillaSlab-Medium.woff') format('woff'),
+		   url('fonts/zilla-slab/otf/ZillaSlab(-Medium).otf') format('opentype'),
+		   url('fonts/zilla-slab/ttf/ZillaSlab-Medium.ttf') format('truetype');
+		   font-weight: 500;
+		   font-style: normal;
+	    }
+
+	    @font-face{
+		   font-family: 'Zilla Slab';
+		   src: url('fonts/zilla-slab/woff/ZillaSlab-MediumItalic.woff');
+		   src: url('fonts/zilla-slab/woff2/ZillaSlab-MediumItalic.woff2') format('woff2'),
+		   url('fonts/zilla-slab/woff/ZillaSlab-MediumItalic.woff') format('woff'),
+		   url('fonts/zilla-slab/otf/ZillaSlab(-MediumItalic).otf') format('opentype'),
+		   url('fonts/zilla-slab/ttf/ZillaSlab-MediumItalic.ttf') format('truetype');
+		   font-weight: 500;
+		   font-style: italic;
+	    }
+
+	    @font-face{
+		   font-family: 'Zilla Slab';
+		   src: url('fonts/zilla-slab/woff/ZillaSlab-SemiBold.woff');
+		   src: url('fonts/zilla-slab/woff2/ZillaSlab-SemiBold.woff2') format('woff2'),
+		   url('fonts/zilla-slab/woff/ZillaSlab-SemiBold.woff') format('woff'),
+		   url('fonts/zilla-slab/otf/ZillaSlab(-SemiBold).otf') format('opentype'),
+		   url('fonts/zilla-slab/ttf/ZillaSlab-SemiBold.ttf') format('truetype');
+		   font-weight: 600;
+		   font-style: normal;
+	    }
+
+	    @font-face{
+		   font-family: 'Zilla Slab';
+		   src: url('fonts/zilla-slab/woff/ZillaSlab-SemiBoldItalic.woff');
+		   src: url('fonts/zilla-slab/woff2/ZillaSlab-SemiBoldItalic.woff2') format('woff2'),
+		   url('fonts/zilla-slab/woff/ZillaSlab-SemiBoldItalic.woff') format('woff'),
+		   url('fonts/zilla-slab/otf/ZillaSlab(-SemiBoldItalic).otf') format('opentype'),
+		   url('fonts/zilla-slab/ttf/ZillaSlab-SemiBoldItalic.ttf') format('truetype');
+		   font-weight: 600;
+		   font-style: italic;
+	    }
+
+	    @font-face{
+		   font-family: 'Zilla Slab';
+		   src: url('fonts/zilla-slab/woff/ZillaSlab-Bold.woff');
+		   src: url('fonts/zilla-slab/woff2/ZillaSlab-Bold.woff2') format('woff2'),
+		   url('fonts/zilla-slab/woff/ZillaSlab-Bold.woff') format('woff'),
+		   url('fonts/zilla-slab/otf/ZillaSlab(-Bold).otf') format('opentype'),
+		   url('fonts/zilla-slab/ttf/ZillaSlab-Bold.ttf') format('truetype');
+		   font-weight: 700;
+		   font-style: normal;
+	    }
+
+	    @font-face{
+		   font-family: 'Zilla Slab';
+		   src: url('fonts/zilla-slab/woff/ZillaSlab-BoldItalic.woff');
+		   src: url('fonts/zilla-slab/woff2/ZillaSlab-BoldItalic.woff2') format('woff2'),
+		   url('fonts/zilla-slab/woff/ZillaSlab-BoldItalic.woff') format('woff'),
+		   url('fonts/zilla-slab/otf/ZillaSlab(-BoldItalic).otf') format('opentype'),
+		   url('fonts/zilla-slab/ttf/ZillaSlab-BoldItalic.ttf') format('truetype');
+		   font-weight: 700;
+		   font-style: italic;
+	    }
+
+	    @font-face{
+		   font-family: 'Zilla Slab Highlight';
+		   src: url('fonts/zilla-slab/woff/ZillaSlabHighlight-Regular.woff');
+		   src: url('fonts/zilla-slab/woff2/ZillaSlabHighlight-Regular.woff2') format('woff2'),
+		   url('fonts/zilla-slab/woff/ZillaSlabHighlight-Regular.woff') format('woff'),
+		   url('fonts/zilla-slab/otf/ZillaSlabHighlight-Regular.otf') format('opentype'),
+		   url('fonts/zilla-slab/ttf/ZillaSlabHighlight-Regular.ttf') format('truetype');
+		   font-weight: 400;
+		   font-style: normal;
+	    }
+
+	    @font-face{
+		   font-family: 'Zilla Slab Highlight';
+		   src: url('fonts/zilla-slab/woff/ZillaSlabHighlight-Bold.woff');
+		   src: url('fonts/zilla-slab/woff2/ZillaSlabHighlight-Bold.woff2') format('woff2'),
+		   url('fonts/zilla-slab/woff/ZillaSlabHighlight-Bold.woff') format('woff'),
+		   url('fonts/zilla-slab/otf/ZillaSlabHighlight-Bold.otf') format('opentype'),
+		   url('fonts/zilla-slab/ttf/ZillaSlabHighlight-Bold.ttf') format('truetype');
+		   font-weight: 700;
+		   font-style: normal;
+	    }
+
+	    body {
+		   font-family: "Zilla Slab", sans-serif;
+		   font-size: 1.5rem;
+	    }
+	   </style>
+    </head>
+    <body>
+	   <h1>Act Against Hate</h1>
+
+	   <section>
+		  <h2>Bring accountability to Nextdoor's police partnerships</h2>
+
+		  <a href="https://foundation.mozilla.org/en/campaigns/nextdoor-pause-police-partnerships/">
+			 Petition
+		  </a>
+
+		  <p>
+			 This petition from the Mozilla foundation calls on Nextdoor, a
+			 popular neighborhood social media app, to pause police relationships
+			 and focus on transparency, equity, and accountability.
+		  </p>
+	   </section>
+	   
+	   <section>
+		  <h2>Make UMass an anti-racism campus</h2>
+		  
+		  <a href="https://bit.ly/umassracialjustice">
+			 Petition for UMass students
+		  </a>
+		  <br />
+		  <a href="https://bit.ly/rjc-support">
+			 Petition for non UMass students
+		  </a>
+
+		  <p>
+			 This petition from the UMass Racial Justice Coalition is asking UMass to
+			 commit to becoming an anti racism institution. The petition asks for
+			 better responses to acts of hate, academic equity, racism prevention
+			 measures, and divestment from the UMass Police Department.
+		  </p>
+	   </section>
+    </body>
 </html>
