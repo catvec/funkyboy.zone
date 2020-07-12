@@ -185,6 +185,22 @@
 	    .img-petition-spacer {
 		   height: 2rem;
 	    }
+
+	    .property-box {
+		   max-width: 26rem;
+		   width: 100%;
+		   display: flex;
+		   flex-direction: row;
+	    }
+
+	    .property-box .property-box-label {
+		   margin-right: 1rem;
+		   width: 10rem;
+	    }
+
+	    .property-box .property-box-value {
+		   flex-grow: 1;
+	    }
 	   </style>
     </head>
     <body>
@@ -223,28 +239,19 @@
 		  <img
 			 src="/imgs/umass-anti-racism-campus.png"
 			 alt="Text which reads: UMass: Commit to becoming an anti-racist campus." />
-		  <i class="img-attribution">
-			 <table>
-				<tr>
-				    <td>Image credit:</td>
-				    <td>
-					   Combination of images from
-					   <a href="https://www.umass.edu/gateway/campus-gallery">
-						  UMass Amherst
-					   </a>
-				    </td>
-				</tr>
-				<tr>
-				    <td></td>
-				    <td>
-					   and
-					   <a href="https://instagram.com/umassrjc">
-						  the UMass Racial Justice Coalition
-					   </a>
-					   .
-				    </td>
-				</tr>
-			 </table>
+		  <i class="img-attribution property-box">
+			 <div class="property-box-label">Image credit:</div>
+			 <div class="property-box-value">
+				Combination of images from
+				<a href="https://www.umass.edu/gateway/campus-gallery">
+				    UMass Amherst
+				</a>
+				and
+				<a href="https://instagram.com/umassrjc">
+				    the UMass Racial Justice Coalition
+				</a>
+				.
+			 </div>
 		  </i>
 
 		  <span class="img-petition-spacer"></span>
