@@ -56,6 +56,7 @@ base:
     - ensure-access
     - redis
     - podman
+    - emacs
 
     # Services
     - backup

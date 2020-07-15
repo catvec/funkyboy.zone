@@ -28,6 +28,7 @@ base:
     - gpg
     - redis
     - podman
+    - emacs
 
     # Services
     - backup
