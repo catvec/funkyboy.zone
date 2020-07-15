@@ -1,0 +1,2 @@
+xbps:
+  pkg: xbps

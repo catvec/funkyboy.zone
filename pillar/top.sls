@@ -1,6 +1,7 @@
 base:
   '*':
     # Low level system configuration
+    - xbps
     - system-config
     - hostname
     - kernel

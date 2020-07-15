@@ -5,6 +5,7 @@ base:
     - salt-dir-perms
 
     # Low level system configuration
+    - xbps
     - system-config
     - hostname
     - sudo-no-password
