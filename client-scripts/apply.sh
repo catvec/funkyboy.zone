@@ -24,43 +24,34 @@
 #
 #?
 
-# {{{1 Exit on any error
-set -e
+# Helpers
+function bold() {
+    echo "$(tput bold)$@$(tput sgr0)"
+}
 
-# {{{1 Get script directory
+function die() {
+    echo "Error: $@" >&2
+    exit 1
+}
+
+function check() {
+    if [ "$?" -ne 0 ]; then
+	   die "$@"
+    fi
+}
+
 prog_dir=$(realpath $(dirname "$0"))
 
-# {{{1 Arguments
+# Arguments
 while getopts "u:h:ntlpf" opt; do
 	case "$opt" in
-		u)
-			user="$OPTARG"
-			;;
-
-		h)
-			host="$OPTARG"
-			;;
-
-		n)
-			no_chown="true"
-			;;
-
-		t)
-			salt_test="true"
-			;;
-
-		l)
-			salt_trace="true"
-			;;
-
-		p)
-			plain_text="true"
-			;;
-
-		f)
-			full_out="true"
-			;;
-
+		u) user="$OPTARG" ;;
+		h) host="$OPTARG" ;;
+		n) no_chown="true" ;;
+		t) salt_test="true" ;;
+		l) salt_trace="true" ;;
+		p) plain_text="true" ;;
+		f) full_out="true" ;;
 		'?')
 			show-help "$0"
 			exit 1
@@ -78,20 +69,18 @@ fi
 
 address="$user@$host"
 
-# {{{1 Upload files
-echo "===== Uploading files"
+# Upload files
+bold "Uploading files"
 
 if [ ! -z "$no_chown" ]; then
 	upload_args="-n"
 fi
 
-if ! "$prog_dir"/upload.sh -u "$user" -h "$host" $upload_args; then
-	echo "Error: Failed to upload files" >&2
-	exit 1
-fi
+"$prog_dir"/upload.sh -u "$user" -h "$host" $upload_args
+check "Failed to upload files"
 
-# {{{1 Apply salt
-echo "===== Applying Salt states"
+# Apply salt
+bold "Applying Salt states"
 
 if [ ! -z "$salt_test" ]; then
 	salt_post_args+=" test=true"
@@ -109,9 +98,7 @@ if [ -z "$full_out" ]; then
 	salt_pre_args+=" --state-output=changes"
 fi
 
-if ! ssh "$address" "sudo salt-call --local $salt_pre_args state.apply $salt_post_args"; then
-	echo "Error: Failed to apply Salt states" >&2
-	exit 1
-fi
+ssh "$address" "sudo salt-call --local $salt_pre_args state.apply $salt_post_args"
+check "Failed to apply Salt states"
 
-echo "Done"
+bold "Done"
