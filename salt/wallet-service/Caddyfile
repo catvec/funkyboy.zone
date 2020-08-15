@@ -1,0 +1,7 @@
+{{ pillar.wallet_service.api_server.hosts }} {
+	proxy / localhost:{{ pillar.wallet_service.api_server.port }}
+	
+	tls {
+		dns digitalocean
+	}
+}

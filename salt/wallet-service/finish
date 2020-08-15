@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Stops MongoDB
+set -x
+prog_dir=$(realpath $(dirname "$0"))
+install_dir="{{ pillar.wallet_service.install_dir }}"
+
+die() {
+    echo "Error: $@" >&2
+    exit 1
+}
+
+check() {
+    if [ "$?" -ne 0 ]; then
+	   die "$@"
+    fi
+}
+
+# Change to bot directory
+cd "$install_dir"
+check "Failed to change to bot directory"
+
+# Check if MongoDB is running
+export CONTAINER_NAME="{{ pillar.wallet_service.mongo.container_name }}"
+mongo_status=$("$install_dir/mongodb" status)
+check "Failed to get MongoDB status"
+
+# Stop MongoDB
+if [ "$mongo_status" -eq "running" ]; then
+    "$install_dir/mongodb" stop
+    check "Failed to stop MongoDB"
+fi
