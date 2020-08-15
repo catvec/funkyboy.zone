@@ -51,5 +51,5 @@ base:
     - factorio
     - factorio-secret
     - public-www
-    - valorant-discord-bot
-    - valorant-discord-bot-secret
+    - wallet-service
+    - wallet-service-secret

@@ -79,7 +79,7 @@ base:
     - public-www
     - goldblum-zone-website
     - wiki-website
-    - valorant-discord-bot
+    - wallet-service
     - activism-website
 
     # Service logging
