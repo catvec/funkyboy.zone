@@ -28,7 +28,7 @@
       Determine the directory in which a bash script is located:<br>
       <br>
       <code>
-	prog_dir=$(realpath $(dirname "$0"))
+	prog_dir=$(dirname $(realpath "$0"))
       </code>
     </section>
 
