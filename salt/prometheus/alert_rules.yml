@@ -1,4 +1,14 @@
 groups:
+  - name: Wallet Service
+    rules:
+      - alert: WalletServerDown
+        expr: up{job='wallet_server'} < 1
+        labels:
+          service: wallet_server
+          severity: critical
+        annotations:
+          summary: The wallet service API server is down
+          
   - name: Cron
     rules:
       - alert: BackupFailed

@@ -9,16 +9,12 @@ alerting:
   alertmanagers:
   - static_configs:
     - targets:
-       - alertmanager:9093
+       - localhost:9093
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
 rule_files:
   - "alert_rules.yml"
-  # - "first_rules.yml"
-  # - "second_rules.yml"
 
-# A scrape configuration containing exactly one endpoint to scrape:
-# Here it's Prometheus itself.
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
   - job_name: 'prometheus'
@@ -28,6 +24,19 @@ scrape_configs:
 
     static_configs:
     - targets: ['localhost:9090'] # Prometheus self metrics
+
+  - job_name: 'node_exporter'
+    static_configs:
     - targets: ['{{ pillar.node_exporter.metrics_host }}'] # Node exporter
+
+  - job_name: 'push_gateway'
+    static_configs:
     - targets: ['{{ pillar.pushgateway.host }}'] # Push gateway
+
+  - job_name: 'caddy'
+    static_configs:
     - targets: ['{{ pillar.caddy.metrics_host }}'] # Caddy
+
+  - job_name: 'wallet_server'
+    static_configs:
+    - targets: ['{{ pillar.wallet_service.metrics_server.host }}'] # Wallet Service server
