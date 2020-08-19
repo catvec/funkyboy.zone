@@ -67,6 +67,7 @@
   file.managed:
     - source: salt://users/zshrc
     - user: {{ user.name }}
+    - makedirs: True
 
 # Load user's Zsh units
 # ... If we should load all Zsh units
