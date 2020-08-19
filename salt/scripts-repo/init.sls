@@ -1,11 +1,13 @@
 # Downloads the scripts repository onto the server and adds its files to 
 # the PATH.
 
+# Git repository
 {{ pillar.scripts_repo.repo }}:
   git.latest:
     - target: {{ pillar.scripts_repo.dir }}
     - force_reset: True
 
+# Make accessible to everyone
 {{ pillar.scripts_repo.dir }}:
   file.directory:
     - makedirs: True
@@ -23,8 +25,3 @@
     - cwd: {{ pillar.scripts_repo.dir }}
     - require:
       - git: {{ pillar.scripts_repo.repo }}
-
-{{ pillar.zsh.zprofiled_path }}/scripts-repo:
-  file.managed:
-    - source: salt://scripts-repo/zprofile.d/scripts-repo
-    - mode: 775
