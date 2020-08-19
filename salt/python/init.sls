@@ -5,3 +5,9 @@ python:
 
 python-pip:
   pkg.installed
+
+pipenv:
+  pip.installed:
+    - pip_bin: /usr/bin/pip3
+    - require:
+      - pkg: python-pip
