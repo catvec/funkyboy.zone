@@ -1,26 +1,29 @@
 #!/usr/bin/env bash
 # Installs Pipenv dependencies and starts the Discord bot.
-set -x
-prog_dir=$(realpath $(dirname "$0"))
+run() {
+    set -x
+    prog_dir=$(realpath $(dirname "$0"))
 
-die() {
-    echo "Error: $@" >&2
-    exit 1
+    die() {
+	   echo "Error: $@" >&2
+	   exit 1
+    }
+
+    check() {
+	   if [ "$?" -ne 0 ]; then
+		  die "$@"
+	   fi
+    }
+
+    # Change to bot source code directory
+    cd "{{ pillar.chis_bot.install_dir }}"
+    check "Failed to change to bot source code directory"
+
+    # Install Pipenv depdencies
+    pipenv install
+    check "Failed to install Pipenv dependencies"
+
+    # Start Discord bot
+    exec pipenv run src/bot.py
 }
-
-check() {
-    if [ "$?" -ne 0 ]; then
-	   die "$@"
-    fi
-}
-
-# Change to bot source code directory
-cd "{{ pillar.chis_bot.install_dir }}"
-check "Failed to change to bot source code directory"
-
-# Install Pipenv depdencies
-pipenv install
-check "Failed to install Pipenv dependencies"
-
-# Start Discord bot
-exec bash run.sh
+run 2>&1

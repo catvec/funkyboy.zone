@@ -33,6 +33,7 @@
   service.enabled:
     - name: {{ pillar.chis_bot.svc_name }}
     - require:
+      - git: {{ pillar.chis_bot.git_uri }}
       - file: {{ pillar.chis_bot.svc_run_file }}
       - file: {{ pillar.chis_bot.svc_log_file }}
       - file: {{ pillar.chis_bot.secret_config_file }}
@@ -45,3 +46,6 @@
       - service: {{ pillar.chis_bot.svc_name }}-enabled
     - watch:
       - git: {{ pillar.chis_bot.git_uri }}
+      - file: {{ pillar.chis_bot.svc_run_file }}
+      - file: {{ pillar.chis_bot.svc_log_file }}
+      - file: {{ pillar.chis_bot.secret_config_file }}

@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-vlogger -t chis-bot
+exec vlogger -t chis-bot
