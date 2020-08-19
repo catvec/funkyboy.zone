@@ -11,6 +11,7 @@ wallet_service:
   # Service
   svc_name: {{ svc_name }}
   svc_run_file: /etc/sv/{{ svc_name }}/run
+  svc_log_file: /etc/sv/{{ svc_name }}/log/run
   svc_finish_file: /etc/sv/{{ svc_name }}/finish
 
   # Configuration file

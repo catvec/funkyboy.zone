@@ -1,44 +1,48 @@
 #!/usr/bin/env bash
 # Installs NPM dependencies, starts MongoDB, and starts the server.
-set -x
-prog_dir=$(realpath $(dirname "$0"))
-server_dir="{{ pillar.wallet_service.install_dir }}/server"
+run() {
+    set -x
+    prog_dir=$(realpath $(dirname "$0"))
+    server_dir="{{ pillar.wallet_service.install_dir }}/server"
 
-die() {
-    echo "Error: $@" >&2
-    exit 1
-}
+    die() {
+	   echo "Error: $@" >&2
+	   exit 1
+    }
 
-check() {
-    if [ "$?" -ne 0 ]; then
-	   die "$@"
+    check() {
+	   if [ "$?" -ne 0 ]; then
+		  die "$@"
+	   fi
+    }
+
+    # Change to server directory
+    cd "$server_dir"
+    check "Failed to change to server directory"
+
+    # Install NPM depdencies
+    npm install
+    check "Failed to install NPM dependencies"
+
+    # Start MongoDB
+    export CONTAINER_NAME="{{ pillar.wallet_service.mongo.container_name }}"
+    export CONTAINER_DB_NAME="{{ pillar.wallet_service.mongo.database }}"
+
+    mongo_status=$("$server_dir/mongodb" status)
+    check "Failed to get MongoDB status"
+
+    if [[ "$mongo_status" != "running" ]]; then
+	   "$server_dir/mongodb" start
+	   check "Failed to start MongoDB"
     fi
+
+    # Start server
+    export NODE_ENV=production
+
+    export APP_API_PORT={{ pillar.wallet_service.api_server.port }}
+    export APP_DB_URI={{ pillar.wallet_service.mongo.uri }}
+
+    exec node "$server_dir/index.js" < "$server_dir/index.js"
 }
 
-# Change to server directory
-cd "$server_dir"
-check "Failed to change to server directory"
-
-# Install NPM depdencies
-npm install
-check "Failed to install NPM dependencies"
-
-# Start MongoDB
-export CONTAINER_NAME="{{ pillar.wallet_service.mongo.container_name }}"
-export CONTAINER_DB_NAME="{{ pillar.wallet_service.mongo.database }}"
-
-mongo_status=$("$server_dir/mongodb" status)
-check "Failed to get MongoDB status"
-
-if [[ "$mongo_status" != "running" ]]; then
-    "$server_dir/mongodb" start
-    check "Failed to start MongoDB"
-fi
-
-# Start server
-export NODE_ENV=production
-
-export APP_API_PORT={{ pillar.wallet_service.api_server.port }}
-export APP_DB_URI={{ pillar.wallet_service.mongo.uri }}
-
-node "$server_dir/index.js"
+run 2>&1

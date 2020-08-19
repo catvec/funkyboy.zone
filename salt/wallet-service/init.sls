@@ -14,6 +14,13 @@
     - mode: 755
     - makedirs: True
 
+{{ pillar.wallet_service.svc_log_file }}:
+  file.managed:
+    - source: salt://wallet-service/log
+    - template: jinja
+    - mode: 755
+    - makedirs: True
+
 {{ pillar.wallet_service.svc_finish_file }}:
   file.managed:
     - source: salt://wallet-service/finish
@@ -26,6 +33,7 @@
     - name: {{ pillar.wallet_service.svc_name }}
     - require:
       - file: {{ pillar.wallet_service.svc_run_file }}
+      - file: {{ pillar.wallet_service.svc_log_file }}
       - file: {{ pillar.wallet_service.svc_finish_file }}
 
 {{ pillar.wallet_service.svc_name }}-running:
@@ -36,6 +44,9 @@
       - service: {{ pillar.wallet_service.svc_name }}-enabled
     - watch:
       - git: {{ pillar.wallet_service.git_uri }}
+      - file: {{ pillar.wallet_service.svc_run_file }}
+      - file: {{ pillar.wallet_service.svc_log_file }}
+      - file: {{ pillar.wallet_service.svc_finish_file }}
 
 # Reverse proxy
 {{ pillar.caddy.config_dir }}/{{ pillar.wallet_service.caddyfile }}:
