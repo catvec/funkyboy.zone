@@ -42,6 +42,9 @@ run() {
     export APP_API_PORT={{ pillar.wallet_service.api_server.port }}
     export APP_DB_URI={{ pillar.wallet_service.mongo.uri }}
 
+    # We pass the index.js file to stdin bc the prom-client NodeJS library
+    # needs some sort of stdin to work: https://github.com/siimon/prom-client/issues/391
+    # Yea, it's really weird.
     exec node "$server_dir/index.js" < "$server_dir/index.js"
 }
 
