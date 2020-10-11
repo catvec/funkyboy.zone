@@ -9,4 +9,5 @@ cd "${WRKDIR}"
 exec chpst -u {{ pillar.prometheus.user }}:{{ pillar.prometheus.group }} prometheus \
 	--config.file={{ pillar.prometheus.config_file }} \
 	--web.listen-address="{{ pillar.prometheus.local_address }}" \
-	--web.enable-admin-api
+	--storage.tsdb.retention.size "2GB" \
+	--web.enable-admin-api 2>&1

@@ -20,6 +20,17 @@
   file.managed:
     - source: salt://prometheus/run
     - template: jinja
+    - mode: 755
+    - makedirs: True
+    - require:
+      - pkg: {{ pkg }}
+
+{{ pillar.prometheus.svc_log_file }}:
+  file.managed:
+    - source: salt://prometheus/log
+    - template: jinja
+    - mode: 755
+    - makedirs: True
     - require:
       - pkg: {{ pkg }}
 
@@ -28,7 +39,6 @@
     - source: salt://prometheus/prometheus.yml
     - template: jinja
     - group: {{ pillar.prometheus.group }}
-    - mode: 755
     - makedirs: True
     - require:
       - group: {{ pillar.prometheus.group }}-group
@@ -47,6 +57,8 @@
     - name: {{ svc }}
     - require:
       - file: {{ pillar.prometheus.svc_file }}
+      - file: {{ pillar.prometheus.svc_log_file }}
+      - file: {{ pillar.prometheus.config_file }}  
 
 {{ svc }}-running:
   service.running:
@@ -55,10 +67,13 @@
       - file: {{ pillar.prometheus.config_file }}
       - file: {{ pillar.prometheus.rules_file }}
       - file: {{ pillar.prometheus.svc_file }}
+      - file: {{ pillar.prometheus.svc_log_file }}
     - require:
       - service: {{ svc }}-enabled
       - file: {{ pillar.prometheus.config_file }}
       - file: {{ pillar.prometheus.rules_file }}
+      - file: {{ pillar.prometheus.svc_file }}
+      - file: {{ pillar.prometheus.svc_log_file }}
 
 # Caddy
 {{ pillar.caddy.config_dir }}/{{ pillar.prometheus.caddy_cfg }}:
