@@ -10,4 +10,4 @@
 cd "$WRKDIR"
 
 set -x
-exec chpst -u {{ pillar.alertmanager.user }}:{{ pillar.alertmanager.group }} alertmanager ${CONF_FLAG} ${ARGS}
+exec chpst -u {{ pillar.alertmanager.user }}:{{ pillar.alertmanager.group }} alertmanager ${CONF_FLAG} ${ARGS} 2>&1
