@@ -1,56 +1,61 @@
 #!/usr/bin/env bash
-# Check Caddy is installed
-caddy={{ pillar.caddy.install_file }}
-if [ ! -f "$caddy" ]; then
-    echo "Error: Caddy binary not found at \"$caddy\""
-    exit 1
-fi
+run() {
+    # Check Caddy is installed
+    caddy={{ pillar.caddy.install_file }}
+    if [ ! -f "$caddy" ]; then
+	   echo "Error: Caddy binary not found at \"$caddy\""
+	   exit 1
+    fi
 
-# Configuration
-last_run_file="/run/caddy_svc_last_run"
-time_between_starts=10
+    # Configuration
+    last_run_file="/run/caddy_svc_last_run"
+    time_between_starts=10
 
-# Get start time
-start_time=$(date +%s)
-if [[ "$?" != "0" ]]; then
-	echo "Error: Failed to get start time"
-	exit 1
-fi
+    # Get start time
+    start_time=$(date +%s)
+    if [[ "$?" != "0" ]]; then
+	   echo "Error: Failed to get start time"
+	   exit 1
+    fi
 
-# Configuration
-export CADDYPATH={{ pillar.caddy.caddy_path }}
-export DO_AUTH_TOKEN={{ pillar.caddy.do_auth_token }}
+    # Configuration
+    export CADDYPATH={{ pillar.caddy.caddy_path }}
+    export DO_AUTH_TOKEN={{ pillar.caddy.do_auth_token }}
 
-cd /etc/caddy
+    cd /etc/caddy
 
-# Check configuration file
-if ! $caddy -validate; then
-	echo "Error: Failed to validate configuration"
-	exit 1
-fi
+    # Check configuration file
+    if ! $caddy -validate; then
+	   echo "Error: Failed to validate configuration"
+	   exit 1
+    fi
 
-# Check we haven't exited too recently
-if [ -f "$last_run_file" ]; then # If file exists
-	# Get last run time
-	last_run_time=$(date -r "$last_run_file" +%s)
-	if [[ "$?" != "0" ]]; then
-		echo "Error: Failed to get last run time"
-		exit 1
-	fi
+    # Check we haven't exited too recently
+    if [ -f "$last_run_file" ]; then # If file exists
+	   # Get last run time
+	   last_run_time=$(date -r "$last_run_file" +%s)
+	   if [[ "$?" != "0" ]]; then
+		  echo "Error: Failed to get last run time"
+		  exit 1
+	   fi
 
-	# Check if it has been long enough
-	if (( ("$start_time" - "$last_run_time") < "$time_between_starts")); then
-		echo "Error: Starting too soon, exiting.."
-		exit 1
-	else
-		echo "Can start now"
-	fi
-fi
+	   # Check if it has been long enough
+	   if (( ("$start_time" - "$last_run_time") < "$time_between_starts")); then
+		  echo "Error: Starting too soon, exiting.."
+		  exit 1
+	   else
+		  echo "Can start now"
+	   fi
+    fi
 
-touch "$last_run_file"
+    touch "$last_run_file"
 
-# Run
-exec chpst -o 8192 -u caddy $caddy \
-     -ca {{ pillar.caddy.lets_encrypt_endpoint }} \
-     -agree \
-     -email {{ pillar.caddy.email }}
+    # Run
+    # -o 8192 limit open file descriptors to 8192 max
+    exec chpst -o 8192 -u caddy $caddy \
+         -ca {{ pillar.caddy.lets_encrypt_endpoint }} \
+         -agree \
+         -email {{ pillar.caddy.email }}
+}
+
+run 2>&1

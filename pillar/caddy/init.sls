@@ -36,6 +36,7 @@ caddy:
 
   svc: caddy
   svc_file: /etc/sv/caddy/run
+  svc_log_file: /etc/sv/caddy/log/run
 
   # Config
   serve_dir: /srv/caddy

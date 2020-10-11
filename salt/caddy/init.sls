@@ -37,8 +37,13 @@ build_caddy:
     - source: salt://caddy/run
     - template: jinja
     - makedirs: True
-    - require:
-      - file: {{ pillar.caddy.config_file }}
+    - mode: 755
+
+{{ pillar.caddy.svc_log_file }}:
+  file.symlink:
+    - target: {{ pillar.syslog.logger_path }}
+    - makedirs: True
+    - mode: 755
       
 {{ pillar.caddy.svc }}-enabled:
   service.enabled:
@@ -46,9 +51,15 @@ build_caddy:
     - require:
         - cmd: build_caddy
         - file: {{ pillar.caddy.svc_file }}
+        - file: {{ pillar.caddy.svc_log_file }}
 
 {{ pillar.caddy.svc }}-running:
   service.running:
     - name: {{ pillar.caddy.svc }}
     - require:
       - service: {{ pillar.caddy.svc }}-enabled
+    - watch:
+      - file: {{ pillar.caddy.config_file }}
+      - file: {{ pillar.caddy.svc_file }}
+      - file: {{ pillar.caddy.svc_log_file }}
+
