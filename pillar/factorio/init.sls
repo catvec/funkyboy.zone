@@ -38,6 +38,7 @@ factorio:
     name: {{ factorio_svc_name }}
     directory: {{ factorio_svc_dir }}
     run_file: {{ factorio_svc_dir }}/run
+    log_file: {{ factorio_svc_dir}}/log/run
     finish_file: {{ factorio_svc_dir }}/finish
 
   # Factorio configuration details:

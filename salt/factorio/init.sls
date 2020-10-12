@@ -125,6 +125,12 @@
     - mode: 755
     - template: jinja
 
+{{ pillar.factorio.factorio_service.log_file }}:
+  file.managed:
+    - source: salt://factorio/log
+    - mode: 755
+    - makedirs: true
+
 {{ pillar.factorio.factorio_service.finish_file }}:
   file.managed:
     - source: salt://factorio/finish
@@ -136,6 +142,8 @@
     - name: {{ pillar.factorio.factorio_service.name }}
     - require:
       - file: {{ pillar.factorio.factorio_service.run_file }}
+      - file: {{ pillar.factorio.factorio_service.log_file }}
+      - file: {{ pillar.factorio.factorio_service.finish_file }}
       - user: {{ pillar.factorio.user.name }}-user
       - file: {{ pillar.factorio.factorio_config.file }}
 
@@ -146,6 +154,8 @@
       - service: {{ pillar.factorio.factorio_service.name }}-enabled
     - watch:
       - file: {{ pillar.factorio.factorio_service.run_file }}
+      - file: {{ pillar.factorio.factorio_service.log_file }}
+      - file: {{ pillar.factorio.factorio_service.finish_file }}
       - file: {{ pillar.factorio.factorio_config.file }}
       - docker_image: {{ pillar.factorio.docker_image }}
       - mount: {{ pillar.factorio.mods_directory }}
