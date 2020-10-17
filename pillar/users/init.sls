@@ -30,6 +30,7 @@ users:
       - salt
       - docker
       - factorio-mods
+      - factorio-admin
       - s3cmd
     authorized_keys: >-
       ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH7worAdtOa+cq2AuyFBdvbX+8Zy4zcHRChFb4EerKGX noah@katla
@@ -45,6 +46,7 @@ users:
     groups:
       - socklog
       - factorio-mods
+      - factorio-admin
     authorized_keys: >-
       ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDFqsP4F+7j3DPPezHqrAO6xmRzr7s9Wi6qYpuq3od/CrMkVl6oTrOmPvwn6H473YRyesDTW6lkfUR1k00InybeFiW8embKXsU5voqj9w7lTT+1yTnjyoLK95jkYwg9FK0eKeAZ9K8pkFOJE9owirWghDG74TgAmYIBMI4w62MGza30wALNrTClUIONdMeVPIL3djev+CsYT3UIjybXlwalYUtoWsoaOCgFkprs4GZ6JEb6CGMpgdDMDRWF6/yp9qrUx/5wcItwCdgp7H3QCVfzcLdHuTUINaOisRfF/MJ5etunhdEONQsOtbq+nAU2c3AbacJY7f0E4Rrc9wf2+18d Zacharie Day
     zsh_units: all
@@ -53,4 +55,12 @@ users:
       - socklog
     authorized_keys: >-
       ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAiXbgdFfrO9J7f7FD2qe4AuDVryo7MVhtcavsF09riHs3PjZsYnulH14ySOxxxqn1jgnBd47otoI3cEyKj3v2Ypo/kxVtuqlvqKakpYxmSAcH/i5AuojWtzWXOzdNOrZxVlcuT/653bShnrBDVNLbdBOnZBW0WFSG7cV6ICvr7H+edTAsnZ5iXu8P2AMxu3BtacBRrJcd6T9itsRtFu2llhH2JTVMSXLtBeg54+8Fpk3mKiLdW2fucbyuBtIXaQeh+cpmyE0Me51KbRwOaZWGGLKZgZHGeD50RuaU7ZLL73vpRZEUf1MVyUGl5CVmp3h+9yEJxrtIpb6gyjeQSK23 chrisae9@penguin
+    zsh_units: all
+  - name: tyler
+    groups:
+      - socklog
+      - factorio-mods
+      - factorio-admin
+    authorized_keys: >-
+      ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDkxXpd/7Um7XqNmSNaVd5Ni4Iity6lEToCiKbNSbIBJhRq1YJmKCXdjQUCfYXvR3OeDF58cdVab4RZqZxD9qc4AwhIZ3QikMe71bqWuYIZltgZ3ha/cCoYxWrq/xAjVsGwLL2S4HU5QpaKVNu14f6QeLI5QOLORTjJDsGv3kQ8hdLmbFIK3DF8QUWF4uZvphhCZ5R4mpVw+Gyr/z6fJwIuwxPPOaTNv53KTve3ihPKUjmBNe0L6MlwM/iBw9Z/sbYvHER+t0D35XfqwcfRkcQh+9UrFYQxTUe1USOsEjIJUYA1d1s6F0va6BgxeqMoRLHlIkGf7zIsGlMBwSXadqR3dKLEZACWNBuTTJS9ZSvgeA1ge3/oHn3xdXkWegqTSLvqFX7MJ2eh9VE6wrPAIShMPpWdsWgdq+PrZ+uWDir1a+8FDuFUfk5gD2VMe3pqkct0koaD2ED9C0iniVFyHBZ6rEaf7yoBdBA2Khj3SESN89zLz2ewdjJfEKDL+eamnV9z9hrPtRTn2QFYQ7rdZa9/UFqOIW+0IEAgXhaLcY7tghF5uxL0zCIGBAQYuklSmUv56cbbrhLT0at8nzTKbJ0eIm9WcoUhni/oXP4Q8uIp5vXIKxBBpmY6YEaSooNlBF2rzp5TUoSPxHZHEfU7naLQsjR52GIIF0h7JMPb2l0hvw== tchar@DESKTOP-NIIA71T
     zsh_units: all
