@@ -9,9 +9,22 @@
 	<body>
 	<h1>Funky Boy Guide</h1>
 	<ol>
-		<li><a href="#installation-and-configuration">Installation and Configuration</a></li>
-		<li><a href="backups">Backups</a></li>
+	    <li><a href="#ssh-access">SSH Access</a></li>
+	    <li><a href="#installation-and-configuration">Installation and Configuration</a></li>
+	    <li><a href="#backups">Backups</a></li>
+	    <li><a href="#services">Services</a></li>
+	    <li><a href="#factorio">Factorio</a></li>
 	</ol>
+
+	<section id="ssh-access">
+	    <h2>SSH Access</h2>
+
+	    <p>
+		   To access the Funkyboy server use SSH on the default port:
+		   <br>
+		   <code>ssh USERNAME@funkyboy.zone</code>
+	    </p>
+	</section>
 
 	<section id="installation-and-configuration">
 		<h2>Installation and Configuration</h2>
@@ -54,6 +67,78 @@
 				<li>Factorio Saves</li>
 			</ul>
 		</p>
+	</section>
+
+	<section id="services">
+	    <h2>Services</h2>
+
+	    <p>
+		   Long running processes are called services. They are managed using
+		   a tool called <a href="http://smarden.org/runit">Runit</a>.
+		   <br>
+		   <br>
+		   Services live in the <code>/etc/sv/</code> directory. There is a
+		   directory for each service. The name of the directory is the name of
+		   the service. Inside service directories there is a <code>run</code>
+		   script. This is typically a bash script which launches the service.
+		   Although the script can be any executable.
+		   <br>
+		   <br>
+		   To administer services use the <code>vsv</code> command. This tool uses
+		   the pattern <code>vsv COMMAND SERVICE</code>. There are many commands
+		   which you can run, however the most common are:
+
+		   <ul>
+			  <li>
+				 <code>vsv status SERVICE</code> retrieves the status of
+				 a service.
+			  </li>
+			  <li>
+				 <code>vsv start SERVICE</code> starts a service.
+			  </li>
+			  <li>
+				 <code>vsv stop SERVICE</code> stops a service.
+			  </li>
+			  <li>
+				 <code>vsv restart SERVICE</code> restarts a service.
+			  </li>
+		   </ul>
+
+		   Most users do not have access to most services. However certain
+		   services have been setup so users can control them.
+	    </p>
+	</section>
+
+	<section id="factorio">
+	    <h2>Factorio</h2>
+
+	    <p>
+	    A Factorio server is hosted as a <a href="#services"><i>service</i></a>.
+
+	    Some users have been given permission to administer this service.
+
+	    <ul>
+		   <li>
+			  Its name is <code>factorio</code>.
+		   </li>
+		   <li>
+			  To restart it run <code>vsv restart factorio</code>.
+		   </li>
+		   <li>
+			  Currently running <code>vsv status factorio</code> will produce
+			  a funky looking output. It may look like the service is down
+			  according to the "STATE" column of this command's output. For now
+			  look at the "TIME" column. If there is a time and a "pid" in this
+			  column the server is probably running. If there a message about
+			  "normally up" in the "TIME" column the server is probably down.
+			  I am working on this issue. When in doubt
+			  run <code>vsv start factorio</code>.
+		   </li>
+	    </ul>
+			  
+	    See the <a href="#services">services section</a> for more details on
+	    service administration.
+	    </p>
 	</section>
 	</body>
 </html>
