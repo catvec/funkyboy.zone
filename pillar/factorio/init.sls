@@ -17,14 +17,20 @@ factorio:
     name: factorio
     id: 845
 
-  # Factorio user group
+  # Group for user which runs the factorio server
   group:
     name: factorio
     id: 845
 
+  # Group which gives has access to the mods directory
   mods_access_group:
     name: factorio-mods
     id: 846
+
+  # Group which allows users to administer the server service
+  admin_group:
+    name: factorio-admin
+    id: 847
 
   # Mode of files to place
   mode: 775
@@ -37,6 +43,7 @@ factorio:
   factorio_service:
     name: {{ factorio_svc_name }}
     directory: {{ factorio_svc_dir }}
+    supervise_directory: {{ factorio_svc_dir }}/supervise
     run_file: {{ factorio_svc_dir }}/run
     log_file: {{ factorio_svc_dir}}/log/run
     finish_file: {{ factorio_svc_dir }}/finish

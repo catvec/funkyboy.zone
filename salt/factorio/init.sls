@@ -32,6 +32,12 @@
       - group: {{ pillar.factorio.group.name }}-group
       - group: {{ pillar.factorio.mods_access_group.name }}-group
 
+# Factorio admins group
+{{ pillar.factorio.admin_group.name }}-group:
+  group.present:
+    - name: {{ pillar.factorio.admin_group.name }}
+    - gid: {{ pillar.factorio.admin_group.id }}
+
 # Docker image
 {{ pillar.factorio.docker_image }}:
   docker_image.present
@@ -159,6 +165,21 @@
       - file: {{ pillar.factorio.factorio_config.file }}
       - docker_image: {{ pillar.factorio.docker_image }}
       - mount: {{ pillar.factorio.mods_directory }}
+
+{{ pillar.factorio.factorio_service.supervise_directory }}:
+  file.directory:
+    - group: {{ pillar.factorio.admin_group.name }}
+    - mode: 775
+    - recurse:
+      - group
+      - mode
+    - require:
+      # Make sure that this state runs after the service is running. This is
+      # because we are trying to get the service's ./supervise directory to be
+      # owned by this group so factorio admins can manage the service
+      # (as per: http://smarden.org/runit/faq.html#user). And the supervise
+      # directory will be created for the first time when the service starts.
+      - service: {{ pillar.factorio.factorio_service.name }}-running
 
 # Caddy
 {{ pillar.caddy.config_dir }}/{{ pillar.factorio.caddy_cfg_file }}:

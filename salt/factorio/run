@@ -7,4 +7,4 @@ exec chpst -u {{ pillar.factorio.user.name}}:{{ pillar.factorio.group.name}}:doc
 	-p {{ pillar.factorio.ports.game }}:{{ pillar.factorio.ports.game }}/udp \
 	-p {{ pillar.factorio.ports.rcon }}:{{ pillar.factorio.ports.rcon }}/tcp \
 	-v {{ pillar.factorio.directory }}:/factorio \
-	{{ pillar.factorio.docker_image }}
+	{{ pillar.factorio.docker_image }} 2>&1
