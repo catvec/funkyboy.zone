@@ -10,4 +10,5 @@ exec chpst -u {{ pillar.prometheus.user }}:{{ pillar.prometheus.group }} prometh
 	--config.file={{ pillar.prometheus.config_file }} \
 	--web.listen-address="{{ pillar.prometheus.local_address }}" \
 	--storage.tsdb.retention.size "2GB" \
+	--storage.tsdb.retention.time "1d" \
 	--web.enable-admin-api 2>&1
