@@ -113,31 +113,66 @@
 	    <h2>Factorio</h2>
 
 	    <p>
-	    A Factorio server is hosted as a <a href="#services"><i>service</i></a>.
+		   A Factorio game server is available at
+		   <code>factorio.funkyboy.zone</code>. You can download the installed
+		   mods at
+		   <a href="https://factorio-mods.funkyboy.zone">
+			  factorio-mods.funkyboy.zone
+		   </a>.
 
-	    Some users have been given permission to administer this service.
+	    </p>
 
-	    <ul>
-		   <li>
-			  Its name is <code>factorio</code>.
-		   </li>
-		   <li>
-			  To restart it run <code>vsv restart factorio</code>.
-		   </li>
-		   <li>
-			  Currently running <code>vsv status factorio</code> will produce
-			  a funky looking output. It may look like the service is down
-			  according to the "STATE" column of this command's output. For now
-			  look at the "TIME" column. If there is a time and a "pid" in this
-			  column the server is probably running. If there a message about
-			  "normally up" in the "TIME" column the server is probably down.
-			  I am working on this issue. When in doubt
-			  run <code>vsv start factorio</code>.
-		   </li>
-	    </ul>
-			  
-	    See the <a href="#services">services section</a> for more details on
-	    service administration.
+	    <h3>Directories</h3>
+
+	    <p>
+		   The <code>/opt/factorio</code> directory contains almost all
+		   Factorio game server files. The relevant sub-directories are:
+		   
+		   <ul>
+			  <li>
+				 <b>config/</b>: Server settings.
+			  </li>
+			  <li>
+				 <b>mods/</b>: Game mods.
+			  </li>
+			  <li>
+				 <b>saves/</b>: Game saves.
+			  </li>
+		   </ul>
+
+		   Additionally the <code>/etc/sv/factorio</code> directory contains
+		   the Factorio game service files.
+	    </p>
+
+	    <h3>Service Management</h3>
+
+	    <p>
+		   A Factorio server is hosted as a
+		   <a href="#services"><i>service</i></a>.
+
+		   Some users have been given permission to administer this service. 
+
+		   <ul>
+			  <li>
+				 Its name is <code>factorio</code>.
+			  </li>
+			  <li>
+				 To restart it run <code>vsv restart factorio</code>.
+			  </li>
+			  <li>
+				 Currently running <code>vsv status factorio</code> will
+				 produce a funky looking output. It may look like the service
+				 is down according to the "STATE" column of this command's
+				 output. For now look at the "TIME" column. If there is a time
+				 and a "pid" in this column the server is probably running. If
+				 there a message about "normally up" in the "TIME" column the
+				 server is probably down. I am working on this issue. When in
+				 doubt run <code>vsv start factorio</code>.
+			  </li>
+		   </ul>
+
+		   See the <a href="#services">services section</a> for more details on
+		   service administration.
 	    </p>
 	</section>
 	</body>
