@@ -64,3 +64,11 @@ users:
     authorized_keys: >-
       ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDkxXpd/7Um7XqNmSNaVd5Ni4Iity6lEToCiKbNSbIBJhRq1YJmKCXdjQUCfYXvR3OeDF58cdVab4RZqZxD9qc4AwhIZ3QikMe71bqWuYIZltgZ3ha/cCoYxWrq/xAjVsGwLL2S4HU5QpaKVNu14f6QeLI5QOLORTjJDsGv3kQ8hdLmbFIK3DF8QUWF4uZvphhCZ5R4mpVw+Gyr/z6fJwIuwxPPOaTNv53KTve3ihPKUjmBNe0L6MlwM/iBw9Z/sbYvHER+t0D35XfqwcfRkcQh+9UrFYQxTUe1USOsEjIJUYA1d1s6F0va6BgxeqMoRLHlIkGf7zIsGlMBwSXadqR3dKLEZACWNBuTTJS9ZSvgeA1ge3/oHn3xdXkWegqTSLvqFX7MJ2eh9VE6wrPAIShMPpWdsWgdq+PrZ+uWDir1a+8FDuFUfk5gD2VMe3pqkct0koaD2ED9C0iniVFyHBZ6rEaf7yoBdBA2Khj3SESN89zLz2ewdjJfEKDL+eamnV9z9hrPtRTn2QFYQ7rdZa9/UFqOIW+0IEAgXhaLcY7tghF5uxL0zCIGBAQYuklSmUv56cbbrhLT0at8nzTKbJ0eIm9WcoUhni/oXP4Q8uIp5vXIKxBBpmY6YEaSooNlBF2rzp5TUoSPxHZHEfU7naLQsjR52GIIF0h7JMPb2l0hvw== tchar@DESKTOP-NIIA71T
     zsh_units: all
+  - name: matt
+    groups:
+      - socklog
+      - factorio-mods
+      - factorio-admin
+    authorized_keys: >-
+      ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDvm5JxUdmriau0Vo2E1TJXCx5A2WocosWFQYltwWpm15v8mBvYivm6Y9sEZFc2UkLo6+i58nIn/noYuZQbF8su9O4sqchUduRes2Cm+FlDUF+h0+9FvpKep6EoR8W3SEsjaMr24y12R5RuZBY9Hm+34UtLjik/K+JhyglIZXZEdGewDP8ESn+PBYn8m4h+JRhAapuPZxNbxBPLDTmqu8aVUstLMkLxQQ3BsDA+TATKuDcuTjlr4ebHeEQduhYJMNe/O10wmjK2/KRnkup9cBhiMVsWthheiseIw4d0ZxhlzUA0DIZapqCPk9lgV/LUvGBGUgOOFE48LP/U2ByZFEqYcqtCUOy2tybnuniE5/UY905WaAnd3gbS7uHoVmS3laY/UUadNknlMeVduBMgJD8JyfRgXKcz321pbtJoeZKERRrpNl3pB9yqDTAOxCyIxlwVqwncW1+u8+jScbw5YvDMFGnVLjgd9zqDDgqh3cObTFTVLvjretJ1IE/qb5UHMF8xHCXu4GX5KeK1eVmn2gLms+qmKNLwgXQzSkfl/invfpjJ5sZ/XASZr/hvnPQ1dmilv4wgmRMBIl73PRMIOWbZ4NPwOstAJ5+IJil85qh36j6wqHRBN/zvVaEDjgMBZDIVAuc0FLdvXGF/oNAcPVj+mi20dxPw4gpIgnPBYU6WZw== Matthew Oslan (derpthemeus@gmail.com)
+    zsh_units: all
