@@ -4,13 +4,13 @@ variable "web_content_bucket_name" {
   default = "noahh-web-content"
 }
 
-resource "aws_s3_bucket" "web-content" {
+resource "aws_s3_bucket" "web_content" {
   bucket = var.web_content_bucket_name
   acl = "public-read"
 }
 
-resource "aws_s3_bucket_policy" "web-content-read" {
-  bucket = aws_s3_bucket.web-content.id
+resource "aws_s3_bucket_policy" "web_content_read" {
+  bucket = aws_s3_bucket.web_content.id
 
   policy = <<POLICY
 {

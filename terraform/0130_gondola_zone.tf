@@ -1,25 +1,25 @@
-data "digitalocean_domain" "gondola-zone" {
+data "digitalocean_domain" "gondola_zone" {
   name = "gondola.zone"
 }
 
-resource "digitalocean_record" "gondola-zone-wildcard" {
-  domain = data.digitalocean_domain.gondola-zone.name
+resource "digitalocean_record" "gondola_zone_wildcard" {
+  domain = data.digitalocean_domain.gondola_zone.name
   type = "A"
   ttl = "60" # seconds
   name = "*"
-  value = digitalocean_droplet.funkyboy-zone.ipv4_address
+  value = digitalocean_droplet.funkyboy_zone.ipv4_address
 }
 
-resource "digitalocean_record" "gondola-zone-apex" {
-  domain = data.digitalocean_domain.gondola-zone.name
+resource "digitalocean_record" "gondola_zone_apex" {
+  domain = data.digitalocean_domain.gondola_zone.name
   type = "A"
   ttl = "60" # seconds
   name = "@"
-  value = digitalocean_droplet.funkyboy-zone.ipv4_address
+  value = digitalocean_droplet.funkyboy_zone.ipv4_address
 }
 
-resource "digitalocean_record" "gondola-zone-keybase" {
-  domain = data.digitalocean_domain.gondola-zone.name
+resource "digitalocean_record" "gondola_zone_keybase" {
+  domain = data.digitalocean_domain.gondola_zone.name
   type = "TXT"
   ttl = "60" # seconds
   name = "@"
