@@ -1,16 +1,16 @@
 variable "web_content_bucket_name" {
-  type = "string"
+  type = string
   description = "Name of web content bucket"
   default = "noahh-web-content"
 }
 
 resource "aws_s3_bucket" "web-content" {
-  bucket = "${var.web_content_bucket_name}"
+  bucket = var.web_content_bucket_name
   acl = "public-read"
 }
 
 resource "aws_s3_bucket_policy" "web-content-read" {
-  bucket = "${aws_s3_bucket.web-content.id}"
+  bucket = aws_s3_bucket.web-content.id
 
   policy = <<POLICY
 {

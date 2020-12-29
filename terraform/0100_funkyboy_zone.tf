@@ -3,23 +3,23 @@ data "digitalocean_domain" "funkyboy-zone" {
 }
 
 resource "digitalocean_record" "funkyboy-zone-wildcard" {
-  domain = "${data.digitalocean_domain.funkyboy-zone.name}"
+  domain = data.digitalocean_domain.funkyboy-zone.name
   type = "A"
   ttl = "60" # seconds
   name = "*"
-  value = "${digitalocean_droplet.funkyboy-zone.ipv4_address}"
+  value = digitalocean_droplet.funkyboy-zone.ipv4_address
 }
 
 resource "digitalocean_record" "funkyboy-zone-apex" {
-  domain = "${data.digitalocean_domain.funkyboy-zone.name}"
+  domain = data.digitalocean_domain.funkyboy-zone.name
   type = "A"
   ttl = "60" # seconds
   name = "@"
-  value = "${digitalocean_droplet.funkyboy-zone.ipv4_address}"
+  value = digitalocean_droplet.funkyboy-zone.ipv4_address
 }
 
 resource "digitalocean_record" "funkyboy-zone-spf" {
-  domain = "${data.digitalocean_domain.funkyboy-zone.name}"
+  domain = data.digitalocean_domain.funkyboy-zone.name
   type = "TXT"
   ttl = "60" # seconds
   name = "@"
@@ -27,7 +27,7 @@ resource "digitalocean_record" "funkyboy-zone-spf" {
 }
 
 resource "digitalocean_record" "funkyboy-zone-dkim" {
-  domain = "${data.digitalocean_domain.funkyboy-zone.name}"
+  domain = data.digitalocean_domain.funkyboy-zone.name
   type = "TXT"
   ttl = "60" # seconds
   name = "mail._domainkey"
@@ -35,7 +35,7 @@ resource "digitalocean_record" "funkyboy-zone-dkim" {
 }
 
 resource "digitalocean_record" "funkyboy-zone-keybase" {
-  domain = "${data.digitalocean_domain.funkyboy-zone.name}"
+  domain = data.digitalocean_domain.funkyboy-zone.name
   type = "TXT"
   ttl = "60" # seconds
   name = "@"

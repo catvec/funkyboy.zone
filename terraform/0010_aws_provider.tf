@@ -1,2 +1,4 @@
 # Setup provider
-provider "aws" {}
+provider "aws" {
+  version = "~> 3.22.0"
+}
