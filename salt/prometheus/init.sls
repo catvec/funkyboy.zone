@@ -52,28 +52,28 @@
       - group: {{ pillar.prometheus.group }}-group
 
 # Service
-{{ svc }}-enabled:
-  service.enabled:
-    - name: {{ svc }}
-    - require:
-      - file: {{ pillar.prometheus.svc_file }}
-      - file: {{ pillar.prometheus.svc_log_file }}
-      - file: {{ pillar.prometheus.config_file }}  
+# {{ svc }}-enabled:
+#   service.enabled:
+#     - name: {{ svc }}
+#     - require:
+#       - file: {{ pillar.prometheus.svc_file }}
+#       - file: {{ pillar.prometheus.svc_log_file }}
+#       - file: {{ pillar.prometheus.config_file }}  
 
-{{ svc }}-running:
-  service.running:
-    - name: {{ svc }}
-    - watch:
-      - file: {{ pillar.prometheus.config_file }}
-      - file: {{ pillar.prometheus.rules_file }}
-      - file: {{ pillar.prometheus.svc_file }}
-      - file: {{ pillar.prometheus.svc_log_file }}
-    - require:
-      - service: {{ svc }}-enabled
-      - file: {{ pillar.prometheus.config_file }}
-      - file: {{ pillar.prometheus.rules_file }}
-      - file: {{ pillar.prometheus.svc_file }}
-      - file: {{ pillar.prometheus.svc_log_file }}
+# {{ svc }}-running:
+#   service.running:
+#     - name: {{ svc }}
+#     - watch:
+#       - file: {{ pillar.prometheus.config_file }}
+#       - file: {{ pillar.prometheus.rules_file }}
+#       - file: {{ pillar.prometheus.svc_file }}
+#       - file: {{ pillar.prometheus.svc_log_file }}
+#     - require:
+#       - service: {{ svc }}-enabled
+#       - file: {{ pillar.prometheus.config_file }}
+#       - file: {{ pillar.prometheus.rules_file }}
+#       - file: {{ pillar.prometheus.svc_file }}
+#       - file: {{ pillar.prometheus.svc_log_file }}
 
 # Caddy
 {{ pillar.caddy.config_dir }}/{{ pillar.prometheus.caddy_cfg }}:

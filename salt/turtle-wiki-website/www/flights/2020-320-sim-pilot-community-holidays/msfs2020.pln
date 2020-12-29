@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<SimBase.Document Type="AceXML" version="1,0">
+    <Descr>AceXML Document</Descr>
+    <FlightPlan.FlightPlan>
+        <Title>Vaasa to Rovaniemi</Title>
+        <FPType>VFR</FPType>
+        <CruisingAlt>7500.000</CruisingAlt>
+        <DepartureID>EFVA</DepartureID>
+        <DepartureLLA>N63° 2' 44.87",E21° 45' 37.37",+000016.50</DepartureLLA>
+        <DestinationID>EFRO</DestinationID>
+        <DestinationLLA>N66° 33' 53.45",E25° 49' 49.38",+000622.00</DestinationLLA>
+        <Descr>Vaasa to Rovaniemi</Descr>
+        <DepartureName>Vaasa</DepartureName>
+        <DestinationName>Rovaniemi</DestinationName>
+        <AppVersion>
+            <AppVersionMajor>11</AppVersionMajor>
+            <AppVersionBuild>282174</AppVersionBuild>
+        </AppVersion>
+        <ATCWaypoint id="Vaasa">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <WorldPosition>N63° 2' 44.87",E21° 45' 37.37",+000016.50</WorldPosition>
+            <SpeedMaxFP>-1</SpeedMaxFP>
+            <ICAO>
+                <ICAOIdent>EFVA</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="Oulu">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <WorldPosition>N64° 55' 43.36",E25° 21' 6.06",+007500.00</WorldPosition>
+            <SpeedMaxFP>-1</SpeedMaxFP>
+            <ICAO>
+                <ICAOIdent>EFOU</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="Tornio">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <WorldPosition>N65° 46' 48.49",E24° 35' 14.55",+006500.00</WorldPosition>
+            <SpeedMaxFP>-1</SpeedMaxFP>
+            <ICAO>
+                <ICAOIdent>EFKE</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+        <ATCWaypoint id="Rovaniemi">
+            <ATCWaypointType>Airport</ATCWaypointType>
+            <WorldPosition>N66° 33' 53.45",E25° 49' 49.38",+000600.00</WorldPosition>
+            <SpeedMaxFP>-1</SpeedMaxFP>
+            <ICAO>
+                <ICAOIdent>EFRO</ICAOIdent>
+            </ICAO>
+        </ATCWaypoint>
+    </FlightPlan.FlightPlan>
+</SimBase.Document>
