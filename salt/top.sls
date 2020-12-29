@@ -82,6 +82,7 @@ base:
     - wallet-service
     - activism-website
     - chis-bot
+    - turtle-wiki-website
 
     # Service logging
     # Placed last so putsvl can modify any services created by any state 

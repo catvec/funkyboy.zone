@@ -54,6 +54,7 @@ caddy:
 
   # Let's Encrypt endpoint
   # staging: https://acme-staging-v02.api.letsencrypt.org/directory
+  # production: https://acme-v02.api.letsencrypt.org/directory
   lets_encrypt_endpoint: https://acme-v02.api.letsencrypt.org/directory
 
   # Sites
@@ -123,3 +124,9 @@ caddy:
       www_dir: activism
       hosts:
         - act.funkyboy.zone
+
+    # Gaming website
+    turtle_wiki:
+      www_dir: turtle-wiki
+      hosts:
+        - turtle.wiki

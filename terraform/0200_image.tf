@@ -1,4 +1,4 @@
 # Droplet image
-data "digitalocean_image" "void-linux" {
+data "digitalocean_image" "void_linux" {
   name = "Void-Linux-GLIBC"
 }

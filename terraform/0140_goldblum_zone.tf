@@ -1,25 +1,25 @@
-data "digitalocean_domain" "goldblum-zone" {
+data "digitalocean_domain" "goldblum_zone" {
   name = "goldblum.zone"
 }
 
-resource "digitalocean_record" "goldblum-zone-wildcard" {
-  domain = "${data.digitalocean_domain.goldblum-zone.name}"
+resource "digitalocean_record" "goldblum_zone_wildcard" {
+  domain = data.digitalocean_domain.goldblum_zone.name
   type = "A"
   ttl = "60" # seconds
   name = "*"
-  value = "${digitalocean_droplet.funkyboy-zone.ipv4_address}"
+  value = digitalocean_droplet.funkyboy_zone.ipv4_address
 }
 
-resource "digitalocean_record" "goldblum-zone-apex" {
-  domain = "${data.digitalocean_domain.goldblum-zone.name}"
+resource "digitalocean_record" "goldblum_zone_apex" {
+  domain = data.digitalocean_domain.goldblum_zone.name
   type = "A"
   ttl = "60" # seconds
   name = "@"
-  value = "${digitalocean_droplet.funkyboy-zone.ipv4_address}"
+  value = digitalocean_droplet.funkyboy_zone.ipv4_address
 }
 
-resource "digitalocean_record" "goldblum-zone-keybase" {
-  domain = "${data.digitalocean_domain.goldblum-zone.name}"
+resource "digitalocean_record" "goldblum_zone_keybase" {
+  domain = data.digitalocean_domain.goldblum_zone.name
   type = "TXT"
   ttl = "60" # seconds
   name = "@"
