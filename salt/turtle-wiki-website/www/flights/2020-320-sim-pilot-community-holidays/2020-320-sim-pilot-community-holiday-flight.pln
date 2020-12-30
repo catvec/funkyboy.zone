@@ -3,31 +3,23 @@
 <SimBase.Document Type="AceXML" version="1,0">
     <Descr>AceXML Document</Descr>
     <FlightPlan.FlightPlan>
-        <Title>Vaasa to Rovaniemi</Title>
+        <Title>Oulu to Rovaniemi</Title>
         <FPType>VFR</FPType>
         <CruisingAlt>7500.000</CruisingAlt>
-        <DepartureID>EFVA</DepartureID>
-        <DepartureLLA>N63° 2' 44.87",E21° 45' 37.37",+000016.50</DepartureLLA>
+        <DepartureID>EFOU</DepartureID>
+        <DepartureLLA>N64° 55' 43.36",E25° 21' 6.06",+000041.00</DepartureLLA>
         <DestinationID>EFRO</DestinationID>
         <DestinationLLA>N66° 33' 53.45",E25° 49' 49.38",+000622.00</DestinationLLA>
-        <Descr>Vaasa to Rovaniemi</Descr>
-        <DepartureName>Vaasa</DepartureName>
+        <Descr>Oulu to Rovaniemi</Descr>
+        <DepartureName>Oulu</DepartureName>
         <DestinationName>Rovaniemi</DestinationName>
         <AppVersion>
             <AppVersionMajor>11</AppVersionMajor>
             <AppVersionBuild>282174</AppVersionBuild>
         </AppVersion>
-        <ATCWaypoint id="Vaasa">
+        <ATCWaypoint id="EFOU">
             <ATCWaypointType>Airport</ATCWaypointType>
-            <WorldPosition>N63° 2' 44.87",E21° 45' 37.37",+000016.50</WorldPosition>
-            <SpeedMaxFP>-1</SpeedMaxFP>
-            <ICAO>
-                <ICAOIdent>EFVA</ICAOIdent>
-            </ICAO>
-        </ATCWaypoint>
-        <ATCWaypoint id="Oulu">
-            <ATCWaypointType>Airport</ATCWaypointType>
-            <WorldPosition>N64° 55' 43.36",E25° 21' 6.06",+007500.00</WorldPosition>
+            <WorldPosition>N64° 55' 43.36",E25° 21' 6.06",+000041.00</WorldPosition>
             <SpeedMaxFP>-1</SpeedMaxFP>
             <ICAO>
                 <ICAOIdent>EFOU</ICAOIdent>
@@ -41,7 +33,7 @@
                 <ICAOIdent>EFKE</ICAOIdent>
             </ICAO>
         </ATCWaypoint>
-        <ATCWaypoint id="Rovaniemi">
+        <ATCWaypoint id="EFRO">
             <ATCWaypointType>Airport</ATCWaypointType>
             <WorldPosition>N66° 33' 53.45",E25° 49' 49.38",+000600.00</WorldPosition>
             <SpeedMaxFP>-1</SpeedMaxFP>
