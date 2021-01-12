@@ -14,6 +14,7 @@
 	<a href="#bash">Bash</a>
 	<ol>
 	  <li><a href="#bash-script-dir">Script Directory</a></li>
+	  <li><a href="#bash-check">Check</a></li>
 	  <li><a href="#bash-bold-echo">Bold Echo</a></li>
 	  <li><a href="#bash-die">Die</a></li>
 	  <li><a href="#bash-getopts-shift"><code>getopts</code> Shift</a></li>
@@ -27,9 +28,24 @@
 
       Determine the directory in which a bash script is located:<br>
       <br>
-      <code>
-	prog_dir=$(dirname $(realpath "$0"))
-      </code>
+      <pre>
+      prog_dir=$(dirname $(realpath "$0"))
+      </pre>
+    </section>
+
+    <section id="bash-check">
+      <h2>Check</h2>
+
+      Check the previous command succeeded and print an
+	 error message if it failed:<br>
+      <br>
+      <pre>
+      check() {
+          if [[ "$?" != "0" ]]; then
+              die "$@"
+          fi
+      }
+      </pre>
     </section>
 
     <section id="bash-bold-echo">
@@ -37,11 +53,11 @@
 
       Print bold text:<br>
       <br>
-      <code>
-	function bold() {<br>
-	&nbsp;&nbsp;&nbsp;&nbsp;echo "$(tput bold)$@$(tput sgr0)"<br>
-	}
-      </code>
+      <pre>
+      bold() {
+          echo "$(tput bold)$@$(tput sgr0)"
+      }
+      </pre>
     </section>
 
     <section id="bash-die">
@@ -49,12 +65,12 @@
 
       Print error to <code>stderr</code> and exit:<br>
       <br>
-      <code>
-	function die() {<br>
-	&nbsp;&nbsp;&nbsp;&nbsp;echo "Error: $@" >&2<br>
-	&nbsp;&nbsp;&nbsp;&nbsp;exit 1<br>
-	}
-      </code>
+      <pre>
+      die() {
+          echo "Error: $@" >&2
+          exit 1
+      }
+      </pre>
     </section>
 
     <section id="bash-getopts-shift">
@@ -62,9 +78,9 @@
 
       Shift after <code>getopts</code>:<br>
       <br>
-      <code>
-	shift $((OPTIND-1))
-      </code>
+      <pre>
+      shift $((OPTIND-1))
+      </pre>
     </section>
   </body>
 </html>
