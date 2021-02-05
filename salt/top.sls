@@ -81,7 +81,6 @@ base:
     - wiki-website
     - wallet-service
     - activism-website
-    - chis-bot
     - turtle-wiki-website
 
     # Service logging

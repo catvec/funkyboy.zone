@@ -53,4 +53,3 @@ base:
     - public-www
     - wallet-service
     - wallet-service-secret
-    - chis-bot
