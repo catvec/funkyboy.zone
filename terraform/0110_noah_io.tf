@@ -68,12 +68,28 @@ resource "digitalocean_record" "noahh_io_protonmail_mx20" {
   value = "mailsec.protonmail.ch."
 }
 
-resource "digitalocean_record" "noahh_io_protonmail_dkim" {
+resource "digitalocean_record" "noahh_io_protonmail_dkim1" {
   domain = data.digitalocean_domain.noahh_io.name
-  type = "TXT"
-  ttl = "3600" # seconds
-  name = "protonmail._domainkey.${data.digitalocean_domain.noahh_io.name}"
-  value = "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDNDdmnmb+9FGSMvNNzW6S1ZgwLl9BT7FTqvk3/HmvQHxOPir3f+m14BzOEE2kON2GW7pmERxY/+RUGghGj/WD+Uj3JP+RQY/cmFdZ+pjiVZZe3759uFaj3pHnnf9sjXjp5rWunMThuA+buS1pBxRTMVIytWVHuSvEdl0pNOiEaZQIDAQAB"
+  type = "CNAME"
+  ttl = "60" # seconds
+  name = "protonmail._domainkey"
+  value = "protonmail.domainkey.dhngagtoz5n6777wkmvw6ll2aqlow4wpnwisycw6oabxgrxih5m6a.domains.proton.ch."
+}
+
+resource "digitalocean_record" "noahh_io_protonmail_dkim2" {
+  domain = data.digitalocean_domain.noahh_io.name
+  type = "CNAME"
+  ttl = "60" # seconds
+  name = "protonmail2._domainkey"
+  value = "protonmail2.domainkey.dhngagtoz5n6777wkmvw6ll2aqlow4wpnwisycw6oabxgrxih5m6a.domains.proton.ch."
+}
+
+resource "digitalocean_record" "noahh_io_protonmail_dkim3" {
+  domain = data.digitalocean_domain.noahh_io.name
+  type = "CNAME"
+  ttl = "60" # seconds
+  name = "protonmail3._domainkey"
+  value = "protonmail3.domainkey.dhngagtoz5n6777wkmvw6ll2aqlow4wpnwisycw6oabxgrxih5m6a.domains.proton.ch."
 }
 
 resource "digitalocean_record" "noahh_io_protonmail_dmarc" {
