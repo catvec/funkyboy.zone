@@ -71,6 +71,7 @@ base:
     - scripts-repo
     - znc
     - factorio
+    - noahhuppert-website
     - funkyboy-website
     - file-modes-website
     - workout-website

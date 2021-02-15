@@ -1,8 +1,6 @@
-# Sets up Nginx to host the noahhuppert.com / noahh.io personal website.
+# Builds my personal website
 
-{% set repo = 'https://github.com/Noah-Huppert/NoahHuppert.com.git' %}
-
-{{ repo }}:
+{{ pillar.noahhuppert_website.repo }}:
   git.latest:
     - target: {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.noahhuppert.clone_dir }}
     - force_clone: True
@@ -13,9 +11,9 @@
 build_noahhuppert_com:
   cmd.run:
     - name: bash -c "npm install && npm run prod"
-    - cwd: {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.noahhuppert.src_dir }}
+    - cwd: {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.noahhuppert.clone_dir }}/{{ pillar.noahhuppert_website.src_dir }}
     - onchanges:
-      - git: {{ repo }}
+      - git: {{ pillar.noahhuppert_website.repo }}
 
 {{ pillar.caddy.serve_dir }}/{{ pillar.caddy.static_sites.noahhuppert.clone_dir }}:
   file.directory:

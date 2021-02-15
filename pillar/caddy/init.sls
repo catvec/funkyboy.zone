@@ -60,6 +60,17 @@ caddy:
   # Sites
   tls: True
   static_sites:
+    # Personal homepage
+    noahhuppert:
+      clone_dir: noahhuppert
+      www_dir: noahhuppert/www/dist
+      hosts:
+        {% for subdomain in [ '', '*.' ] %}
+        - '{{ subdomain }}noahh.io'
+        - '{{ subdomain }}noahhuppert.com'
+        - '{{ subdomain }}4e48.dev'
+        {% endfor %}
+        
     # Funky Boy Homepage
     funkyboy:
       www_dir: funkyboy
