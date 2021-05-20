@@ -1,32 +1,36 @@
 # Install Docker.
-
-{% set pkg = 'docker' %}
-{% set svc = 'docker' %}
-
-{{ pkg }}-pkg:
+{% for pkg in pillar['docker']['pkgs'] %}
+{{ pkg }}-install:
   pkg.installed:
     - name: {{ pkg }}
+{% endfor %}
 
+{% for pkg in pillar['docker']['py3_pkgs'] %}
 # Install python bindings so Salt can use Docker
-install_py3_bindings:
+install_py3_bindings_{{ pkg }}:
   cmd.run:
-    - name: pip3 install docker
-    - unless: pip3 show docker
+    - name: pip3 install {{ pkg }}
+    - unless: pip3 show {{ pkg }}
+{% endfor %}
 
-install_py2_bindings:
+{% for pkg in pillar['docker']['py2_pkgs'] %}
+# Install python bindings so Salt can use Docker
+install_py2_bindings_{{ pkg }}:
   cmd.run:
-    - name: pip2 install docker
-    - unless: pip2 show docker
+    - name: pip2 install {{ pkg }}
+    - unless: pip2 show {{ pkg }}
+{% endfor %}
 
-
-{{ svc }}-service-enabled:
+{{ pillar.docker.svc }}-service-enabled:
   service.enabled:
-    - name: {{ svc }}
+    - name: {{ pillar.docker.svc }}
     - require:
-      - pkg: {{ pkg }}-pkg
+      {% for pkg in pillar['docker']['pkgs'] %}
+      - pkg: {{ pkg }}-install
+      {% endfor %}
 
-{{ svc }}-service-running:
+{{ pillar.docker.svc }}-service-running:
   service.running:
-    - name: {{ svc }}
+    - name: {{ pillar.docker.svc }}
     - require:
-      - service: {{ svc }}-service-enabled
+      - service: {{ pillar.docker.svc }}-service-enabled
