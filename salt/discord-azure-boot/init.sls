@@ -32,3 +32,7 @@
     - name: {{ pillar.discord_azure_boot.svc }}
     - require:
       - service: {{ pillar.discord_azure_boot.svc }}-enabled
+    - watch:
+      - git: {{ pillar.discord_azure_boot.git_repo }}
+      - file: {{ pillar.discord_azure_boot.config_file }}
+      - file: {{ pillar.discord_azure_boot.svc_file }}
