@@ -54,3 +54,4 @@ base:
     - wallet-service
     - wallet-service-secret
     - noahhuppert-website
+    - discord-azure-boot

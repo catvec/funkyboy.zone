@@ -83,6 +83,7 @@ base:
     - wallet-service
     - activism-website
     - turtle-wiki-website
+    - discord-azure-boot
 
     # Service logging
     # Placed last so putsvl can modify any services created by any state 
