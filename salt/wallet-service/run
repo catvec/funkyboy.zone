@@ -28,11 +28,11 @@ run() {
     export CONTAINER_NAME="{{ pillar.wallet_service.mongo.container_name }}"
     export CONTAINER_DB_NAME="{{ pillar.wallet_service.mongo.database }}"
 
-    mongo_status=$("$server_dir/mongodb" status)
+    mongo_status=$("$prog_dir/mongodb" status)
     check "Failed to get MongoDB status"
 
     if [[ "$mongo_status" != "running" ]]; then
-	   "$server_dir/mongodb" start
+	   "$prog_dir/mongodb" start
 	   check "Failed to start MongoDB"
     fi
 

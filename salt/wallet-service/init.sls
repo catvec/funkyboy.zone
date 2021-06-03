@@ -6,6 +6,13 @@
     - target: {{ pillar.wallet_service.install_dir }}
     - identity: salt://ssh-deploy-key-secret/deploy_key
 
+# MongoDB Script
+{{ pillar.wallet_service.mongodb_script }}:
+  file.managed:
+    - source: salt://wallet-service/mongodb
+    - mode: 755
+    - makedirs: True
+      
 # Service
 {{ pillar.wallet_service.svc_run_file }}:
   file.managed:
@@ -32,6 +39,7 @@
   service.enabled:
     - name: {{ pillar.wallet_service.svc_name }}
     - require:
+      - file: {{ pillar.wallet_service.mongodb_script }}
       - file: {{ pillar.wallet_service.svc_run_file }}
       - file: {{ pillar.wallet_service.svc_log_file }}
       - file: {{ pillar.wallet_service.svc_finish_file }}

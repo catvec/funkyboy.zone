@@ -8,6 +8,9 @@ wallet_service:
   # Directory bot will be installed
   install_dir: {{ install_dir }}
 
+  # Mongo DB script
+  mongodb_script: /etc/sv/{{ svc_name }}/mongodb
+
   # Service
   svc_name: {{ svc_name }}
   svc_run_file: /etc/sv/{{ svc_name }}/run

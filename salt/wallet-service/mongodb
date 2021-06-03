@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+# $1 = command to run, commands:
+# - start: start MongoDB container
+# - status: get status of container, outputs "running" if MongoDB server is running,
+#           "stopped" if the MongoDB container is stopped but still exists, and
+#           "not found" if the MongoDB container does not exist.
+# - stop: Stops and removes the MongoDB container.
+# - logs: View logs from MongoDB container.
+# - cli: Open a MongoDB CLI which is connected to the container.
+
+function die() {
+    echo "mongodb:: $@" >&2
+    exit 1
+}
+
+function check() {
+    if [ "$?" -ne 0 ]; then
+	   die "$@"
+    fi
+}
+
+if [ -z "$CONTAINER_CLI" ]; then
+    if which podman &> /dev/null; then
+	   # Non systemd machines currently need to run podman with sudo due to a bug
+	   if ls -l /sbin/init | grep "systemd" &> /dev/null; then
+		  CONTAINER_CLI=podman
+	   else
+		  CONTAINER_CLI="sudo podman"		  
+	   fi
+    elif which docker &> /dev/null; then
+	   CONTAINER_CLI=docker
+    else
+	   die "Either podman or docker must be installed"
+    fi
+fi
+
+if [ -z "$CONTAINER_NAME" ]; then
+    CONTAINER_NAME=dev-wallet-service
+fi
+
+if [ -z "$CONTAINER_DB_NAME" ]; then
+    CONTAINER_DB_NAME=dev_wallet_service
+fi
+
+if [ -z "$CONTAINER_DATA_DIR" ]; then
+    CONTAINER_DATA_DIR="$PWD/container-data/mongodb"
+fi
+mkdir -p "$CONTAINER_DATA_DIR"
+check "Failed to create container data directory"
+
+container_tag="mongo:latest"
+
+case "$1" in
+    start)
+	   case $($0 status) in
+		  running) die "already running" ;;
+		  stopped) $CONTAINER_CLI start "$CONTAINER_NAME" ;;
+		  "not found") $CONTAINER_CLI run -d -e "MONGO_INITDB_DATABASE=$CONTAINER_DB_NAME" -v "$CONTAINER_DATA_DIR:/data/db" --net host --name "$CONTAINER_NAME" "$container_tag" ;;
+	   esac
+	   ;;
+    status)
+	   if $CONTAINER_CLI ps | grep "$CONTAINER_NAME" &> /dev/null; then
+		  echo "running"
+	   elif $CONTAINER_CLI ps -a | grep "$CONTAINER_NAME" &> /dev/null; then
+		  echo "stopped"
+	   else
+		  echo "not found"
+	   fi
+	   ;;
+    stop)
+	   case $($0 status) in
+		  running)
+			 $CONTAINER_CLI stop "$CONTAINER_NAME"
+			 $CONTAINER_CLI rm "$CONTAINER_NAME"
+			 ;;
+		  stopped)
+			 $CONTAINER_CLI rm "$CONTAINER_NAME"
+			 ;;
+		  *) die "Cannot stop and remove mongodb: if not running" ;;
+	   esac
+	   ;;
+    logs)
+	   case $($0 status) in
+		  running)
+			 $CONTAINER_CLI logs -f "$CONTAINER_NAME"
+			 ;;
+		  *) die "Cannot get logs if MongoDB is not running" ;;
+	   esac
+	   ;;
+    cli)
+	   shift
+	   $CONTAINER_CLI run -it --rm --net host "$container_tag" mongo "$CONTAINER_DB_NAME" $@
+	   ;;
+    *)
+	   die "first argument must be \"start\", \"status\", \"stop\", \"logs\", \"cli\""
+	   ;;
+esac
