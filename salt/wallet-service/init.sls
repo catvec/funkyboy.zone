@@ -5,12 +5,14 @@
   git.latest:
     - target: {{ pillar.wallet_service.install_dir }}
     - identity: salt://ssh-deploy-key-secret/deploy_key
+    - force_reset: remote-changes
 
 # MongoDB Script
-{{ pillar.wallet_service.mongodb_script }}:
+{{ pillar.wallet_service.docker_compose_env_file }}:
   file.managed:
-    - source: salt://wallet-service/mongodb
-    - mode: 755
+    - source: salt://wallet-service/docker-compose.env.yml
+    - template: jinja
+    - mode: 644
     - makedirs: True
       
 # Service
@@ -28,21 +30,13 @@
     - mode: 755
     - makedirs: True
 
-{{ pillar.wallet_service.svc_finish_file }}:
-  file.managed:
-    - source: salt://wallet-service/finish
-    - template: jinja
-    - mode: 755
-    - makedirs: True
-
 {{ pillar.wallet_service.svc_name }}-enabled:
   service.enabled:
     - name: {{ pillar.wallet_service.svc_name }}
     - require:
-      - file: {{ pillar.wallet_service.mongodb_script }}
+      - file: {{ pillar.wallet_service.docker_compose_env_file }}
       - file: {{ pillar.wallet_service.svc_run_file }}
       - file: {{ pillar.wallet_service.svc_log_file }}
-      - file: {{ pillar.wallet_service.svc_finish_file }}
 
 {{ pillar.wallet_service.svc_name }}-running:
   service.running:
@@ -54,7 +48,6 @@
       - git: {{ pillar.wallet_service.git_uri }}
       - file: {{ pillar.wallet_service.svc_run_file }}
       - file: {{ pillar.wallet_service.svc_log_file }}
-      - file: {{ pillar.wallet_service.svc_finish_file }}
 
 # Reverse proxy
 {{ pillar.caddy.config_dir }}/{{ pillar.wallet_service.caddyfile }}:

@@ -20,32 +20,17 @@ run() {
     cd "$server_dir"
     check "Failed to change to server directory"
 
-    # Install NPM depdencies
-    npm install
-    check "Failed to install NPM dependencies"
+    # export NODE_ENV=production
 
-    # Start MongoDB
-    export CONTAINER_NAME="{{ pillar.wallet_service.mongo.container_name }}"
-    export CONTAINER_DB_NAME="{{ pillar.wallet_service.mongo.database }}"
-
-    mongo_status=$("$prog_dir/mongodb" status)
-    check "Failed to get MongoDB status"
-
-    if [[ "$mongo_status" != "running" ]]; then
-	   "$prog_dir/mongodb" start
-	   check "Failed to start MongoDB"
-    fi
-
-    # Start server
-    export NODE_ENV=production
-
-    export APP_API_PORT={{ pillar.wallet_service.api_server.port }}
-    export APP_DB_URI={{ pillar.wallet_service.mongo.uri }}
+    # export APP_API_PORT={{ pillar.wallet_service.api_server.port }}
+    # export APP_DB_URI={{ pillar.wallet_service.mongo.uri }}
 
     # We pass the index.js file to stdin bc the prom-client NodeJS library
     # needs some sort of stdin to work: https://github.com/siimon/prom-client/issues/391
     # Yea, it's really weird.
-    exec node "$server_dir/index.js" < "$server_dir/index.js"
+    # exec node "$server_dir/index.js" < "$server_dir/index.js"
+
+    exec docker-compose -f docker-compose.yml -f docker-compose.prod.yml -f {{ pillar.wallet_service.docker_compose_env_file }} up --build
 }
 
 run 2>&1

@@ -8,9 +8,6 @@ wallet_service:
   # Directory bot will be installed
   install_dir: {{ install_dir }}
 
-  # Mongo DB script
-  mongodb_script: /etc/sv/{{ svc_name }}/mongodb
-
   # Service
   svc_name: {{ svc_name }}
   svc_run_file: /etc/sv/{{ svc_name }}/run
@@ -19,10 +16,7 @@ wallet_service:
 
   # Configuration file
   secret_config_file: {{ install_dir }}/src/secret.config.js
-
-  # MongoDB container
-  mongo:
-    container_name: prod-wallet-service-mongo
+  docker_compose_env_file: {{ install_dir }}/docker-compose.env.yml
 
   # Caddyfile name
   caddyfile: wallet-service
