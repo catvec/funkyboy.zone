@@ -23,7 +23,7 @@
 #
 #?
 
-# {{{1 Configuration
+# Configuration
 prog_dir=$(realpath $(dirname "$0"))
 
 terraform=terraform
@@ -32,18 +32,18 @@ configuration_dir=$(realpath "$prog_dir/../terraform")
 plan_file=/tmp/funkyboy-zone.tf.plan
 state_file=$(realpath "$prog_dir/../secret/terraform.tfstate")
 
-# {{{1 Helpers
+# Helpers
 function die() {
     echo "Error: $@" >&2
     exit 1
 }
 
-# {{{1 Check for terraform CLI
+# Check for terraform CLI
 if ! which $terraform &> /dev/null; then
     die "terraform must be installed"
 fi
 
-# {{{1 Options
+# Options
 while getopts "py" opt; do
     case "$opt" in
 	p) plan_only="true" ;;
@@ -52,8 +52,8 @@ while getopts "py" opt; do
     esac
 done
 
-# {{{1 Environment variables
-# {{{2 Check
+# Environment variables
+# Check
 if [ -z "$DO_API_TOKEN" ]; then
     die "DO_API_TOKEN must be set"
 fi
@@ -66,18 +66,18 @@ if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
     die "AWS_SECRET_ACCESS_KEY must be set"
 fi
 
-# {{{2 Set TF_VAR environment variables
+# Set TF_VAR environment variables
 export TF_VAR_do_token="$DO_API_TOKEN"
 
-# {{{1 Initialize terraform
+# Initialize terraform
 if [ ! -d "$configuration_dir/.terraform" ]; then
     if ! terraform init "$configuration_dir"; then
 	die "Failed to initialize terraform"
     fi
 fi
 
-# {{{1 Plan
-# {{{2 Delete plan file if exists
+# Plan
+# Delete plan file if exists
 if [ -f "$plan_file" ]; then
     echo "Deleting existing plan file"
 
@@ -86,7 +86,7 @@ if [ -f "$plan_file" ]; then
     fi
 fi
 
-# {{{2 Plan
+# Plan
 if ! terraform plan \
      -out "$plan_file" \
      -state "$state_file" \
@@ -94,13 +94,13 @@ if ! terraform plan \
     die "Failed to plan"
 fi
 
-# {{{2 Exit if plan only given
+# Exit if plan only given
 if [ -n "$plan_only" ]; then
     echo "DONE"
     exit 0
 fi
 
-# {{{2 Confirm plan
+# Confirm plan
 if [ -z "$noconfirm" ]; then
     echo "OK? [y/N]"
 
@@ -111,7 +111,7 @@ if [ -z "$noconfirm" ]; then
     fi
 fi
 
-# {{{1 Apply plan
+# Apply plan
 if ! terraform apply \
      -state-out "$state_file" \
      "$plan_file"; then

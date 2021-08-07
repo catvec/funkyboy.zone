@@ -23,7 +23,7 @@
 # {{1 Exit on any error
 set -e
 
-# {{{1 Get script directory
+# Get script directory
 prog_dir=$(realpath $(dirname "$0"))
 
 # Arguments
