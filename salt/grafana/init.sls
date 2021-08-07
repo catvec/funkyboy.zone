@@ -23,16 +23,23 @@
     - makedirs: True
 
 # Service
-{{ svc }}-enabled:
-  service.enabled:
+# {{ svc }}-enabled:
+#   service.enabled:
+#     - name: {{ svc }}
+#     - require:
+#       - pkg: {{ pkg }}
+
+# Disabled until crashes are fixed, probably will not fix and re-make with a new infrastructure overhaul. It keeps crashing bc it cannot make the log dir /var/log/grafana, need to give it its own user and make that dir for it.
+{{ svc }}-disabled:
+  service.disabled:
     - name: {{ svc }}
     - require:
       - pkg: {{ pkg }}
 
-{{ svc }}-running:
-  service.running:
-    - name: {{ svc }}
-    - watch:
-      - file: {{ pillar.grafana.config_file }}
-    - require:
-      - service: {{ svc }}-enabled
+# {{ svc }}-running:
+#   service.running:
+#     - name: {{ svc }}
+#     - watch:
+#       - file: {{ pillar.grafana.config_file }}
+#     - require:
+#       - service: {{ svc }}-enabled
