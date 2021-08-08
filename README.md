@@ -28,12 +28,11 @@ name my Linux server: Funky Boy.
    ```
    You must have access to the [funkyboy.zone-secrets](https://github.com/Noah-Huppert/funkyboy.zone-secrets)
    repository. This private repository holds secret setup information.
-
+2. Make a copy of `.env-example` named `.env`, edit your own values.
 2. Setup cloud resources on DigitalOcean using [Terraform](https://terraform.io):
    ```
    ./client-scripts/setup-cloud.sh
    ```
-
 3. Run the initial setup script:
    ```
    ./client-scripts/init.sh
