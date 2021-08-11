@@ -22,7 +22,7 @@ variable "keybase_verification" {
 }
 
 variable "mx" {
-  type = list([string])
+  type = list(string)
   description = "The mail servers to publish, must contain 2 servers, one primary and one secondary (Optional)."
   default = []
 
@@ -33,7 +33,7 @@ variable "mx" {
 }
 
 variable "dkim" {
-  type = list([tuple([string, string])])
+  type = list(tuple([string, string]))
   description = "The DKIM keys to publish, must contain 3 elements if mx is provided. Each element is a tuple of (dkim CNAME record name, value) (Optional)."
   default = []
 
@@ -47,19 +47,14 @@ variable "dmarc" {
   type = string
   description = "The DMARC policy to public, required if mx is set (Optional)."
   default = ""
-
-  validation {
-    condition = length(var.mx) > 0 && length(var.dmarc) > 0
-    error_message = "The dmarc value must be provided if the mx value is provided."
-  }
 }
 
 # Content records
-data "digitalocean_domain" "${domain}_domain" {
+data "digitalocean_domain" "domain" {
   name = domain
 }
 
-resource "digitalocean_record" "${domain}_wildcard" {
+resource "digitalocean_record" "record_wildcard" {
   domain = domain
   type = "A"
   ttl = "60" # seconds
@@ -67,7 +62,7 @@ resource "digitalocean_record" "${domain}_wildcard" {
   value = var.target
 }
 
-resource "digitalocean_record" "${domain}_apex" {
+resource "digitalocean_record" "record_apex" {
   domain = domain
   type = "A"
   ttl = "60" # seconds
@@ -76,7 +71,7 @@ resource "digitalocean_record" "${domain}_apex" {
 }
 
 # Verification records
-resource "digitalocean_record" "${domain}_spf" {
+resource "digitalocean_record" "record_spf" {
   domain = domain
   type = "TXT"
   ttl = "60" # seconds
@@ -85,7 +80,7 @@ resource "digitalocean_record" "${domain}_spf" {
 }
 
 
-resource "digitalocean_record" "${domain}_keybase" {
+resource "digitalocean_record" "record_keybase" {
   count = var.keybase_verification != "" ? 1 : 0
   domain = domain
   type = "TXT"
@@ -94,7 +89,7 @@ resource "digitalocean_record" "${domain}_keybase" {
   value = var.keybase_verification
 }
 
-resource "digitalocean_record" "${domain}_protonmail_mx10" {
+resource "digitalocean_record" "record_protonmail_mx10" {
   count = length(var.mx) > 0 ? 1 : 0
   domain = domain
   type = "TXT"
@@ -104,7 +99,7 @@ resource "digitalocean_record" "${domain}_protonmail_mx10" {
   value = var.mx[0]
 }
 
-resource "digitalocean_record" "${domain}_protonmail_mx20" {
+resource "digitalocean_record" "record_protonmail_mx20" {
   count = length(var.mx) > 0 ? 1 : 0
   domain = domain
   type = "TXT"
@@ -114,7 +109,7 @@ resource "digitalocean_record" "${domain}_protonmail_mx20" {
   value = var.mx[1]
 }
 
-resource "digitalocean_record" "${domain}_protonmail_dkim1" {
+resource "digitalocean_record" "record_protonmail_dkim1" {
   count = length(var.mx) > 0 ? 1 : 0
   domain = domain
   type = "CNAME"
@@ -123,7 +118,7 @@ resource "digitalocean_record" "${domain}_protonmail_dkim1" {
   value = var.dkim[0][1]
 }
 
-resource "digitalocean_record" "${domain}_protonmail_dkim2" {
+resource "digitalocean_record" "record_protonmail_dkim2" {
   count = length(var.mx) > 0 ? 1 : 0
   domain = domain
   type = "CNAME"
@@ -132,7 +127,7 @@ resource "digitalocean_record" "${domain}_protonmail_dkim2" {
   value = var.dkim[1][1]
 }
 
-resource "digitalocean_record" "${domain}_protonmail_dkim3" {
+resource "digitalocean_record" "record_protonmail_dkim3" {
   count = length(var.mx) > 0 ? 1 : 0
   domain = domain
   type = "CNAME"
@@ -141,7 +136,7 @@ resource "digitalocean_record" "${domain}_protonmail_dkim3" {
   value = var.dkim[2][1]
 }
 
-resource "digitalocean_record" "${domain}_protonmail_dmarc" {
+resource "digitalocean_record" "record_protonmail_dmarc" {
   count = length(var.mx) > 0 ? 1 : 0
   domain = domain
   type = "TXT"

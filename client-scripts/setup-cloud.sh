@@ -83,7 +83,7 @@ if ! which $terraform &> /dev/null; then
 fi
 
 # Options
-while getopts "hpy" opt; do
+while getopts "hipy" opt; do
     case "$opt" in
 	   h)
 		  cat <<EOF
@@ -95,24 +95,27 @@ USAGE
 
 OPTIONS
 
-   -p    Run in plan mode
-   -y    Do not confirm
+    -h    Show help text
+    -i    Force a terraform initialization
+    -p    Run in plan mode
+    -y    Do not confirm
 
 BEHAVIOR
 
-   Setup cloud resources with Terraform.
+    Setup cloud resources with Terraform.
 
  ENVIRONMENT VARIABLES
 
-   DO_API_TOKEN             Digital Ocean API token
-   AWS_ACCESS_KEY_ID        AWS API access key ID
-   AWS_SECRET_ACCESS_KEY    AWS API secret access key
+    DO_API_TOKEN             Digital Ocean API token
+    AWS_ACCESS_KEY_ID        AWS API access key ID
+    AWS_SECRET_ACCESS_KEY    AWS API secret access key
 
 EOF
 		  exit 0
-	   ;;
-	   p) plan_only="true" ;;
-	   y) noconfirm="true" ;;
+		  ;;
+	   i) force_tf_init=true ;;
+	   p) plan_only=true ;;
+	   y) noconfirm=true ;;
 	   '?') die "$ERR_CODE_UNKNOWN_OPT" "Unknown option" ;;
     esac
 done
@@ -134,7 +137,7 @@ fi
 export TF_VAR_do_token="$DO_API_TOKEN"
 
 # Initialize terraform
-if [ ! -d "$configuration_dir/.terraform" ]; then
+if [ ! -d "$configuration_dir/.terraform" ] || [ -n "$force_tf_init" ]; then
     terraform -chdir="$configuration_dir" init
     check "$ERR_CODE_TERRAFORM_INIT" "Failed to initialize terraform"
 fi

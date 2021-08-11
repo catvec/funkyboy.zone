@@ -39,7 +39,7 @@ variable "spf_no_email" {
 }
 
 variable "mx" {
-  type = list([string])
+  type = list(string)
   description = "Mail server MX DNS records."
   default = [
     "mail.protonmail.ch.",
@@ -48,7 +48,7 @@ variable "mx" {
 }
 
 variable "dkim" {
-  type = map(string)
+  type = map(list(tuple([string, string])))
   description = "DKIM DNS entries for domains."
   default = {
     "funkyboy.zone": [],
@@ -91,7 +91,7 @@ variable "dmarc" {
   type = map(string)
   description = "DMARC policies for domains."
   default = {
-    "funkyboy.zone": [],
+    "funkyboy.zone": "",
     "noahh.io": "v=DMARC1; p=none; rua=mailto:contact@noahh.io",
     "noahhuppert.com": "v=DMARC1; p=none; rua=mailto:contact@noahhuppert.com",
     "gondola.zone": "",
@@ -102,7 +102,7 @@ variable "dmarc" {
 }
 
 module "domains" {
-  source "./domain"
+  source = "./domain"
 
   dynamic "setting" {
     for_each = var.domains
