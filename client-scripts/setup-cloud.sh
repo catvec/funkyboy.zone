@@ -91,7 +91,7 @@ setup-cloud.sh - Setup cloud resources
 
 USAGE
 
-    setup-cloud.sh [-p,-y]
+    setup-cloud.sh [-h,-i,-p,-y]
 
 OPTIONS
 
@@ -138,7 +138,7 @@ export TF_VAR_do_token="$DO_API_TOKEN"
 
 # Initialize terraform
 if [ ! -d "$configuration_dir/.terraform" ] || [ -n "$force_tf_init" ]; then
-    terraform -chdir="$configuration_dir" init
+    terraform -chdir="$configuration_dir" init -upgrade
     check "$ERR_CODE_TERRAFORM_INIT" "Failed to initialize terraform"
 fi
 
