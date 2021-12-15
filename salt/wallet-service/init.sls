@@ -6,6 +6,7 @@
     - target: {{ pillar.wallet_service.install_dir }}
     - identity: salt://ssh-deploy-key-secret/deploy_key
     - force_reset: remote-changes
+    - rev: {{ pillar.wallet_service.server_tag }}
 
 # MongoDB Script
 {{ pillar.wallet_service.docker_compose_env_file }}:

@@ -4,6 +4,7 @@
 wallet_service:
   # Git repository
   git_uri: git@github.com:Noah-Huppert/wallet-service.git
+  server_tag: server-v1.1.0
 
   # Directory bot will be installed
   install_dir: {{ install_dir }}
