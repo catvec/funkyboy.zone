@@ -39,12 +39,23 @@ variable "spf_no_email" {
 }
 
 variable "mx" {
-  type = list(string)
+  type = map(list(string))
   description = "Mail server MX DNS records."
-  default = [
-    "mail.protonmail.ch.",
-    "mailsec.protonmail.ch.",
-  ]
+  default = {
+    "funkyboy.zone": [],
+    "noahh.io": [
+	 "mail.protonmail.ch.",
+	 "mailsec.protonmail.ch.",
+    ],
+    "noahhuppert.com": [
+	 "mail.protonmail.ch.",
+	 "mailsec.protonmail.ch.",
+    ],
+    "gondola.zone": [],
+    "oliversgame.deals": [],
+    "4e48.dev": [],
+    "turtle.wiki": [],
+  }
 }
 
 variable "dkim" {
@@ -104,17 +115,13 @@ variable "dmarc" {
 module "domains" {
   source = "./domain"
 
-  dynamic "setting" {
-    for_each = var.domains
-    iterator = "domain"
-    content {
-	 name = domain
-	 target = digitalocean_droplet.funkyboy_zone.ipv4_address
-	 spf = length(var.mx[domain]) > 0 ? var.spf_email : var.spf_no_email
-	 keybase_verification = keybase_verification[domain]
-	 mx = var.mx
-	 dkim = var.dkim
-	 dmarc = var.dmarc[domain]
-    }
-  }
+  for_each = toset(var.domains)
+
+  name = each.key
+  target = digitalocean_droplet.funkyboy_zone.ipv4_address
+  spf = length(var.mx[each.key]) > 0 ? var.spf_email : var.spf_no_email
+  keybase_verification = var.keybase_verification[each.key]
+  mx = var.mx[each.key]
+  dkim = var.dkim[each.key]
+  dmarc = var.dmarc[each.key]
 }
