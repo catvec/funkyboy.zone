@@ -178,6 +178,7 @@ fi
 # Apply plan
 terraform -chdir="$configuration_dir" apply \
 		-state-out "$state_file" \
+		-state "$state_file" \
 		"$plan_file"
 check "$ERR_CODE_TERRAFORM_APPLY" "Failed to apply"
 

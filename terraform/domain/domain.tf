@@ -49,6 +49,12 @@ variable "dmarc" {
   default = ""
 }
 
+variable "protonmail_verification" {
+  type = string
+  description = "Protonmail domain ownership verification (Optional)."
+  default = ""
+}
+
 # Content records
 data "digitalocean_domain" "domain" {
   name = var.name
@@ -92,7 +98,7 @@ resource "digitalocean_record" "record_keybase" {
 resource "digitalocean_record" "record_protonmail_mx10" {
   count = length(var.mx) > 0 ? 1 : 0
   domain = var.name
-  type = "TXT"
+  type = "MX"
   ttl = "1800" # seconds
   name = "@"
   priority = 10
@@ -102,7 +108,7 @@ resource "digitalocean_record" "record_protonmail_mx10" {
 resource "digitalocean_record" "record_protonmail_mx20" {
   count = length(var.mx) > 0 ? 1 : 0
   domain = var.name
-  type = "TXT"
+  type = "MX"
   ttl = "1800" # seconds
   name = "@"
   priority = 20
@@ -114,7 +120,7 @@ resource "digitalocean_record" "record_protonmail_dkim1" {
   domain = var.name
   type = "CNAME"
   ttl = "60" # seconds
-  name = var.dkim[0][1]
+  name = var.dkim[0][0]
   value = var.dkim[0][1]
 }
 
@@ -145,3 +151,11 @@ resource "digitalocean_record" "record_protonmail_dmarc" {
   value = var.dmarc
 }
 
+resource "digitalocean_record" "record_protonmail_verification" {
+  count = length(var.mx) > 0 ? 1 : 0
+  domain = var.name
+  type = "TXT"
+  ttl = "1800" # seconds
+  name = "@"
+  value = var.protonmail_verification
+}
