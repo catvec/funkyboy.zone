@@ -5,7 +5,7 @@ variable "domains" {
     "funkyboy.zone",
     "noahh.io",
     "noahhuppert.com",
-    "gondola.zone",
+    "goldblum.zone",
     "oliversgame.deals",
     "4e48.dev",
     "turtle.wiki",
@@ -19,7 +19,7 @@ variable "keybase_verification" {
     "funkyboy.zone": "keybase-site-verification=29OQirPLhHqrbRfkhsdWl45XyYDZ537bFU2sh1zsW-A",
     "noahh.io": "keybase-site-verification=qLC-aj3hDn591K3qx2EX-aiZTb09QLlk2IY4BmuOBmI",
     "noahhuppert.com": "keybase-site-verification=JLTh13lgHP5frw5NRtWBWquFyy2GHCaVHXhph2g6qbQ",
-    "gondola.zone": "keybase-site-verification=WZW-zpLmYG-6wcbQolAisRi5lrynVWsT2TRDKUv4APM",
+    "goldblum.zone": "keybase-site-verification=WZW-zpLmYG-6wcbQolAisRi5lrynVWsT2TRDKUv4APM",
     "oliversgame.deals": "",
     "4e48.dev": "",
     "turtle.wiki": "",
@@ -51,7 +51,7 @@ variable "mx" {
 	 "mail.protonmail.ch.",
 	 "mailsec.protonmail.ch.",
     ],
-    "gondola.zone": [],
+    "goldblum.zone": [],
     "oliversgame.deals": [],
     "4e48.dev": [],
     "turtle.wiki": [],
@@ -91,7 +91,7 @@ variable "dkim" {
 	   "protonmail3.domainkey.d2i3l6setswma5tygpxpd7llkrjpntekxmytca5etovoacggdmrka.domains.proton.ch."
 	 ],
     ],
-    "gondola.zone": [],
+    "goldblum.zone": [],
     "oliversgame.deals": [],
     "4e48.dev": [],
     "turtle.wiki": [],
@@ -105,7 +105,21 @@ variable "dmarc" {
     "funkyboy.zone": "",
     "noahh.io": "v=DMARC1; p=none; rua=mailto:contact@noahh.io",
     "noahhuppert.com": "v=DMARC1; p=none; rua=mailto:contact@noahhuppert.com",
-    "gondola.zone": "",
+    "goldblum.zone": "",
+    "oliversgame.deals": "",
+    "4e48.dev": "",
+    "turtle.wiki": "",
+  }
+}
+
+variable "protonmail_verification" {
+  type = map(string)
+  description = "Protonmail domain ownership verification."
+  default = {
+    "funkyboy.zone": "",
+    "noahh.io": "protonmail-verification=22cdd158fff490e87ec1b1964e266de6935e653a",
+    "noahhuppert.com": "protonmail-verification=445adbc2c30dfd5f7e79ff00b0254cc6d65b6841",
+    "goldblum.zone": "",
     "oliversgame.deals": "",
     "4e48.dev": "",
     "turtle.wiki": "",
@@ -124,4 +138,5 @@ module "domains" {
   mx = var.mx[each.key]
   dkim = var.dkim[each.key]
   dmarc = var.dmarc[each.key]
+  protonmail_verification = var.protonmail_verification[each.key]
 }
