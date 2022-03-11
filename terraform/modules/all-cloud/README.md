@@ -17,3 +17,4 @@ Creates the following elements:
   - oliversgame.deals
   - 4e48.dev
   - turtle.wiki
+- Digital Ocean Droplet

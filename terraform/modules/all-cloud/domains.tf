@@ -131,7 +131,7 @@ module "domains" {
   for_each = toset(var.domains)
 
   name = each.key
-  target = var.linux_server_ipv4
+  target = digitalocean_droplet.funkyboy_zone.ipv4_address
   spf = length(var.mx[each.key]) > 0 ? var.spf_email : var.spf_no_email
   keybase_verification = var.keybase_verification[each.key]
   mx = var.mx[each.key]
