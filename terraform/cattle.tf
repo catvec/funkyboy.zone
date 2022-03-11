@@ -1,3 +1,14 @@
+# Droplet image
+data "digitalocean_image" "void_linux" {
+  name = "Void-Linux-GLIBC"
+}
+
+# SSH Key
+data "digitalocean_ssh_key" "katla" {
+  name = "Katla"
+}
+
+# Droplet
 resource "digitalocean_droplet" "funkyboy_zone" {
   name = "funkyboy.zone"
   region = "nyc1"
