@@ -127,12 +127,11 @@ variable "protonmail_verification" {
 }
 
 module "domains" {
-  source = "./domain"
-
+  source = "../domain"
   for_each = toset(var.domains)
 
   name = each.key
-  target = digitalocean_droplet.funkyboy_zone.ipv4_address
+  target = var.linux_server_ipv4
   spf = length(var.mx[each.key]) > 0 ? var.spf_email : var.spf_no_email
   keybase_verification = var.keybase_verification[each.key]
   mx = var.mx[each.key]
