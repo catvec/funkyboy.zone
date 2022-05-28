@@ -6,11 +6,21 @@ variable "name" {
 variable "region" {
   type = string
   description = "Identifier of DigitalOcean region in which the cluster will be created"
+
+  validation {
+    condition = contains([ "nyc1", "nyc3", "ams3", "sfo3", "sgp1", "lon1", "fra1", "tor1", "blr1" ], var.region)
+    error_message = "Must be one of the following:  [ nyc1, nyc3, ams3, sfo3, sgp1, lon1, fra1, tor1, blr1 ] (Populated from: https://docs.digitalocean.com/products/platform/availability-matrix/#other-product-availability)"
+  }
 }
 
 variable "kubernetes_version" {
   type = string
   description = "Kubernetes cluster version"
+
+  validation {
+    condition = contains([ "1.22.8-do.1", "1.21.11-do.1" ], var.kubernetes_version)
+    error_message = "Must be on of: [ 1.22.8-do.1, 1.21.11-do.1 ] (Populated from the `doctl kubernetes options versions` command)"
+  }
 }
 
 variable "node_pools" {
