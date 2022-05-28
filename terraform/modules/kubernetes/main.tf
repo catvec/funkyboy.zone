@@ -11,4 +11,9 @@ resource "digitalocean_kubernetes_cluster" "cluster" {
 	 node_count = node_pool.value.node_count
     }
   }
+
+  maintenance_policy {
+    day = var.maintenance.day
+    start_time = var.maintenance.start_time
+  }
 }

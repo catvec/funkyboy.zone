@@ -12,4 +12,9 @@ module "kubernetes_cluster" {
 	 node_count = 2
     }
   ]
+
+  maintenance = {
+    day = "sunday"
+    start_time = "04:00" # Midnight EST
+  }
 }

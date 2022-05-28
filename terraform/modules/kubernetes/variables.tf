@@ -31,3 +31,17 @@ variable "node_pools" {
   }))
   description = "Worker node pool definitions"
 }
+
+variable "maintenance" {
+  type = object({
+    day = string
+    start_time = string
+  })
+  description = "When the cluster should be taken down for maintenance by Digital Ocean"
+
+  validation {
+    condition = contains(
+	 ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "any"], var.maintenance.day) && can(regex("^[0-9]{2}:[0-9]{2}$", var.maintenance.start_time))
+    error_message = "day must be one of: [ monday, tuesday, wednesday, thursday, friday, saturday, sunday, any] and start_time must be in UTC in the format: HH:MM (strftime format: %k:%M)"
+  }
+}
