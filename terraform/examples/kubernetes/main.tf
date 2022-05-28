@@ -1,9 +1,9 @@
-module "cluster" {
-  source = "../modules/k8s"
+module "kubernetes_cluster" {
+  source = "../modules/kubernetes"
 
   name = "cluster-name"
   region = "nyc1"
-  version = "1.22.8"
+  kubernetes_version = "1.22.8"
 
   node_pools = [
     {

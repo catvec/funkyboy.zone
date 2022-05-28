@@ -8,7 +8,7 @@ variable "region" {
   description = "Identifier of DigitalOcean region in which the cluster will be created"
 }
 
-variable "version" {
+variable "kubernetes_version" {
   type = string
   description = "Kubernetes cluster version"
 }
@@ -16,7 +16,7 @@ variable "version" {
 variable "node_pools" {
   type = list(object({
     name = string
-    size = number
+    size = string
     node_count = number
   }))
   description = "Worker node pool definitions"

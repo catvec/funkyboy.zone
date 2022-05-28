@@ -1,9 +1,9 @@
-module "k8s" {
-  source = "../k8s"
+module "kubernetes_cluster" {
+  source = "../kubernetes"
 
   name = "funkyboy"
   region = "nyc1"
-  version = "1.22.8"
+  kubernetes_version = "1.22.8"
 
   node_pools = [
     {
