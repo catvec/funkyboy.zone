@@ -17,3 +17,9 @@ resource "digitalocean_kubernetes_cluster" "cluster" {
     start_time = var.maintenance.start_time
   }
 }
+
+resource "local_sensitive_file" "kubeconfig" {
+  filename = var.kubeconfig_out_path
+  content = digitalocean_kubernetes_cluster.cluster.kube_config[0].raw_config
+  file_permission = "0666"
+}

@@ -23,6 +23,16 @@ variable "kubernetes_version" {
   }
 }
 
+variable "kubeconfig_out_path" {
+  type = string
+  description = "Path to a file location where the cluster's kubeconfig.yaml file will be saved"
+
+  validation {
+    condition = can(regex("^*.\\.yaml$", var.kubeconfig_out_path))
+    error_message = "Must have the file extension '.yaml' since data will be in YAML format"
+  }
+}
+
 variable "node_pools" {
   type = list(object({
     name = string

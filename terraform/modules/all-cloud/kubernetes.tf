@@ -5,6 +5,8 @@ module "kubernetes_cluster" {
   region = "nyc1"
   kubernetes_version = "1.22.8-do.1"
 
+  kubeconfig_out_path = "${path.root}/funkyboy-kubeconfig.yaml"
+
   node_pools = [
     {
 	 name = "worker-pool-a"

@@ -3,3 +3,6 @@
 
 # Terraform plugins
 .terraform/
+
+# Kubeconfig
+terraform/*.yaml
