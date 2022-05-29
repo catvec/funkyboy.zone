@@ -3,7 +3,9 @@ module "kubernetes_cluster" {
 
   name = "cluster-name"
   region = "nyc1"
-  kubernetes_version = "1.22.8"
+  kubernetes_version = "1.22.8-do.1"
+
+  kubeconfig_out_path = "${path.root}/kubeconfig.yaml"
 
   node_pools = [
     {
@@ -12,4 +14,9 @@ module "kubernetes_cluster" {
 	 node_count = 2
     }
   ]
+
+  maintenance = {
+    day = "sunday"
+    start_time = "04:00" # Midnight EST
+  }
 }
