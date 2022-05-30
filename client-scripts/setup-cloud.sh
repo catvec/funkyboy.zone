@@ -17,6 +17,9 @@ readonly ERR_CODE_TERRAFORM_APPLY=132
 readonly ERR_CODE_RM_EXISTING_PLAN=140
 readonly ERR_CODE_RUN_PLAN_CONFIRM=141
 
+readonly ERR_CODE_APPLY_MAIN_TERRAFORM_PROJECT=150
+readonly ERR_CODE_APPLY_KUBERNETES_TERRAFORM_PROJECT=151
+
 # Configuration
 prog_dir=$(realpath $(dirname "$0"))
 
@@ -194,4 +197,7 @@ apply_tf_project() { # ( project_directory )
 }
 
 apply_tf_project "terraform"
+check "$ERR_CODE_APPLY_MAIN_TERRAFORM_PROJECT" "Failed to apply main Terraform project"
+
 apply_tf_project "terraform/kubernetes-terraform"
+check "$ERR_CODE_APPLY_KUBERNETES_TERRAFORM_PROJECT" "Failed to apply Kubernetes Terraform project"
