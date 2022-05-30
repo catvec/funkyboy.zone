@@ -22,10 +22,6 @@ prog_dir=$(realpath $(dirname "$0"))
 
 terraform=terraform
 
-configuration_dir=$(realpath "$prog_dir/../terraform")
-plan_file=/tmp/funkyboy-zone.tf.plan
-state_file=$(realpath "$prog_dir/../secret/terraform.tfstate")
-
 # Helpers
 # Exit with code and message
 die() { # (code, msg...)
@@ -136,50 +132,66 @@ fi
 # Set TF_VAR environment variables
 export TF_VAR_do_token="$DO_API_TOKEN"
 
-# Initialize terraform
-if [ ! -d "$configuration_dir/.terraform" ] || [ -n "$force_tf_init" ]; then
-    terraform -chdir="$configuration_dir" init -upgrade
-    check "$ERR_CODE_TERRAFORM_INIT" "Failed to initialize terraform"
-fi
+# project_directory = Name of the project directory relative to the repository root
+apply_tf_project() { # ( project_directory )
+    # Arguments
+    local -r project_dir="$1"
 
-# Plan
-# Delete plan file if exists
-if [ -f "$plan_file" ]; then
-    echo "Deleting existing plan file"
+    # Terraform directories for project
+    local -r project_name=$(echo "$project_dir" | sed 's/\//-/g')
+    
+    local -r configuration_dir=$(realpath "$prog_dir/../$project_dir")
+    local -r plan_file="/tmp/$project_name.tf.plan"
+    local -r state_file=$(realpath "$prog_dir/../secret/$project_name.tfstate")
 
-    rm "$plan_file"
-    check "$ERR_CODE_RM_EXISTING_PLAN" "Failed to delete existing plan file"
-fi
-
-# Plan
-terraform -chdir="$configuration_dir" plan \
-		-out "$plan_file" \
-		-state "$state_file"
-		
-check "$ERR_CODE_TERRAFORM_PLAN" "Failed to plan"
-
-# Exit if plan only given
-if [ -n "$plan_only" ]; then
-    echo "DONE"
-    exit 0
-fi
-
-# Confirm plan
-if [ -z "$noconfirm" ]; then
-    echo "OK? [y/N]"
-
-    read plan_confirm
-
-    if [[ ! "$plan_confirm" =~ ^y|Y$ ]]; then
-	   die "$ERR_CODE_RUN_PLAN_CONFIRM" "Did not confirm"
+    # Initialize terraform
+    if [ ! -d "$configuration_dir/.terraform" ] || [ -n "$force_tf_init" ]; then
+	   terraform -chdir="$configuration_dir" init -upgrade
+	   check "$ERR_CODE_TERRAFORM_INIT" "Failed to initialize terraform (project: $project_dir)"
     fi
-fi
 
-# Apply plan
-terraform -chdir="$configuration_dir" apply \
-		-state-out "$state_file" \
-		-state "$state_file" \
-		"$plan_file"
-check "$ERR_CODE_TERRAFORM_APPLY" "Failed to apply"
+    # Plan
+    # Delete plan file if exists
+    if [ -f "$plan_file" ]; then
+	   echo "Deleting existing plan file '$plan_file' (project: $project_dir)"
 
-echo "DONE"
+	   rm "$plan_file"
+	   check "$ERR_CODE_RM_EXISTING_PLAN" "Failed to delete existing plan file (project: $project_dir)"
+    fi
+
+    # Plan
+    terraform -chdir="$configuration_dir" plan \
+		    -out "$plan_file" \
+		    -state "$state_file"
+
+    check "$ERR_CODE_TERRAFORM_PLAN" "Failed to plan (project: $project_dir)"
+
+    # Exit if plan only given
+    if [ -n "$plan_only" ]; then
+	   echo "DONE (project: $project_dir)"
+	   exit 0
+    fi
+
+    # Confirm plan
+    if [ -z "$noconfirm" ]; then
+	   echo "OK? [y/N] (project: $project_dir)"
+
+	   read plan_confirm
+
+	   if [[ ! "$plan_confirm" =~ ^y|Y$ ]]; then
+		  die "$ERR_CODE_RUN_PLAN_CONFIRM" "Did not confirm (project: $project_dir)"
+	   fi
+    fi
+
+    # Apply plan
+    terraform -chdir="$configuration_dir" apply \
+		    -state-out "$state_file" \
+		    -state "$state_file" \
+		    "$plan_file"
+    check "$ERR_CODE_TERRAFORM_APPLY" "Failed to apply (project: $project_dir)"
+
+    echo "DONE (project: $project_dir)"
+}
+
+apply_tf_project "terraform"
+apply_tf_project "terraform/kubernetes-terraform"

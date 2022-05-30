@@ -7,6 +7,6 @@ Configuration as code for cloud resources.
 # Overview
 Terraform resources.
 
-Currently in the middle of a refactor, in which all resources will be provisioned as an instance of a module. The reason is so a copy of the infrastructure could easily be spun up, without making a fork of this repository (ex., staging, production).
-
 The `main.tf` file is an entrypoint, which makes an instance of the main `all-cloud` module. Terraform modules are located in [`modules/`](./modules).
+
+Once cloud resources have been provisioned the Kubernetes cluster will be setup by the Terraform in the [`kubernetes-terraform`](./kubernetes-terraform) directory. This is a separate Terraform project, which requires this Terraform project's resources to operate.
