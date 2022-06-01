@@ -90,7 +90,7 @@ setup-cloud.sh - Setup cloud resources
 
 USAGE
 
-    setup-cloud.sh [-h,-i,-p,-y]
+    setup-cloud.sh [-h,-i,-p,-y] [project]
 
 OPTIONS
 
@@ -98,6 +98,10 @@ OPTIONS
     -i    Force a terraform initialization
     -p    Run in plan mode
     -y    Do not confirm
+
+ARGUMENTS
+
+    project    The name of the Terraform project to apply, if specified only this project will be applied
 
 BEHAVIOR
 
@@ -118,6 +122,11 @@ EOF
 	   '?') die "$ERR_CODE_UNKNOWN_OPT" "Unknown option" ;;
     esac
 done
+
+shift $((OPTIND-1))
+
+# Arguments
+readonly arg_project="$1"
 
 # Environment variables
 # Check
@@ -196,8 +205,12 @@ apply_tf_project() { # ( project_directory )
     echo "DONE (project: $project_dir)"
 }
 
-apply_tf_project "terraform"
-check "$ERR_CODE_APPLY_MAIN_TERRAFORM_PROJECT" "Failed to apply main Terraform project"
+if [[ "$arg_project" == "terraform" ]] || [[ -z "$arg_project" ]]; then
+    apply_tf_project "terraform"
+    check "$ERR_CODE_APPLY_MAIN_TERRAFORM_PROJECT" "Failed to apply main Terraform project"
+fi
 
-apply_tf_project "terraform/kubernetes-terraform"
-check "$ERR_CODE_APPLY_KUBERNETES_TERRAFORM_PROJECT" "Failed to apply Kubernetes Terraform project"
+if [[ "$arg_project" == "terraform/kubernetes-terraform" ]] || [[ -z "$arg_project" ]]; then
+    apply_tf_project "terraform/kubernetes-terraform"
+    check "$ERR_CODE_APPLY_KUBERNETES_TERRAFORM_PROJECT" "Failed to apply Kubernetes Terraform project"
+fi
