@@ -20,6 +20,7 @@ readonly ERR_CODE_RM_EXISTING_PLAN=140
 readonly ERR_CODE_RUN_PLAN_CONFIRM=141
 
 readonly ERR_CODE_APPLY_MAIN_TERRAFORM_PROJECT=150
+readonly ERR_CODE_KUBERNETES_APPLY=151
 
 # Configuration
 prog_dir=$(realpath $(dirname "$0"))
@@ -91,7 +92,7 @@ setup-cloud.sh - Setup cloud resources
 
 USAGE
 
-    setup-cloud.sh [-h,-i,-p,-y] [project]
+    setup-cloud.sh [-h,-i,-p,-y] [component]
 
 OPTIONS
 
@@ -102,7 +103,7 @@ OPTIONS
 
 ARGUMENTS
 
-    project    The name of the Terraform project to apply, if specified only this project will be applied
+    component    The name of the cloud component to setup, if specified only this project will be applied, if not specified all components will be setup (values: terraform, kubernetes)
 
 BEHAVIOR
 
@@ -125,6 +126,9 @@ EOF
 done
 
 shift $((OPTIND-1))
+
+# Arguments
+declare -r arg_component="$1"
 
 # Environment variables
 # Check
@@ -203,5 +207,20 @@ apply_tf_project() { # ( project_directory )
     echo "DONE (project: $project_dir)"
 }
 
-apply_tf_project "terraform"
-check "$ERR_CODE_APPLY_MAIN_TERRAFORM_PROJECT" "Failed to apply main Terraform project"
+# Applies Kubernetes manifests
+kustomize_and_apply() {
+    local -r kubernetes_dir="$prog_dir/../kubernetes"
+    local -r kubeconfig="$kubernetes_dir/kubeconfig.yaml"
+
+    cd "$kubernetes_dir" && kustomize build . | KUBECONFIG="$kubeconfig" kubectl apply -f -
+}
+
+if [[ -z "$arg_component" ]] || [[ "$arg_component" == "terraform" ]]; then
+    apply_tf_project "terraform"
+    check "$ERR_CODE_APPLY_MAIN_TERRAFORM_PROJECT" "Failed to apply main Terraform project"
+fi
+
+if [[ -z "$arg_component" ]] || [[ "$arg_component" == "kubernetes" ]]; then
+    kustomize_and_apply
+    check "$ERR_CODE_KUBERNETES_APPLY" "Failed to kustomize and apply Kubernetes manifests"
+fi
