@@ -5,4 +5,4 @@
 .terraform/
 
 # Kubeconfig
-terraform/*.yaml
+kubeconfig.yaml
