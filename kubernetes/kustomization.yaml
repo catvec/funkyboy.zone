@@ -4,3 +4,4 @@ resources:
   - https://raw.githubusercontent.com/operator-framework/operator-lifecycle-manager/v0.21.2/deploy/upstream/quickstart/crds.yaml
   - https://raw.githubusercontent.com/operator-framework/operator-lifecycle-manager/v0.21.2/deploy/upstream/quickstart/olm.yaml
   - https://operatorhub.io/install/argocd-operator.yaml
+  - argocd.yaml
