@@ -20,7 +20,6 @@ readonly ERR_CODE_RM_EXISTING_PLAN=140
 readonly ERR_CODE_RUN_PLAN_CONFIRM=141
 
 readonly ERR_CODE_APPLY_MAIN_TERRAFORM_PROJECT=150
-readonly ERR_CODE_APPLY_KUBERNETES_TERRAFORM_PROJECT=151
 
 # Configuration
 prog_dir=$(realpath $(dirname "$0"))
@@ -127,9 +126,6 @@ done
 
 shift $((OPTIND-1))
 
-# Arguments
-readonly arg_project="$1"
-
 # Environment variables
 # Check
 missing_env_vars=()
@@ -146,26 +142,10 @@ fi
 # Set TF_VAR environment variables
 export TF_VAR_do_token="$DO_API_TOKEN"
 
-# Gets resources which are data resources
-get_data_resources() { # ( state_file )
-    local -r state_file="$1"
-
-    jq '.resources[] | select(.mode == "data") | . as $instance | $instance.instances[] | $instance.module + "." + $instance.mode + "." + $instance.type + "." + $instance.name' < "$state_file" | tr '\n' ' '
-}
-
-# Gets count of resources from get_data_resources
-get_data_resources_count() { # ( state_file )
-    local -r state_file="$1"
-
-    jq '.resources[] | select(.mode == "data") | . as $instance | $instance.instances[] | length' < "$state_file" | tr '\n' ' '
-}
-
 # project_directory = Name of the project directory relative to the repository root
-# If data_only_resources argument is set then only resource which are of mode "data" will be applied
-apply_tf_project() { # ( project_directory, [ data_only_resources ] )
+apply_tf_project() { # ( project_directory )
     # Arguments
     local -r project_dir="$1"
-    local -r data_only_resources="$2"
 
     # Terraform directories for project
     local -r project_name=$(echo "$project_dir" | sed 's/\//-/g')
@@ -189,44 +169,10 @@ apply_tf_project() { # ( project_directory, [ data_only_resources ] )
 	   check "$ERR_CODE_RM_EXISTING_PLAN" "Failed to delete existing plan file (project: $project_dir)"
     fi
 
-    # Create -target options
-    target_opts=()
-    if [[ -n "$data_only_resources" ]]; then
-	   local -r data_resources=$(get_data_resources "$state_file") || exit
-	   check "$ERR_CODE_GET_DATA_RESOURCES" "Failed to find data only resources"
-
-	   local -r data_resources_arr=($data_resources)
-
-	   local -r data_resources_counts=$(get_data_resources_count "$state_file") || exit
-	   check "$ERR_CODE_GET_DATA_RESOURCES_COUNT" "Failed to find data only resources counts"
-
-	   local -r data_resources_counts_arr=($data_resources_counts)
-
-	   local -i resource_i=0
-	   
-	   local -i instance_i
-	   local -i number_of_this_resource
-	   for resource in "${data_resources_arr[@]}"; do
-		  instance_i=0
-		  number_of_this_resource=${data_resources_counts_arr[$resource_i]}
-
-		  while (($instance_i < $number_of_this_resource)); do
-			 resource_str=$(sed 's/"//g' <<< "$resource")
-			 target_opts+=("-target=$resource_str[$instance_i]")
-			 echo "$resource_str[$instance_i]"
-
-			 instance_i=$(($instance_i + 1))
-		  done
-
-		  resource_i=$(($resource_i + 1))
-	   done
-	   exit 0
-    fi
-
     # Plan
     terraform -chdir="$configuration_dir" plan \
 		    -out "$plan_file" \
-		    -state "$state_file" "${target_opts[@]}"
+		    -state "$state_file"
 
     check "$ERR_CODE_TERRAFORM_PLAN" "Failed to plan (project: $project_dir)"
 
@@ -257,13 +203,5 @@ apply_tf_project() { # ( project_directory, [ data_only_resources ] )
     echo "DONE (project: $project_dir)"
 }
 
-if [[ "$arg_project" == "terraform" ]] || [[ -z "$arg_project" ]]; then
-    apply_tf_project "terraform"
-    check "$ERR_CODE_APPLY_MAIN_TERRAFORM_PROJECT" "Failed to apply main Terraform project"
-fi
-
-if [[ "$arg_project" == "terraform/kubernetes-terraform" ]] || [[ -z "$arg_project" ]]; then
-    apply_tf_project "terraform/kubernetes-terraform" "y"
-    apply_tf_project "terraform/kubernetes-terraform"
-    check "$ERR_CODE_APPLY_KUBERNETES_TERRAFORM_PROJECT" "Failed to apply Kubernetes Terraform project"
-fi
+apply_tf_project "terraform"
+check "$ERR_CODE_APPLY_MAIN_TERRAFORM_PROJECT" "Failed to apply main Terraform project"
