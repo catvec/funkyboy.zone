@@ -1,4 +1,4 @@
-variable "remote_manifests" {
-  type = list(string)
-  description = "URLs to YAML manifest files to apply"
+variable "remote_manifest" {
+  type = string
+  description = "URL of YAML manifest file to apply"
 }

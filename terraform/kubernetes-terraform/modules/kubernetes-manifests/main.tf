@@ -1,11 +1,13 @@
-data "http" "yamls" {
-  count = length(var.remote_manifests)
+data "http" "yaml" {
+  url = var.remote_manifest
+}
 
-  url = var.remote_manifests[count.index]
+data "kubectl_file_documents" "manifest" {
+  content = data.http.yaml.body
 }
 
 resource "kubectl_manifest" "apply" {
-  count = length(var.remote_manifests)
+  for_each = data.kubectl_file_documents.manifest.manifests
   
-  yaml_body = data.http.yamls[count.index].body
+  yaml_body = each.value # data.kubectl_file_documents.manifest.documents[count.index]
 }

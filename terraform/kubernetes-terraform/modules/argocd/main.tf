@@ -1,7 +1,5 @@
 module "operator_manifest"{
   source = "../kubernetes-manifests"
 
-  remote_manifests = [
-    "https://operatorhub.io/install/argocd-operator.yaml"
-  ]
+  remote_manifest = "https://operatorhub.io/install/argocd-operator.yaml"
 }
