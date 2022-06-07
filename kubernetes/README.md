@@ -1,8 +1,12 @@
-# Kubernetes Terraform
-Terraform project which will setup the Kubernetes cluster.
+# Kubernetes
+Manifests for the Kubernetes cluster.
 
 # Table Of Contents
 - [Overview](#overview)
+- [Instructions](#instructions)
 
 # Overview
-The main Terraform project (in the parent directory) creates a Kubernetes cluster. Once that cluster has been created this Terraform project then configures the cluster. This project is required to be a separate project because the Kubernetes Terraform provider is being used, and providers cannot reference resource attributes.
+Once the Kubernetes cluster has been provisioned by [Terraform](../terraform) the manifests in this directory are applied to the cluster using Kustomize and Kubectl.
+
+# Instructions
+The manifests in this directory include custom resource definitions. Once these are applied to the Kubernetes cluster it may take a few moments for their api version's and kind's to be recognized as valid. As a result some manifests in this directory will likely be rejected by the Kubernetes cluster on the first attempt. Therefore one must apply these manifests once, wait a few seconds, and then apply them again.
