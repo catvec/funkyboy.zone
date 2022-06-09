@@ -20,7 +20,11 @@ readonly ERR_CODE_RM_EXISTING_PLAN=140
 readonly ERR_CODE_RUN_PLAN_CONFIRM=141
 
 readonly ERR_CODE_APPLY_MAIN_TERRAFORM_PROJECT=150
-readonly ERR_CODE_KUBERNETES_APPLY=151
+
+readonly ERR_CODE_KUBERNETES_KUSTOMIZE=160
+readonly ERR_CODE_KUBERNETS_APPLY_DRY_RUN=161
+readonly ERR_CODE_KUBERNETES_DRY_RUN_CONFIRM=162
+readonly ERR_CODE_KUBERNETES_APPLY=163
 
 # Configuration
 prog_dir=$(realpath $(dirname "$0"))
@@ -212,7 +216,29 @@ kustomize_and_apply() {
     local -r kubernetes_dir="$prog_dir/../kubernetes"
     local -r kubeconfig="$kubernetes_dir/kubeconfig.yaml"
 
-    cd "$kubernetes_dir" && kustomize build . | KUBECONFIG="$kubeconfig" kubectl apply -f -
+    # Build manifests with kustomize
+    local kustomize_result
+    kustomize_result=$(cd "$kubernetes_dir" && kustomize build .) || exit
+    check "$ERR_CODE_KUBERNETES_KUSTOMIZE" "Failed to build Kubernetes manifests with Kustomize"
+
+    # Dry run apply
+    KUBECONFIG="$kubeconfig"
+    
+    kubectl apply --dry-run=server -f - <<< "$kustomize_result"
+    check "$ERR_CODE_KUBERNETES_APPLY_DRY_RUN" "Failed to dry run apply Kubernetes manifests"
+
+    if [ -z "$noconfirm" ]; then
+	   echo "OK? [y/N] (project: kubernetes)"
+
+	   read plan_confirm
+
+	   if [[ ! "$plan_confirm" =~ ^y|Y$ ]]; then
+		  die "$ERR_CODE_KUBERNETES_DRY_RUN_CONFIRM" "Did not confirm (project: kubernetes)"
+	   fi
+    fi
+
+    kubectl apply -f - <<< "$kustomize_result"
+    check "$ERR_CODE_KUBERNETES_APPLY" "Failed to apply Kubernetes manifests"
 }
 
 if [[ -z "$arg_component" ]] || [[ "$arg_component" == "terraform" ]]; then
