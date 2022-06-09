@@ -1,5 +1,5 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./base/operator-lifecycle-manager/deploy/upstream/quickstart/crds.yaml
-  - ./base/operator-lifecycle-manager/deploy/upstream/quickstart/olm.yaml
+  - ./resources/operator-lifecycle-manager/deploy/upstream/quickstart/crds.yaml
+  - ./resources/operator-lifecycle-manager/deploy/upstream/quickstart/olm.yaml

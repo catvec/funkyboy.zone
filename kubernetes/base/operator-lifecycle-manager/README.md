@@ -10,4 +10,4 @@ Installs the Operator Lifecycle Manager which can be used to install and manage 
 
 # Instructions
 ## Updating Operator Lifecycle Manager Version
-The OLM repository is a submodule in the [`./base/operator-lifecycle-manager/`](./base/operator-lifecycle-manager) directory. To update the version of the OLM tool checkout a different revision of the submodule. 
+The OLM repository is a submodule in the [`./resources/operator-lifecycle-manager/`](./resources/operator-lifecycle-manager) directory. To update the version of the OLM tool checkout a different revision of the submodule. 
