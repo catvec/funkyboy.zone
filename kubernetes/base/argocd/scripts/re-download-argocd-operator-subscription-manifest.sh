@@ -19,7 +19,7 @@ declare -r HELP_BEHAVIOR="Downloads the ArgoCD operator OLM subscription manifes
 
 # Constants
 declare -r MANIFEST_URL="https://operatorhub.io/install/argocd-operator.yaml"
-declare -r MANIFEST_OUT="$PROG_DIR/../base/argocd-operator-subscription.yaml"
+declare -r MANIFEST_OUT="$PROG_DIR/../resources/argocd-operator-subscription.yaml"
 
 # Options
 while getopts "h" opt; do
