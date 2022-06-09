@@ -3,7 +3,7 @@
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: RELEASE-NAME
+  name: teleport-cluster
   annotations:
     seccomp.security.alpha.kubernetes.io/allowedProfileNames: 'docker/default,runtime/default'
     seccomp.security.alpha.kubernetes.io/defaultProfileName: 'runtime/default'
@@ -39,14 +39,14 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: RELEASE-NAME
+  name: teleport-cluster
   namespace: default
 ---
 # Source: teleport-cluster/templates/config.yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: RELEASE-NAME
+  name: teleport-cluster
   namespace: default
 data:
   teleport.yaml: |
@@ -79,10 +79,10 @@ data:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: RELEASE-NAME
+  name: teleport-cluster
   namespace: default
   labels:
-    app: RELEASE-NAME
+    app: teleport-cluster
 spec:
   accessModes:
   - ReadWriteOnce
@@ -94,7 +94,7 @@ spec:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: RELEASE-NAME
+  name: teleport-cluster
 rules:
 - apiGroups:
   - ""
@@ -121,21 +121,21 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: RELEASE-NAME
+  name: teleport-cluster
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: RELEASE-NAME
+  name: teleport-cluster
 subjects:
 - kind: ServiceAccount
-  name: RELEASE-NAME
+  name: teleport-cluster
   namespace: default
 ---
 # Source: teleport-cluster/templates/psp.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: RELEASE-NAME-psp
+  name: teleport-cluster-psp
 rules:
 - apiGroups:
   - policy
@@ -144,29 +144,29 @@ rules:
   verbs:
   - use
   resourceNames:
-  - RELEASE-NAME
+  - teleport-cluster
 ---
 # Source: teleport-cluster/templates/psp.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: RELEASE-NAME-psp
+  name: teleport-cluster-psp
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: RELEASE-NAME-psp
+  name: teleport-cluster-psp
 subjects:
 - kind: ServiceAccount
-  name: RELEASE-NAME
+  name: teleport-cluster
 ---
 # Source: teleport-cluster/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: RELEASE-NAME
+  name: teleport-cluster
   namespace: default
   labels:
-    app: RELEASE-NAME
+    app: teleport-cluster
 spec:
   type: LoadBalancer
   ports:
@@ -191,30 +191,30 @@ spec:
     targetPort: 3036
     protocol: TCP
   selector:
-    app: RELEASE-NAME
+    app: teleport-cluster
 ---
 # Source: teleport-cluster/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: RELEASE-NAME
+  name: teleport-cluster
   namespace: default
   labels:
-    app: RELEASE-NAME
+    app: teleport-cluster
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: RELEASE-NAME
+      app: teleport-cluster
   template:
     metadata:
       annotations:
         # ConfigMap checksum, to recreate the pod on config changes.
-        checksum/config: 9902b3b470da86f7f834ce40b53ef25c07f72728a39bd71a65afb70617d99e3c
+        checksum/config: e787efc353957a394e7556b7fd7f0b4cc07606db926418e539045f8b64802bba
       labels:
-        app: RELEASE-NAME
+        app: teleport-cluster
     spec:
       containers:
       - name: "teleport"
@@ -254,8 +254,8 @@ spec:
           secretName: teleport-gcp-credentials
       - name: "config"
         configMap:
-          name: RELEASE-NAME
+          name: teleport-cluster
       - name: "data"
         persistentVolumeClaim:
-          claimName: RELEASE-NAME
-      serviceAccountName: RELEASE-NAME
+          claimName: teleport-cluster
+      serviceAccountName: teleport-cluster

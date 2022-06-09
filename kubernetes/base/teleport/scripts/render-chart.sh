@@ -29,6 +29,7 @@ EOF
 # Constants
 declare -r HELM_CHART_PATH="$PROG_DIR/../resources/teleport/examples/chart/teleport-cluster"
 declare -r HELM_CHART_VALUES_FILE="$PROG_DIR/../resources/teleport-chart-values.yaml"
+declare -r HELM_CHART_RELEASE_NAME="teleport-cluster"
 declare -r MANIFEST_OUT="$PROG_DIR/../resources/teleport-cluster.yaml"
 
 # Options
@@ -47,5 +48,5 @@ run_check "ensure_bins helm" "$EXIT_CODE_MISSING_HELM" "$EXIT_MSG_MISSING_HELM"
 
 # Expand chart
 log "Rendering Teleport chart into '$MANIFEST_OUT' manifest file"
-run_check "helm template --values '$HELM_CHART_VALUES_FILE' '$HELM_CHART_PATH' > '$MANIFEST_OUT'" "$EXIT_CODE_HELM_TEMPLATE" "$EXIT_MSG_HELM_TEMPLATE"
+run_check "helm template --values '$HELM_CHART_VALUES_FILE' --name-template '$HELM_CHART_RELEASE_NAME' '$HELM_CHART_PATH' > '$MANIFEST_OUT'" "$EXIT_CODE_HELM_TEMPLATE" "$EXIT_MSG_HELM_TEMPLATE"
 log "Done"
