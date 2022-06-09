@@ -224,7 +224,7 @@ kustomize_and_apply() {
     # Dry run apply
     KUBECONFIG="$kubeconfig"
     
-    kubectl apply --dry-run=server -f - <<< "$kustomize_result"
+    kubectl apply --dry-run=client -f - <<< "$kustomize_result"
     check "$ERR_CODE_KUBERNETES_APPLY_DRY_RUN" "Failed to dry run apply Kubernetes manifests"
 
     if [ -z "$noconfirm" ]; then
