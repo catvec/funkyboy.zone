@@ -2,6 +2,10 @@
 
 set -o pipefail
 
+# Constants
+declare -ri TRUE=0
+declare -ri FALSE=1
+
 # Output the date, time, and $msg to stdout.
 log() { # ( msg )
     local -r msg="$1"
@@ -67,11 +71,22 @@ join_arr() { # ( $delimiter, $array )
     echo "$out"
 }
 
+# Reads stdin and ensures each line is indented by $indent. Outputs indented result.
+indent_lines() { # ( indent )
+    # Arguments
+    local -r indent="$1"
+
+    # Indent
+    while read -r line; do
+	   echo "${indent}${line}"
+    done
+}
+
 # Outputs a help message. Arguments are passed in via global environment variables since multiple arrays arguments are required and this is not possible with bash.
 # $HELP_SCRIPT is the name of the script file.
 # $HELP_SCRIPT_BLURB is a short sentence describing the script.
 # $HEPL_OPTIONS is an array of option letters. Place a question mark after the letter to indicate it is optional (ex., 'a?'). If the option takes a value add a colon then the name of the value as it should be shown in the help (ex., 'a:AIRPLANE' would result in the help text '-a AIRPLANE'). If an option is optional and required a value put the question mark before the colon.
-# $HELP_OPTIONS_HELP are the help texts corresponding to each option at the same index in $options.
+# $HELP_OPTION_BLURBS are the help texts corresponding to each option at the same index in $HELP_OPTIONS.
 # $HELP_BEHAVIOR is an optional paragraph that will be included at the bottom of the message.
 generate_help_msg() {
     # Parsed option specification information:
@@ -237,7 +252,7 @@ EOF
 
 BEHAVIOR
 
-  $HELP_BEHAVIOR
+$(indent_lines "  " <<< "$HELP_BEHAVIOR")
  
 EOF
 					)
@@ -251,4 +266,26 @@ USAGE
 
   ${HELP_SCRIPT}${usage_options_required_str}${usage_options_optional_str}${options_help_block}${behavior_block}
 EOF
+}
+
+# Prints an error message and returns $FALSE if any of the provided $bins cannot be found in the $PATH.
+ensure_bins() { # ( bins )
+    # Arguments
+    local -ra bins=("$@")
+
+    # Check
+    local -a missing_bins=()
+    for bin in "${bins[@]}"; do
+	   if ! which "$bin" &> /dev/null; then
+		  missing_bins+=("$bin")
+	   fi
+    done
+
+    if ((${#missing_bins[@]} > 0)); then
+	   local -a missing_bins_str
+	   missing_bins_str=$(join_arr ", " "${missing_bins[@]}") || exit
+	   
+	   elog "Missing program(s): $missing_bins_str"
+	   return $FALSE
+    fi
 }
