@@ -5,5 +5,5 @@
 	path = kubernetes/base/operator-lifecycle-manager/base/operator-lifecycle-manager
 	url = git@github.com:operator-framework/operator-lifecycle-manager.git
 [submodule "kubernetes/base/teleport/base/teleport"]
-	path = kubernetes/base/teleport/base/teleport
+	path = kubernetes/base/teleport/resources/teleport
 	url = git@github.com:gravitational/teleport.git

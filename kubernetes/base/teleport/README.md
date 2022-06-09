@@ -10,7 +10,7 @@ The Teleport platform manages users and grants access to services within the Kub
 
 # Instructions
 ## Updating Teleport
-The Teleport repository is a Git sub-module in the [`./base/teleport`](./base/teleport) directory. To update the version of Teleport used:
+The Teleport repository is a Git sub-module in the [`./resources/teleport`](./resources/teleport) directory. To update the version of Teleport used:
 
 1. Checkout a new commit in the sub-module
 2. Run:

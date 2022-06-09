@@ -27,9 +27,9 @@ EOF
 	   )
 
 # Constants
-declare -r HELM_CHART_PATH="$PROG_DIR/../base/teleport/examples/chart/teleport-cluster"
-declare -r HELM_CHART_VALUES_FILE="$PROG_DIR/../base/teleport-chart-values.yaml"
-declare -r MANIFEST_OUT="$PROG_DIR/../base/teleport-cluster.yaml"
+declare -r HELM_CHART_PATH="$PROG_DIR/../resources/teleport/examples/chart/teleport-cluster"
+declare -r HELM_CHART_VALUES_FILE="$PROG_DIR/../resources/teleport-chart-values.yaml"
+declare -r MANIFEST_OUT="$PROG_DIR/../resources/teleport-cluster.yaml"
 
 # Options
 while getopts "h" opt; do
