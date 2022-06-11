@@ -4,3 +4,4 @@ bases:
   - ./base/operator-lifecycle-manager
   - ./base/teleport
   - ./base/argocd
+  - ./base/tektoncd
