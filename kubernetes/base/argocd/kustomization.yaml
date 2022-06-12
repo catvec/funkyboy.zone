@@ -4,4 +4,5 @@ resources:
   - ./resources/argocd-operator-subscription.yaml
   - ./resources/namespace.yaml
   - ./resources/argocd-operator.yaml
+  #- ./resources/applications/noahhuppert-com.yaml
 namespace: argocd
