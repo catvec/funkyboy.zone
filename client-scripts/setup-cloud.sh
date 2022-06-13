@@ -224,8 +224,12 @@ kustomize_and_apply() {
     # Dry run apply
     KUBECONFIG="$kubeconfig"
     
-    kubectl apply --dry-run=client -f - <<< "$kustomize_result"
-    check "$ERR_CODE_KUBERNETES_APPLY_DRY_RUN" "Failed to dry run apply Kubernetes manifests"
+    kubectl diff -f - <<< "$kustomize_result"
+    local -ri diff_status=$?
+    if (( $diff_status > 1 )); then
+	   # kubectl diff exits with 0 if no diff and 1 if there is a diff, and >1 if there is an error, so we need to check for an error code manually
+	   die "$ERR_CODE_KUBERNETES_APPLY_DRY_RUN" "Failed to dry run apply Kubernetes manifests"
+    fi
 
     if [ -z "$noconfirm" ]; then
 	   echo "OK? [y/N] (project: kubernetes)"
