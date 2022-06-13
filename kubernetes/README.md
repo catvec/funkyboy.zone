@@ -23,6 +23,9 @@ All applications in the cluster should have the following labels:
 
 - `app`: Logical name of an application
 
+## CI Deployment
+TektonCD pipelines will trigger on repository pushes. The [TektonCD buildah task](https://hub.tekton.dev/tekton/task/buildah) can be used to build Docker images. The [TektonCD ArgoCD task](https://hub.tekton.dev/tekton/task/argocd-task-sync-and-wait) can be used to deploy resources to the cluster.
+
 ## Future Services
 ### Teleport
 Initially [Teleport](https://goteleport.com) was going to be used for user authentication and private cluster access. However the Teleport program does not allow for declarative setup, as setup must be done manually via a CLI. Potential future plans:
