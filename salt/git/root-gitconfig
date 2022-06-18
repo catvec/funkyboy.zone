@@ -1,0 +1,4 @@
+{% for dir in pillar['git']['safe_dirs'] %}
+[safe]
+    directory = {{ dir }}
+{% endfor %}

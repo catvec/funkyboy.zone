@@ -22,6 +22,7 @@ base:
     - digitalocean-spaces-secret
     - s3cmd
     - s3fs
+    - git
     - vsv
     - prometheus-push-cli
     - git-secret
