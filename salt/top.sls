@@ -76,7 +76,6 @@ base:
     - file-modes-website
     - workout-website
     - system-guide-website
-    - gondola-zone-website
     - public-www
     - goldblum-zone-website
     - wiki-website

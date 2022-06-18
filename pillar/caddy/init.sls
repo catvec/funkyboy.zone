@@ -104,12 +104,6 @@ caddy:
       hosts:
         - guide.funkyboy.zone
 
-    # gondola.zone site
-    gondola_zone:
-      www_dir: gondola-zone
-      hosts:
-        - gondola.zone
-        - '*.gondola.zone'
 
     # goldblum.zone site
     goldblum_zone:
