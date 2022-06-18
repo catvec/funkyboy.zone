@@ -67,6 +67,7 @@ repo_path=$(realpath "$prog_path/..")
 
 rsync \
     --exclude .git \
+    --exclude kubernetes \
     -r "$repo_path" "$address":/opt/
 check "Failed to upload repository files to $address"
 
