@@ -47,8 +47,10 @@ ufw:
         - udp
       deny:
         - tcp
+
+    # MongoDB
     - port: 27015
-      allow:
-        - tcp
+      allow: []
       deny:
+        - tcp
         - udp
