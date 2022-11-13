@@ -13,6 +13,8 @@ Provides the following services:
 
 - [Operator Lifecycle Manager](./base/operator-lifecycle-manager)
 - [ArgoCD](./base/argocd)
+- [TektonCD](./base/tektoncd)
+- [Quay](./base/quay)
 
 # Instructions
 The manifests in this directory include custom resource definitions. Once these are applied to the Kubernetes cluster it may take a few moments for their api version's and kind's to be recognized as valid. As a result some manifests in this directory will likely be rejected by the Kubernetes cluster on the first attempt. Therefore one must apply these manifests once, wait a few seconds, and then apply them again.

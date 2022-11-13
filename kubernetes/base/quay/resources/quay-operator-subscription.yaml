@@ -1,0 +1,10 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: quay
+  namespace: operators
+spec:
+  channel: stable-3.7
+  name: quay
+  source: operatorhubio-catalog
+  sourceNamespace: olm
