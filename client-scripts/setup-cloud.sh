@@ -222,7 +222,7 @@ kustomize_and_apply() {
     check "$ERR_CODE_KUBERNETES_KUSTOMIZE" "Failed to build Kubernetes manifests with Kustomize"
 
     # Dry run apply
-    KUBECONFIG="$kubeconfig"
+    export KUBECONFIG="$kubeconfig"
     
     kubectl diff -f - <<< "$kustomize_result"
     local -ri diff_status=$?
