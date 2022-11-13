@@ -3,7 +3,7 @@ module "kubernetes_cluster" {
 
   name = "funkyboy"
   region = "nyc1"
-  kubernetes_version = "1.22.8-do.1"
+  kubernetes_version = "1.22.13-do.0"
 
   kubeconfig_out_path = "${path.root}/../kubernetes/kubeconfig.yaml"
 
