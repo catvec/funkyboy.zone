@@ -5,6 +5,6 @@ metadata:
   namespace: operators
 spec:
   channel: stable-3.7
-  name: quay
+  name: project-quay
   source: operatorhubio-catalog
   sourceNamespace: olm

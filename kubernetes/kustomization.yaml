@@ -4,4 +4,4 @@ bases:
   - ./base/operator-lifecycle-manager
   - ./base/argocd
   - ./base/tektoncd
-  #- ./base/quay
+  - ./base/quay
