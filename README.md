@@ -29,15 +29,21 @@ name my Linux server: Funky Boy.
    You must have access to the [funkyboy.zone-secrets](https://github.com/Noah-Huppert/funkyboy.zone-secrets)
    repository. This private repository holds secret setup information.
 2. Make a copy of `.env-example` named `.env`, edit your own values.
-2. Setup cloud resources on DigitalOcean using [Terraform](https://terraform.io):
+3. Setup cloud resources on DigitalOcean using [Terraform](https://terraform.io):
    ```
    ./client-scripts/setup-cloud.sh
    ```
-3. Run the initial setup script:
+4. Setup the Kubernetes cluster:
+   ```
+   ./client-scripts/setup-k8s.py --no-diff
+   ./client-scripts/setup-k8s.py
+   ```
+   The first invocation must have the `--no-diff` option since some custom resource definitions must be created on the server. Expect the first invocation to exit with an error related to these custom resource definitions. The second invocation should succeed.
+5. Run the initial setup script on the Linux server:
    ```
    ./client-scripts/init.sh
    ```
-4. (Optional) Restore data from a backup, ssh into the server and run:
+6. (Optional) Restore data from a backup, ssh into the server and run:
    ```
    sudo su
    /opt/backup/run-restore.sh

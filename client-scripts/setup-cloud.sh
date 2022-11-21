@@ -21,11 +21,6 @@ readonly ERR_CODE_RUN_PLAN_CONFIRM=141
 
 readonly ERR_CODE_APPLY_MAIN_TERRAFORM_PROJECT=150
 
-readonly ERR_CODE_KUBERNETES_KUSTOMIZE=160
-readonly ERR_CODE_KUBERNETES_APPLY_DRY_RUN=161
-readonly ERR_CODE_KUBERNETES_DRY_RUN_CONFIRM=162
-readonly ERR_CODE_KUBERNETES_APPLY=163
-
 # Configuration
 prog_dir=$(realpath $(dirname "$0"))
 
@@ -96,7 +91,7 @@ setup-cloud.sh - Setup cloud resources
 
 USAGE
 
-    setup-cloud.sh [-h,-i,-p,-y] [component]
+    setup-cloud.sh [-h,-i,-p,-y]
 
 OPTIONS
 
@@ -104,10 +99,6 @@ OPTIONS
     -i    Force a terraform initialization
     -p    Run in plan mode
     -y    Do not confirm
-
-ARGUMENTS
-
-    component    The name of the cloud component to setup, if specified only this project will be applied, if not specified all components will be setup (values: terraform, kubernetes)
 
 BEHAVIOR
 
@@ -211,46 +202,5 @@ apply_tf_project() { # ( project_directory )
     echo "DONE (project: $project_dir)"
 }
 
-# Applies Kubernetes manifests
-kustomize_and_apply() {
-    local -r kubernetes_dir="$prog_dir/../kubernetes"
-    local -r kubeconfig="$kubernetes_dir/kubeconfig.yaml"
-
-    # Build manifests with kustomize
-    local kustomize_result
-    kustomize_result=$(cd "$kubernetes_dir" && kustomize build .) || exit
-    check "$ERR_CODE_KUBERNETES_KUSTOMIZE" "Failed to build Kubernetes manifests with Kustomize"
-
-    # Dry run apply
-    export KUBECONFIG="$kubeconfig"
-    
-    kubectl diff -f - <<< "$kustomize_result"
-    local -ri diff_status=$?
-    if (( $diff_status > 1 )); then
-	   # kubectl diff exits with 0 if no diff and 1 if there is a diff, and >1 if there is an error, so we need to check for an error code manually
-	   die "$ERR_CODE_KUBERNETES_APPLY_DRY_RUN" "Failed to dry run apply Kubernetes manifests"
-    fi
-
-    if [ -z "$noconfirm" ]; then
-	   echo "OK? [y/N] (project: kubernetes)"
-
-	   read plan_confirm
-
-	   if [[ ! "$plan_confirm" =~ ^y|Y$ ]]; then
-		  die "$ERR_CODE_KUBERNETES_DRY_RUN_CONFIRM" "Did not confirm (project: kubernetes)"
-	   fi
-    fi
-
-    kubectl apply -f - <<< "$kustomize_result"
-    check "$ERR_CODE_KUBERNETES_APPLY" "Failed to apply Kubernetes manifests"
-}
-
-if [[ -z "$arg_component" ]] || [[ "$arg_component" == "terraform" ]]; then
-    apply_tf_project "terraform"
-    check "$ERR_CODE_APPLY_MAIN_TERRAFORM_PROJECT" "Failed to apply main Terraform project"
-fi
-
-if [[ -z "$arg_component" ]] || [[ "$arg_component" == "kubernetes" ]]; then
-    kustomize_and_apply
-    check "$ERR_CODE_KUBERNETES_APPLY" "Failed to kustomize and apply Kubernetes manifests"
-fi
+apply_tf_project "terraform"
+check "$ERR_CODE_APPLY_MAIN_TERRAFORM_PROJECT" "Failed to apply main Terraform project"
