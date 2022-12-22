@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  dev_container:
+    build:
+      context: ./
+    volumes:
+      - ../:/mnt
+    ports:
+      - "8001:8001" # Kubectl proxy
+    entrypoint: sleep infinity
