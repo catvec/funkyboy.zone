@@ -8,7 +8,7 @@ metadata:
     component: gotify-server
 spec:
   rules:
-  - host: "gotify.funkyboy.zone"
+  - host: "gotify.k8s.funkyboy.zone"
     http:
       paths:
       - path: /
