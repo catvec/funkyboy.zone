@@ -19,6 +19,9 @@ RUN install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 RUN curl -Ls "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
 RUN mv ./kustomize /usr/local/bin/kustomize
 
+# Network tools
+RUN apk add bind-tools
+
 # Entrypoint
 WORKDIR /mnt
 ENTRYPOINT [ "/bin/bash" ]
