@@ -23,6 +23,13 @@ class KustomizeBuildError(Exception):
     def __init__(self):
         super().__init__("Failed to build manifests with Kustomize")
 
+class KubeApplyDryRunError(Exception):
+    """ Indicates that running Kubectl apply in dry run mode failed.
+    """
+
+    def __init__(self):
+        super().__init__("Failed to validate manifests using dry run mode")
+
 class KubeDiffError(Exception):
     """ Failed to compute difference of Kubectl manifests.
     """
@@ -74,6 +81,23 @@ def main():
         logging.error("kustomize error: %s", kustomize_res.stderr)
         raise KustomizeBuildError()
     kustomize_build_str = kustomize_res.stdout
+
+    # Validate manifests
+    kubectl_dry_run_res = subprocess.Popen(
+        ["kubectl", "apply", "-f", "-", "--dry-run=server"],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=dict(os.environ, KUBECONFIG=KUBECONFIG_PATH),
+    )
+    kubectl_dry_run_out = kubectl_dry_run_res.communicate(input=kustomize_build_str)
+    
+    if kubectl_dry_run_res.returncode != 0:
+        logging.error("kubectl apply dry run error: %s", kubectl_dry_run_out[1].decode('utf-8') if kubectl_dry_run_out[1] is not None else "<No error returned>")
+        raise KubeApplyDryRunError()
+
+    logging.info("Validated manifests")
+    logging.info(kubectl_dry_run_out[0].decode('utf-8'))
 
     # Show manifest diff    
     if not args.no_diff:
