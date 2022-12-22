@@ -19,6 +19,15 @@ Provides the following services:
 # Instructions
 The manifests in this directory include custom resource definitions. Once these are applied to the Kubernetes cluster it may take a few moments for their api version's and kind's to be recognized as valid. As a result some manifests in this directory will likely be rejected by the Kubernetes cluster on the first attempt. Therefore one must apply these manifests once, wait a few seconds, and then apply them again.
 
+## Kubernetes Dashboard
+To access the dashboard run the Kubernetes proxy (The `--address` option is not needed if not in the dev container):
+
+```
+kubectl proxy --address 0.0.0.0
+```
+
+Then access the Dashboard: [here](http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/)
+
 # Planning
 ## Standard Labels
 All applications in the cluster should have the following labels:
