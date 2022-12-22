@@ -20,3 +20,15 @@ module "kubernetes_cluster" {
     start_time = "04:00" # Midnight EST
   }
 }
+
+locals {
+  kubernetes_master_endpoint_host = replace(module.kubernetes_cluster.master_endpoint, "https://", "")
+}
+
+resource "digitalocean_record" "kubernetes" {
+  domain = "funkyboy.zone"
+  type = "CNAME"
+  ttl = "60" # Seconds
+  name = "k8s"
+  value = "${local.kubernetes_master_endpoint_host}."
+}
