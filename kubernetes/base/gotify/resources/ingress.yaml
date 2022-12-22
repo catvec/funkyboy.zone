@@ -6,7 +6,10 @@ metadata:
   labels:
     project: gotify
     component: gotify-server
+  annotations:
+    nginx.org/websocket-services: gotify
 spec:
+  ingressClassName: nginx
   rules:
   - host: "gotify.k8s.funkyboy.zone"
     http:

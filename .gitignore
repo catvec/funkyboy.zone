@@ -3,7 +3,7 @@
 
 # Terraform plugins
 *.terraform/
-*.terraform.lock.hcl
+.terraform.lock.hcl
 
 # Kubeconfig
 kubeconfig.yaml
