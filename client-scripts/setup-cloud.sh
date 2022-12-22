@@ -91,7 +91,7 @@ setup-cloud.sh - Setup cloud resources
 
 USAGE
 
-    setup-cloud.sh [-h,-i,-p,-y]
+    setup-cloud.sh [-h,-i,-p,-y] [PROJECT]
 
 OPTIONS
 
@@ -99,6 +99,10 @@ OPTIONS
     -i    Force a terraform initialization
     -p    Run in plan mode
     -y    Do not confirm
+
+ARGUMENTS
+
+    PROJECT    The directory of the Terraform project to setup, defaults to the terraform directory in the root.
 
 BEHAVIOR
 
@@ -124,6 +128,10 @@ shift $((OPTIND-1))
 
 # Arguments
 declare -r arg_component="$1"
+
+if [[ -z "$arg_component" ]]; then
+    arg_component="$prog_dir/terraform"
+fi
 
 # Environment variables
 # Check
@@ -202,5 +210,5 @@ apply_tf_project() { # ( project_directory )
     echo "DONE (project: $project_dir)"
 }
 
-apply_tf_project "terraform"
+apply_tf_project "$arg_component"
 check "$ERR_CODE_APPLY_MAIN_TERRAFORM_PROJECT" "Failed to apply main Terraform project"
