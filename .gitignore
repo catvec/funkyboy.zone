@@ -2,7 +2,8 @@
 .env
 
 # Terraform plugins
-.terraform/
+*.terraform/
+*.terraform.lock.hcl
 
 # Kubeconfig
 kubeconfig.yaml
