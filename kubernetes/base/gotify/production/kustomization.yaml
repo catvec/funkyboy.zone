@@ -4,6 +4,14 @@ namespace: gotify
 commonLabels:
   project: gotify
   component: gotify-server
+patches:
+- target:
+    kind: Ingress
+    name: gotify
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: gotify.k8s.funkyboy.zone
 bases:
 - ../base
 resources:
