@@ -2,13 +2,12 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: gotify
-  namespace: gotify
-  labels:
-    project: gotify
-    component: gotify-server
+  annotations:
+    nginx.org/websocket-services: gotify
 spec:
+  ingressClassName: nginx
   rules:
-  - host: "gotify.funkyboy.zone"
+  - host: "gotify.k8s.funkyboy.zone"
     http:
       paths:
       - path: /
