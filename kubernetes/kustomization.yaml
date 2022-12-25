@@ -9,4 +9,4 @@ bases:
   - ./base/quay
 
   # Services
-  - ./base/gotify
+  - ./base/gotify/deploy
