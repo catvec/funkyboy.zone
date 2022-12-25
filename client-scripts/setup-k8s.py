@@ -62,7 +62,7 @@ def main():
         description="""\
             Valid, diff, and apply manifests to the Kubernetes cluster.
 
-            When not in verbose mode only changed resources will be shown in the diff.\
+            When not in verbose mode only changed resources will be shown in output.\
         """,
 
     )
@@ -98,7 +98,7 @@ def main():
     )
     parser.add_argument(
         "--verbose",
-        help="If provided then does not trim any command output. If not provided then the diff command will only show changed resources",
+        help="In non-verbose mode only changed resources will be shown from command output",
         action='store_true',
         default=False,
     )
@@ -106,6 +106,8 @@ def main():
     args = parser.parse_args()
 
     # Render Kubernetes manifests
+    logging.info("Building manifests with Kustomize")
+
     kustomize_res = subprocess.Popen(
         ["kustomize", "build", args.target_dir],
         cwd=KUBERNETES_DIR,
@@ -122,8 +124,12 @@ def main():
         )
     kustomize_build_str = kustomize_out[0]
 
+    logging.info("Successfully built manifests")
+
     # Validate manifests
     if not args.no_validate:
+        logging.info("Validating manifests")
+
         kubectl_dry_run_res = subprocess.Popen(
             ["kubectl", args.action, "-f", "-", "--dry-run=server"],
             stdin=subprocess.PIPE,
@@ -147,6 +153,7 @@ def main():
     # Show manifest diff    
     if not args.no_diff and args.action == "apply":
         logging.info("Preparing diff")
+
         kubectl_diff_res = subprocess.Popen(
             ["kubectl", "diff", "-f", "-"],
             stdin=subprocess.PIPE,
@@ -182,6 +189,7 @@ def main():
         logging.debug(str(kustomize_build_str).replace("\\n", "\n"))
 
     # Apply Kubernetes manifest
+    logging.info("Apply manifests")
     kubectl_action_res = subprocess.Popen(
         ["kubectl", args.action, "-f", "-"],
         stdin=subprocess.PIPE,
@@ -200,7 +208,13 @@ def main():
         )
 
     logging.info("%s Kuberenetes manifests", "Applied" if args.action == "apply" else "Deleted")
-    logging.info(decode_bytes(kubectl_action_out[0]))
+    for line in decode_bytes(kubectl_action_out[0]).split("\n"):
+        if "unchanged" in line and not args.verbose or len(line.strip()) == 0:
+            continue
+
+        print(line)
+
+    logging.info("Applied manifests")
 
 if __name__ == '__main__':
     main()
