@@ -2,10 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gotify
-  namespace: gotify
-  labels:
-    project: gotify
-    component: gotify-server
 spec:
   replicas: 1
   selector:
