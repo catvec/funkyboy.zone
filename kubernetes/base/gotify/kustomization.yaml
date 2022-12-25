@@ -6,6 +6,7 @@ commonLabels:
   component: gotify-server
 resources:
 - resources/namespace.yaml
+- resources/persistent-volume-claim.yaml
 - resources/deployment.yaml
 - resources/service.yaml
 - resources/ingress.yaml

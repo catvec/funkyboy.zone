@@ -19,3 +19,10 @@ spec:
         image: gotify/server
         ports:
           - containerPort: 80
+        volumeMounts:
+        - mountPath: "/app/data"
+          name: gotify-server-data
+      volumes:
+      - name: gotify-server-data
+        persistentVolumeClaim:
+          claimName: gotify-server-data
