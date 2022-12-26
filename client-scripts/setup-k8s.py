@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-import os.path
 import argparse
 import subprocess
-import sys
 import logging
 import os
-import io
+from typing import Optional, Literal, Union
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -20,21 +18,21 @@ KUBECONFIG_PATH = os.path.join(KUBERNETES_DIR, "kubeconfig.yaml")
 class KustomizeBuildError(Exception):
     """ Indicates kustomize failed to build manifests.
     """
-    def __init__(self):
-        super().__init__("Failed to build manifests with Kustomize")
+    def __init__(self, returncode: int, stdout: Optional[str], stderr: Optional[str]):
+        super().__init__(f"Failed to build manifests with Kustomize (exit code: {returncode}), stdout={stdout}, stderr={stderr}")
 
 class KubeDryRunError(Exception):
     """ Indicates that running Kubectl in dry run mode failed.
     """
 
-    def __init__(self):
-        super().__init__("Failed to validate manifests using dry run mode")
+    def __init__(self, returncode: int, stdout: Optional[str], stderr: Optional[str]):
+        super().__init__(f"Failed to validate manifests using dry run mode (exit code: {returncode}), stdout={stdout}, stderr={stderr}")
 
 class KubeDiffError(Exception):
     """ Failed to compute difference of Kubectl manifests.
     """
-    def __init__(self):
-        super().__init__("Failed to compute diff of Kubernetes manifests")
+    def __init__(self, returncode: int, stdout: Optional[str], stderr: Optional[str]):
+        super().__init__(f"Failed to compute diff of Kubernetes manifests (exit code: {returncode}), stdout={stdout}, stderr{stderr}")
 
 class KubeDiffConfirmFail(Exception):
     """ Indicates the Kubernetes manifest difference was not accepted.
@@ -42,18 +40,31 @@ class KubeDiffConfirmFail(Exception):
     def __init__(self):
         super().__init__("Failed to confirm Kubernetes manifest changes")
 
-class KubeApplyError(Exception):
+class KubeApplyOrDeleteError(Exception):
     """ Indicates kubectl apply failed.
     """
-    def __init__(self):
-        super().__init__("Failed to apply Kubernetes manifests")
+    def __init__(self, action: Union[Literal["apply"], Literal["delete"]], returncode: int, stdout: Optional[str], stderr: Optional[str]):
+        super().__init__(f"Failed to {action} Kubernetes manifests (exit code: {returncode}), stdout={stdout}, stderr={stderr}")
+
+def decode_bytes(value: bytes) -> Optional[str]:
+    """ Converts bytes into a string. If no value is stored in bytes then None is returned.
+    """
+    if value is None or len(value) == 0:
+        return None
+
+    return value.decode("utf-8")
 
 def main():
     """ Entrypoint.
     """
     # Options
     parser = argparse.ArgumentParser(
-        description="Apply manifests to the Kubernetes cluster"
+        description="""\
+            Valid, diff, and apply manifests to the Kubernetes cluster.
+
+            When not in verbose mode only changed resources will be shown in output.\
+        """,
+
     )
     parser.add_argument(
         "action",
@@ -85,23 +96,40 @@ def main():
         help="Which Kustomization directory to build",
         default=KUBERNETES_DIR,
     )
+    parser.add_argument(
+        "--verbose",
+        help="In non-verbose mode only changed resources will be shown from command output",
+        action='store_true',
+        default=False,
+    )
 
     args = parser.parse_args()
 
     # Render Kubernetes manifests
-    kustomize_res = subprocess.run(
+    logging.info("Building manifests with Kustomize")
+
+    kustomize_res = subprocess.Popen(
         ["kustomize", "build", args.target_dir],
         cwd=KUBERNETES_DIR,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
-    if kustomize_res.returncode != 0:
-        logging.error("kustomize error: %s", kustomize_res.stderr)
-        raise KustomizeBuildError()
-    kustomize_build_str = kustomize_res.stdout
+    kustomize_out = kustomize_res.communicate()
+
+    if kustomize_res.wait() != 0:
+        raise KustomizeBuildError(
+            returncode=kustomize_res.returncode,
+            stdout=decode_bytes(kustomize_out[0]),
+            stderr=decode_bytes(kustomize_out[1]),
+        )
+    kustomize_build_str = kustomize_out[0]
+
+    logging.info("Successfully built manifests")
 
     # Validate manifests
     if not args.no_validate:
+        logging.info("Validating manifests")
+
         kubectl_dry_run_res = subprocess.Popen(
             ["kubectl", args.action, "-f", "-", "--dry-run=server"],
             stdin=subprocess.PIPE,
@@ -111,17 +139,21 @@ def main():
         )
         kubectl_dry_run_out = kubectl_dry_run_res.communicate(input=kustomize_build_str)
         
-        if kubectl_dry_run_res.returncode != 0:
-            logging.error("kubectl %s dry error: %s", args.action, kubectl_dry_run_out[1].decode('utf-8') if kubectl_dry_run_out[1] is not None else "<No error returned>")
-            raise KubeDryRunError()
+        if kubectl_dry_run_res.wait() != 0:
+            raise KubeDryRunError(
+                returncode=kubectl_dry_run_res.returncode,
+                stdout=decode_bytes(kubectl_dry_run_out[0]),
+                stderr=decode_bytes(kubectl_dry_run_out[1]),
+            )
 
         logging.info("Validated manifests")
-        logging.info(kubectl_dry_run_out[0].decode('utf-8'))
     else:
         logging.info("Not validating manifests")
 
     # Show manifest diff    
     if not args.no_diff and args.action == "apply":
+        logging.info("Preparing diff")
+
         kubectl_diff_res = subprocess.Popen(
             ["kubectl", "diff", "-f", "-"],
             stdin=subprocess.PIPE,
@@ -130,15 +162,17 @@ def main():
             env=dict(os.environ, KUBECONFIG=KUBECONFIG_PATH),
         )
         kubectl_diff_out = kubectl_diff_res.communicate(input=kustomize_build_str)
-
-        if kubectl_diff_res.returncode != 0:
-            logging.error("kubectl diff error: %s", kubectl_diff_out[1].decode('utf-8') if kubectl_diff_out[1] is not None else "<No error returned>")
-            raise KubeDiffError()
+        
+        if kubectl_diff_res.wait() > 1:
+            raise KubeDiffError(
+                returncode=kubectl_diff_res.returncode,
+                stdout=decode_bytes(kubectl_diff_out[0]),
+                stderr=decode_bytes(kubectl_diff_out[1]),
+            ) 
 
         logging.info("Proposed manifest changes")
-        kubectl_diff_str = kubectl_diff_out[0].decode('utf-8')
-        logging.info(kubectl_diff_str if len(kubectl_diff_str) > 0 else "<Empty string>")
-
+        logging.info(decode_bytes(kubectl_diff_out[0]))
+        
         logging.info("Confirm changes [y/N]")
         confirm_in = input().strip().lower()
 
@@ -155,6 +189,7 @@ def main():
         logging.debug(str(kustomize_build_str).replace("\\n", "\n"))
 
     # Apply Kubernetes manifest
+    logging.info("Apply manifests")
     kubectl_action_res = subprocess.Popen(
         ["kubectl", args.action, "-f", "-"],
         stdin=subprocess.PIPE,
@@ -164,12 +199,22 @@ def main():
     )
     kubectl_action_out = kubectl_action_res.communicate(input=kustomize_build_str)
     
-    if kubectl_action_res.returncode != 0:
-        logging.error("kubectl %s error: %s", args.action, kubectl_action_out[1].decode('utf-8') if kubectl_action_out[1] is not None else "<No error returned>")
-        raise KubeApplyError()
+    if kubectl_action_res.wait() != 0:
+        raise KubeApplyOrDeleteError(
+            action=args.action,
+            returncode=kubectl_action_res.returncode,
+            stdout=decode_bytes(kubectl_action_out[0]),
+            stderr=decode_bytes(kubectl_action_out[1]),
+        )
 
     logging.info("%s Kuberenetes manifests", "Applied" if args.action == "apply" else "Deleted")
-    logging.info(kubectl_action_out[0].decode('utf-8'))
+    for line in decode_bytes(kubectl_action_out[0]).split("\n"):
+        if "unchanged" in line and not args.verbose or len(line.strip()) == 0:
+            continue
+
+        print(line)
+
+    logging.info("Applied manifests")
 
 if __name__ == '__main__':
     main()

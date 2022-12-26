@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: gotify
+commonLabels:
+  project: gotify
+  component: gotify-server
+patches:
+- target:
+    kind: Ingress
+    name: gotify
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: gotify.k8s.funkyboy.zone
+bases:
+- ../base
+resources:
+- namespace.yaml
