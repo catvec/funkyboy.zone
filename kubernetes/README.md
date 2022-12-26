@@ -11,13 +11,21 @@ Once the Kubernetes cluster has been provisioned by [Terraform](../terraform) th
 
 Provides the following services:
 
-- [Operator Lifecycle Manager](./base/operator-lifecycle-manager)
-- [ArgoCD](./base/argocd)
-- [TektonCD](./base/tektoncd)
-- [Quay](./base/quay)
+- Foundational services:
+    - [Operator Lifecycle Manager](./base/operator-lifecycle-manager) (WIP)
+    - [ArgoCD](./base/argocd) (WIP)
+    - [TektonCD](./base/tektoncd) (WIP)
+    - [Quay](./base/quay) (WIP)
+    - [Cert Manager](./base/cert-manager/)
+- [Gotify](./base/gotify/)
 
 # Instructions
-The manifests in this directory include custom resource definitions. Once these are applied to the Kubernetes cluster it may take a few moments for their api version's and kind's to be recognized as valid. As a result some manifests in this directory will likely be rejected by the Kubernetes cluster on the first attempt. Therefore one must apply these manifests once, wait a few seconds, and then apply them again.
+1. Follow setup instructions in:
+    - [`base/cert-manager/README.md`](./base/cert-manager/README.md)
+2. Run the `setup-k8s.py` script from the root of the repository:
+   ```
+   ./clients-scripts/setup-k8s.py
+   ```
 
 ## Kubernetes Dashboard
 To access the dashboard run the Kubernetes proxy (The `--address` option is not needed if not in the dev container):

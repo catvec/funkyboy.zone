@@ -32,13 +32,9 @@ name my Linux server: Funky Boy.
 3. Setup cloud resources on DigitalOcean using [Terraform](https://terraform.io):
    ```
    ./client-scripts/setup-cloud.sh
+   ./client-scripts/setup-cloud.sh ./kubernetes/terraform
    ```
-4. Setup the Kubernetes cluster:
-   ```
-   ./client-scripts/setup-k8s.py --no-diff
-   ./client-scripts/setup-k8s.py
-   ```
-   The first invocation must have the `--no-diff` option since some custom resource definitions must be created on the server. Expect the first invocation to exit with an error related to these custom resource definitions. The second invocation should succeed.
+4. To setup the Kubernetes cluster follow instructions in [`kubernetes/README.md`](./kubernetes/README.md).
 5. Run the initial setup script on the Linux server:
    ```
    ./client-scripts/init.sh

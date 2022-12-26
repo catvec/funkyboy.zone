@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: http01
+spec:
+  acme:
+    email: user@example.com
+    server: acme-example.com
+    privateKeySecretRef:
+      name: cert-manager-account-key
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
