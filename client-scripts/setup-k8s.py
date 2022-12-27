@@ -105,11 +105,28 @@ def main():
 
     args = parser.parse_args()
 
+    render_and_apply_or_delete(
+        action=args.action,
+        target_dir=args.target_dir,
+        no_validate=args.no_validate,
+        no_diff=args.no_diff,
+        show_manifests=args.show_manifests,
+        verbose=args.verbose,
+    )
+
+def render_and_apply_or_delete(
+    action: Union[Literal["apply"], Literal["delete"]],
+    target_dir: str,
+    no_validate: bool,
+    no_diff: bool,
+    show_manifests: bool,
+    verbose: bool,
+):
     # Render Kubernetes manifests
     logging.info("Building manifests with Kustomize")
 
     kustomize_res = subprocess.Popen(
-        ["kustomize", "build", args.target_dir],
+        ["kustomize", "build", target_dir],
         cwd=KUBERNETES_DIR,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -127,11 +144,11 @@ def main():
     logging.info("Successfully built manifests")
 
     # Validate manifests
-    if not args.no_validate:
+    if not no_validate:
         logging.info("Validating manifests")
 
         kubectl_dry_run_res = subprocess.Popen(
-            ["kubectl", args.action, "-f", "-", "--dry-run=server"],
+            ["kubectl", action, "-f", "-", "--dry-run=server"],
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -151,7 +168,7 @@ def main():
         logging.info("Not validating manifests")
 
     # Show manifest diff    
-    if not args.no_diff and args.action == "apply":
+    if not no_diff and action == "apply":
         logging.info("Preparing diff")
 
         kubectl_diff_res = subprocess.Popen(
@@ -178,20 +195,20 @@ def main():
 
         if confirm_in != "y":
             raise KubeDiffConfirmFail()
-    elif args.action == "delete":
+    elif action == "delete":
         logging.info("Cannot compute diff for delete")
     else:
         logging.info("Not computing Kubernetes manifest differences")
 
     # Show manifests
-    if args.show_manifests:
+    if show_manifests:
         logging.debug("Kubernetes manifests")
         logging.debug(str(kustomize_build_str).replace("\\n", "\n"))
 
     # Apply Kubernetes manifest
     logging.info("Apply manifests")
     kubectl_action_res = subprocess.Popen(
-        ["kubectl", args.action, "-f", "-"],
+        ["kubectl", action, "-f", "-"],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -201,15 +218,15 @@ def main():
     
     if kubectl_action_res.wait() != 0:
         raise KubeApplyOrDeleteError(
-            action=args.action,
+            action=action,
             returncode=kubectl_action_res.returncode,
             stdout=decode_bytes(kubectl_action_out[0]),
             stderr=decode_bytes(kubectl_action_out[1]),
         )
 
-    logging.info("%s Kuberenetes manifests", "Applied" if args.action == "apply" else "Deleted")
+    logging.info("%s Kuberenetes manifests", "Applied" if action == "apply" else "Deleted")
     for line in decode_bytes(kubectl_action_out[0]).split("\n"):
-        if "unchanged" in line and not args.verbose or len(line.strip()) == 0:
+        if "unchanged" in line and not verbose or len(line.strip()) == 0:
             continue
 
         print(line)
