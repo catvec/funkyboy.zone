@@ -10,7 +10,7 @@ bases:
   - ./base/argocd
   - ./base/tektoncd
   - ./base/quay
-  - ./base/cert-manager/production
+  - ./base/cert-manager
 
   # Services
   - ./base/gotify/production

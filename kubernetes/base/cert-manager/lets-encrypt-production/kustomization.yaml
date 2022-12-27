@@ -1,0 +1,42 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+patches:
+  # Set ACME server
+  - target:
+      kind: ClusterIssuer
+      name: issuer
+    patch: |-
+      - op: replace
+        path: /spec/acme/server
+        value: https://acme-v02.api.letsencrypt.org/directory
+      - op: replace
+        path: /metadata/name
+        value: lets-encrypt-production-http01
+
+  # Set ACME email
+  - target:
+      kind: ClusterIssuer
+      name: issuer
+    path: ./acme-email-patch.yaml
+
+  # Rename secret
+  - target:
+      kind: Secret
+      name: cert-manager-account-key
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: production-cert-manager-account-key
+replacements:
+# Rename secret
+- source:
+    kind: Secret
+    name: cert-manager-account-key
+  targets:
+  - select:
+      kind: ClusterIssuer
+      name: issuer
+    fieldPaths:
+      - spec.acme.privateKeySecretRef.name
+bases:
+- ../bases/issuer
