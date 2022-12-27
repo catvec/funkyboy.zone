@@ -4,6 +4,7 @@ import subprocess
 import logging
 import os
 from typing import Optional, Literal, Union
+import re
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -157,11 +158,29 @@ def render_and_apply_or_delete(
         kubectl_dry_run_out = kubectl_dry_run_res.communicate(input=kustomize_build_str)
         
         if kubectl_dry_run_res.wait() != 0:
-            raise KubeDryRunError(
-                returncode=kubectl_dry_run_res.returncode,
-                stdout=decode_bytes(kubectl_dry_run_out[0]),
-                stderr=decode_bytes(kubectl_dry_run_out[1]),
-            )
+            # Ignore if the only errors are about namespaces not existing
+            kubectl_dry_run_stderr = decode_bytes(kubectl_dry_run_out[1])
+            
+            namespace_error_re = re.compile("^Error from server \(NotFound\): error when creating \"STDIN\": namespaces \"(.*)\" not found$")
+            only_namespace_errors = True
+            missing_namespaces = set()
+
+            for stderr_line in kubectl_dry_run_stderr.strip().split("\n"):
+                err_match = namespace_error_re.match(stderr_line.strip())
+                if err_match:
+                    missing_namespaces.add(err_match.group(1))
+                else:
+                    only_namespace_errors = False
+
+            for ns in missing_namespaces:
+                logging.warning("Must create namespace: %s", ns)
+
+            if not only_namespace_errors:
+                raise KubeDryRunError(
+                    returncode=kubectl_dry_run_res.returncode,
+                    stdout=decode_bytes(kubectl_dry_run_out[0]),
+                    stderr=kubectl_dry_run_stderr,
+                )
 
         logging.info("Validated manifests")
     else:
