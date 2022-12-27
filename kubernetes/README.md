@@ -12,11 +12,12 @@ Once the Kubernetes cluster has been provisioned by [Terraform](../terraform) th
 Provides the following services:
 
 - Foundational services:
+    - [Nginx Ingress](./base/nginx-ingress/)
+    - [Cert Manager](./base/cert-manager/)
     - [Operator Lifecycle Manager](./base/operator-lifecycle-manager) (WIP)
     - [ArgoCD](./base/argocd) (WIP)
     - [TektonCD](./base/tektoncd) (WIP)
     - [Quay](./base/quay) (WIP)
-    - [Cert Manager](./base/cert-manager/)
 - [Gotify](./base/gotify/)
 
 # Instructions

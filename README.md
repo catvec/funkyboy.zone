@@ -34,7 +34,7 @@ name my Linux server: Funky Boy.
    ./client-scripts/setup-cloud.sh
    ./client-scripts/setup-cloud.sh ./kubernetes/terraform
    ```
-4. To setup the Kubernetes cluster follow instructions in [`kubernetes/README.md`](./kubernetes/README.md).
+4. To setup the Kubernetes cluster follow instructions in [`kubernetes/README.md`](./kubernetes/README.md#instructions).
 5. Run the initial setup script on the Linux server:
    ```
    ./client-scripts/init.sh
