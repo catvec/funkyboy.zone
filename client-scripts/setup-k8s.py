@@ -128,7 +128,6 @@ def render_and_apply_or_delete(
 
     kustomize_res = subprocess.Popen(
         ["kustomize", "build", target_dir],
-        cwd=KUBERNETES_DIR,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
@@ -239,7 +238,12 @@ def render_and_apply_or_delete(
         if confirm_in != "y":
             raise KubeDiffConfirmFail()
     elif action == "delete":
-        logging.info("Cannot compute diff for delete")
+        logging.info("Cannot compute diff for delete, displaying manifests which will be passed to delete command: \n%s", decode_bytes(kustomize_build_str).replace("\\n", "\n"))
+        logging.info("Confirm delete of manifests? [y/N]")
+
+        confirm_in = input().strip().lower()
+        if confirm_in != "y":
+            raise KubeDiffConfirmFail()
     else:
         logging.info("Not computing Kubernetes manifest differences")
 
@@ -249,7 +253,7 @@ def render_and_apply_or_delete(
         logging.debug(str(kustomize_build_str).replace("\\n", "\n"))
 
     # Apply Kubernetes manifest
-    logging.info("Apply manifests")
+    logging.info("%s manifests", "Applying" if action == "apply" else "Deleting")
     kubectl_action_res = subprocess.Popen(
         ["kubectl", action, "-f", "-"],
         stdin=subprocess.PIPE,
