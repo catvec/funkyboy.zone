@@ -32,7 +32,8 @@ Then access the Dashboard: [here](http://127.0.0.1:8001/api/v1/namespaces/kubern
 ## Standard Labels
 All applications in the cluster should have the following labels:
 
-- `app`: Logical name of an application
+- `project`: Name of overarching service which may be made up of several parts but works towards providing a unified experience of some sort
+- `component`: Name of specific service
 
 ## CI Deployment
 TektonCD pipelines will trigger on repository pushes. The [TektonCD buildah task](https://hub.tekton.dev/tekton/task/buildah) can be used to build Docker images. The [TektonCD ArgoCD task](https://hub.tekton.dev/tekton/task/argocd-task-sync-and-wait) can be used to deploy resources to the cluster.
