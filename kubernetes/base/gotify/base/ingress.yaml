@@ -4,6 +4,7 @@ metadata:
   name: gotify
   annotations:
     nginx.org/websocket-services: gotify
+    cert-manager.io/cluster-issuer: lets-encrypt-production-http01
 spec:
   ingressClassName: nginx
   rules:
@@ -17,3 +18,7 @@ spec:
             name: gotify
             port:
               number: 80
+  tls:
+  - hosts:
+    - example.com
+    secretName: gotify-ingress-cert

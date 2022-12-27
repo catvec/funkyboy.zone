@@ -12,6 +12,9 @@ patches:
     - op: replace
       path: /spec/rules/0/host
       value: gotify.k8s.funkyboy.zone
+    - op: replace
+      path: /spec/tls/0/hosts/0
+      value: gotify.k8s.funkyboy.zone
 bases:
 - ../base
 resources:
