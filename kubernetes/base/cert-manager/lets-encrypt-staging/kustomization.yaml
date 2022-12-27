@@ -20,23 +20,13 @@ patches:
     path: ./acme-email-patch.yaml
 
   # Rename secret
+  # Rename secret
   - target:
-      kind: Secret
-      name: cert-manager-account-key
-    patch: |-
-      - op: replace
-        path: /metadata/name
-        value: staging-cert-manager-account-key
-replacements:
-# Rename secret
-- source:
-    kind: Secret
-    name: cert-manager-account-key
-  targets:
-  - select:
       kind: ClusterIssuer
       name: issuer
-    fieldPaths:
-      - spec.acme.privateKeySecretRef.name
+    patch: |-
+      - op: replace
+        path: /spec/acme/privateKeySecretRef/name
+        value: staging-cert-manager-account-key
 bases:
 - ../bases/issuer
