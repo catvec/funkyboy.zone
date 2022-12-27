@@ -175,6 +175,9 @@ def render_and_apply_or_delete(
             for ns in missing_namespaces:
                 logging.warning("Must create namespace: %s", ns)
 
+            if only_namespace_errors:
+                logging.warning("Validation might not be accurate because resource(s) were specified in namespace(s) which do not exist")
+
             if not only_namespace_errors:
                 raise KubeDryRunError(
                     returncode=kubectl_dry_run_res.returncode,
@@ -200,11 +203,32 @@ def render_and_apply_or_delete(
         kubectl_diff_out = kubectl_diff_res.communicate(input=kustomize_build_str)
         
         if kubectl_diff_res.wait() > 1:
-            raise KubeDiffError(
-                returncode=kubectl_diff_res.returncode,
-                stdout=decode_bytes(kubectl_diff_out[0]),
-                stderr=decode_bytes(kubectl_diff_out[1]),
-            ) 
+            # Ignore missing namespace errors
+            kubectl_diff_stderr = decode_bytes(kubectl_diff_out[1])
+
+            namespace_error_re = re.compile("^Error from server \(NotFound\): namespaces \"(.*)\" not found$")
+            missing_namespaces = set()
+            only_namespace_errors = True
+
+            for stderr_line in kubectl_diff_stderr.strip().split("\n"):
+                err_match = namespace_error_re.match(stderr_line.strip())
+                if err_match:
+                    missing_namespaces.add(err_match.group(1))
+                else:
+                    only_namespace_errors = False
+
+            for ns in missing_namespaces:
+                logging.warning("Must create namespace: %s", ns)
+
+            if only_namespace_errors:
+                logging.warning("Diff might not be accurate because resource(s) were specified in namespace(s) which do not exist")
+
+            if not only_namespace_errors:
+                raise KubeDiffError(
+                    returncode=kubectl_diff_res.returncode,
+                    stdout=decode_bytes(kubectl_diff_out[0]),
+                    stderr=kubectl_diff_stderr,
+                ) 
 
         logging.info("Proposed manifest changes")
         logging.info(decode_bytes(kubectl_diff_out[0]))
