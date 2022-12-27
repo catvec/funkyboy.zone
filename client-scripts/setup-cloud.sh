@@ -127,10 +127,10 @@ done
 shift $((OPTIND-1))
 
 # Arguments
-declare -r arg_component="$1"
+arg_component="$1"
 
 if [[ -z "$arg_component" ]]; then
-    arg_component="$prog_dir/terraform"
+    arg_component="terraform"
 fi
 
 # Environment variables
