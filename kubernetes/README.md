@@ -14,6 +14,7 @@ Provides the following services:
 - Foundational services:
     - [Nginx Ingress](./base/nginx-ingress/)
     - [Cert Manager](./base/cert-manager/)
+	- [Minio](./base/minio/)
     - [Operator Lifecycle Manager](./base/operator-lifecycle-manager) (WIP)
     - [ArgoCD](./base/argocd) (WIP)
     - [TektonCD](./base/tektoncd) (WIP)
