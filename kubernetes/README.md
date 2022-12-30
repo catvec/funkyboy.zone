@@ -20,6 +20,7 @@ Provides the following services:
     - [TektonCD](./base/tektoncd) (WIP)
     - [Quay](./base/quay) (WIP)
 - [Gotify](./base/gotify/)
+- [ChatGPT3 Discord Bot](./base/chatgpt-discord-bot/)
 
 # Instructions
 1. Follow setup instructions in:
