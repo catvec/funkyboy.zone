@@ -7,11 +7,11 @@ bases:
 
   # Operators
   - ./base/operator-lifecycle-manager
-  - ./base/argocd
-  - ./base/tektoncd
-  - ./base/quay
+  #- ./base/argocd
+  #- ./base/tektoncd
+  #- ./base/quay
   - ./base/cert-manager
-  - ./base/minio/production
+  #- ./base/minio/production
 
   # Services
   - ./base/gotify/production
