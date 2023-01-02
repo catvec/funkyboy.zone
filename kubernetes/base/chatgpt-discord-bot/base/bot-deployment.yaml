@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chatgpt-discord-bot
+  labels:
+    project: chatgpt-discord-bot
+    component: chatgpt-discord-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: chatgpt-discord-bot
+      component: chatgpt-discord-bot
+  template:
+    metadata:
+      labels:
+        project: chatgpt-discord-bot
+        component: chatgpt-discord-bot
+    spec:
+      containers:
+      - name: chatgpt-discord-bot
+        image: noahhuppert/chatgpt-discord-bot:v1.0.0-alpha1
+        env:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: chatgpt-discord-bot
+              key: OPENAI_API_KEY
+        - name: DISCORD_GUILD_ID
+          valueFrom:
+            secretKeyRef:
+              name: chatgpt-discord-bot
+              key: DISCORD_GUILD_ID
+        - name: DISCORD_BOT_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: chatgpt-discord-bot
+              key: DISCORD_BOT_TOKEN
+        - name: DISCORD_CHANNEL_ID
+          valueFrom:
+            secretKeyRef:
+              name: chatgpt-discord-bot
+              key: DISCORD_CHANNEL_ID
+        - name: REDIS_HOST
+          value: redis
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_DB
+          value: "0"

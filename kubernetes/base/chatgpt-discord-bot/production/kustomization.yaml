@@ -3,8 +3,8 @@ kind: Kustomization
 namespace: chatgpt-discord-bot
 secretGenerator:
 - name: chatgpt-discord-bot
-  files:
-  - config.json
+  envs:
+  - config.env
 bases:
 - ../base
 resources:

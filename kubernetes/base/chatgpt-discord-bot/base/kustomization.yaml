@@ -1,4 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-- ./deployment.yaml
+- ./bot-deployment.yaml
+- ./redis-pvc.yaml
+- ./redis-deployment.yaml
+- ./redis-svc.yaml

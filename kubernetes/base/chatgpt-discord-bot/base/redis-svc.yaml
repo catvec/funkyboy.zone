@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    project: chatgpt-discord-bot
+    component: redis
+spec:
+  selector:
+    project: chatgpt-discord-bot
+    component: redis
+  ports:
+  - protocol: TCP
+    port: 6379
+    targetPort: 6379
