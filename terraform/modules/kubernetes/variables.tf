@@ -16,11 +16,6 @@ variable "region" {
 variable "kubernetes_version" {
   type = string
   description = "Kubernetes cluster version"
-
-  validation {
-    condition = contains([ "1.23.10-do.0", "1.22.13-do.0", "1.22.8-do.1", "1.21.11-do.1" ], var.kubernetes_version)
-    error_message = "Must be on of: [ 1.23.10-do.0, 1.22.13-do.0, 1.22.8-do.1, 1.21.11-do.1 ] (Populated from the `doctl kubernetes options versions` command)"
-  }
 }
 
 variable "kubeconfig_out_path" {

@@ -3,14 +3,14 @@ module "kubernetes_cluster" {
 
   name = "funkyboy"
   region = "nyc1"
-  kubernetes_version = "1.23.10-do.0"
+  kubernetes_version = "1.25.4-do.0"
 
   kubeconfig_out_path = "${path.root}/../kubernetes/kubeconfig.yaml"
 
   node_pools = [
     {
 	 name = "worker-pool-a"
-	 size = "s-1vcpu-2gb"
+	 size = "s-4vcpu-8gb"
 	 node_count = 2
     }
   ]
