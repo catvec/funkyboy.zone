@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: chatgpt-discord-bot
-        image: noahhuppert/chatgpt-discord-bot:v1.0.0-alpha4
+        image: noahhuppert/chatgpt-discord-bot:v1.0.0-alpha6
         env:
         - name: OPENAI_API_KEY
           valueFrom:
