@@ -9,10 +9,14 @@ data "kubernetes_service" "nginx_ingress_controller" {
   }
 }
 
+locals {
+  load_balancer_ip = one(data.kubernetes_service.nginx_ingress_controller.status.0.load_balancer.0.ingress[*].ip)
+}
+
 resource "digitalocean_record" "kubernetes" {
   domain = "funkyboy.zone"
   type = "A"
   ttl = "60" # Seconds
   name = "*.k8s"
-  value = one(data.kubernetes_service.nginx_ingress_controller.status.0.load_balancer.0.ingress[*].ip)
+  value = local.load_balancer_ip != null && local.load_balancer_ip != "" ? local.load_balancer_ip : "127.0.0.1"
 }
