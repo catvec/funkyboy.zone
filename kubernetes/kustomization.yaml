@@ -15,4 +15,4 @@ bases:
 
   # Services
   - ./base/gotify/production
-  - ./base/chatgpt-discord-bot/production
+  - ./base/chatgpt-discord-bot/deploy

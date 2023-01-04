@@ -2,20 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: redis
-  labels:
-    project: chatgpt-discord-bot
-    component: redis
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      project: chatgpt-discord-bot
-      component: redis
   template:
-    metadata:
-      labels:
-        project: chatgpt-discord-bot
-        component: redis
     spec:
       containers:
       - name: redis
