@@ -10,7 +10,11 @@ data "kubernetes_service" "nginx_ingress_controller" {
 }
 
 locals {
-  load_balancer_ip = one(data.kubernetes_service.nginx_ingress_controller.status.0.load_balancer.0.ingress[*].ip)
+  load_balancer_annotation = one(data.kubernetes_service.nginx_ingress_controller.metadata[*].annotations["kubernetes.digitalocean.com/load-balancer-id"])
+}
+
+data "digitalocean_loadbalancer" "kubernetes_nginx_ingress" {
+  id = local.load_balancer_annotation
 }
 
 resource "digitalocean_record" "kubernetes" {
@@ -18,5 +22,5 @@ resource "digitalocean_record" "kubernetes" {
   type = "A"
   ttl = "60" # Seconds
   name = "*.k8s"
-  value = local.load_balancer_ip != null && local.load_balancer_ip != "" ? local.load_balancer_ip : "127.0.0.1"
+  value = data.digitalocean_loadbalancer.kubernetes_nginx_ingress.ip
 }
