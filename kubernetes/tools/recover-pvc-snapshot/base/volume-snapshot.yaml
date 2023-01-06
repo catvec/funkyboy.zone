@@ -1,0 +1,7 @@
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: restore-volume-snapshot
+spec:
+  source:
+    volumeSnapshotContentName: restore-volume-snapshot-content

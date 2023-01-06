@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: pvc-restore
+replacements:
+- source:
+    kind: VolumeSnapshot
+    name: restore-volume-snapshot
+    fieldPath: metadata.namespace
+  targets:
+  - select:
+      kind: VolumeSnapshotContent
+      name: restore-volume-snapshot-content
+    fieldPaths:
+    - spec.volumeSnapshotRef.namespace
+resources:
+- namespace.yaml
+- volume-snapshot-content.yaml
+- volume-snapshot.yaml
+- pvc.yaml
+- pod.yaml

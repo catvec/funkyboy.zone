@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+bases:
+- ../base
+namePrefix: <Project Name Here>
+patches:
+- target:
+    kind: VolumeSnapshotContent
+    name: restore-volume-snapshot-content
+  patch: |
+    - op: replace
+      path: /spec/source/snapshotHandle
+      value: <DigitalOcean volume snapshot ID>

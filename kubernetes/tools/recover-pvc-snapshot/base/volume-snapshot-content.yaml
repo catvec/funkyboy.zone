@@ -1,0 +1,12 @@
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotContent
+metadata:
+  name: restore-volume-snapshot-content
+spec:
+  deletionPolicy: Delete
+  driver: testdriver.csi.k8s.io
+  source:
+    snapshotHandle: your-snapshot-ID
+  volumeSnapshotRef:
+    name: restore-snapshot
+    namespace: default
