@@ -4,9 +4,9 @@ metadata:
   name: restore-volume-snapshot-content
 spec:
   deletionPolicy: Delete
-  driver: testdriver.csi.k8s.io
+  driver: dobs.csi.digitalocean.com
   source:
     snapshotHandle: your-snapshot-ID
   volumeSnapshotRef:
-    name: restore-snapshot
+    name: restore-volume-snapshot
     namespace: default

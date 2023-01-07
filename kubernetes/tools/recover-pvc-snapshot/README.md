@@ -16,7 +16,6 @@ Follow these sections to copy data from a DigitalOcean volume snapshot to a PVC 
    doctl compute snapshot list
    ```
 2. Create a copy of [`overlay/kustomization.example.yaml`](./overlay/kustomization.example.yaml) named `kustomization.yaml`:
-   - Replace `namePrefix`: With a name describing what snapshot your are restoring, this will be a prefix for all created Kubernetes resource names (Only include lowercase letters and slashes, ideally end it with a dash), replace `<namePrefix>` in the instructions with this value
    - Replace `patches.0.patch.value`: With your ID of snapshot ID
 3. Apply the Kubernetes manifests to create the resources used to restore the volume:
    ```
@@ -24,7 +23,7 @@ Follow these sections to copy data from a DigitalOcean volume snapshot to a PVC 
    ```
 4. Copy the contents of the restored volume to your computer:
    ```
-   kubectl -n pvc-restore cp <namePrefix>restore-pod:/mnt ./restored-volume
+   kubectl -n pvc-restore cp restore-pod:/mnt ./restored-volume
    ```
    Then copy the content to the volume attached to the pod you were trying to restore into:
    ```

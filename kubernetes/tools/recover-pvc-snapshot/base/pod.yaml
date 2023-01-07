@@ -6,10 +6,11 @@ spec:
   volumes:
     - name: restore-volume
       persistentVolumeClaim:
-        claimName: restore-pvc
+        claimName: pvc-restore
   containers:
   - name: shell
     image: alpine
+    command: [ "sh", "-c", "sleep infinity" ]
     volumeMounts:
       - mountPath: /mnt
         name: restore-volume
