@@ -14,11 +14,7 @@ Provides the following services:
 - Foundational services:
     - [Nginx Ingress](./base/nginx-ingress/)
     - [Cert Manager](./base/cert-manager/)
-	- [Minio](./base/minio/)
-    - [Operator Lifecycle Manager](./base/operator-lifecycle-manager) (WIP)
-    - [ArgoCD](./base/argocd) (WIP)
-    - [TektonCD](./base/tektoncd) (WIP)
-    - [Quay](./base/quay) (WIP)
+    - [Operator Lifecycle Manager](./base/operator-lifecycle-manager)
 - [Gotify](./base/gotify/)
 - [ChatGPT3 Discord Bot](./base/chatgpt-discord-bot/)
 
@@ -47,7 +43,16 @@ All applications in the cluster should have the following labels:
 - `project`: Name of overarching service which may be made up of several parts but works towards providing a unified experience of some sort
 - `component`: Name of specific service
 
-## CI Deployment
-(WIP)
+## Works In Progress
+Hosting new services on Kubernetes can be easier than other platforms from a technology perspective. However much planning and thought must go into what is hosted and how. In general being careful and slow when adding service is the best practice. As to not put the cluster in a bad state. 
 
+### WIP Services
+Services where manifests are the the process of being written, but deployments aren't logistically planned out yet:
+
+- [ArgoCD](./base/argocd) (WIP)
+- [TektonCD](./base/tektoncd) (WIP)
+- [Quay](./base/quay) (WIP)
+- [Minio](./base/minio/)
+
+### CI Deployment
 TektonCD pipelines will trigger on repository pushes. The [TektonCD buildah task](https://hub.tekton.dev/tekton/task/buildah) can be used to build Docker images. The [TektonCD ArgoCD task](https://hub.tekton.dev/tekton/task/argocd-task-sync-and-wait) can be used to deploy resources to the cluster.
