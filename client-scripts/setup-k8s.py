@@ -385,7 +385,7 @@ def render_and_apply_or_delete(
     if not no_validate:
         logging.info("Validating manifests")
 
-        dry_run_res = kubectl.dry_run(kustomize_build_str)
+        dry_run_res = kubectl.dry_run(action, kustomize_build_str)
         
         if 'missing_namespaces' in dry_run_res:
             for ns in dry_run_res['missing_namespaces']:
