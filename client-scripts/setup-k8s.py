@@ -288,7 +288,7 @@ class KustomizeClient:
         - KustomizeBuildError: If build encounters an error
         """        
         res = subprocess.Popen(
-            self.__build_cmd([dir]),
+            self.__build_cmd(["--reorder=none", dir]),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
