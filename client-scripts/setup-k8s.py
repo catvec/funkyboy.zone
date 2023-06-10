@@ -6,6 +6,7 @@ import os
 from typing import Optional, Literal, Union, List, TypedDict
 import re
 import sys
+import shutil
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -89,6 +90,13 @@ class KubeDiffRes(TypedDict):
     """
     missing_namespaces: Optional[List[str]]
     diff: str
+
+class KubeApplyRes(TypedDict):
+    """ Results of kubectl apply.
+    Arguments:
+    - output: Apply output
+    """
+    output: str
 
 class KubectlClient:
     """ Client for kubectl tool.
@@ -204,6 +212,38 @@ class KubectlClient:
         return {
             'diff': decode_bytes(out[0]),
         }
+    
+    def apply(self, action: Union[Literal["apply"], Literal["delete"]], input_manifests: str) -> KubeApplyRes:
+        """ Apply manifests to server.
+        Arguments:
+        - action: Whether the apply should create or delete resources
+        - input_manifests: YAML mainfests of resources
+
+        Returns: Result of apply
+
+        Raises:
+        - KubeApplyOrDeleteError: If an error occurred while applying
+        """
+        res = subprocess.Popen(
+            ["kubectl", action, "-f", "-"],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            env=dict(os.environ, KUBECONFIG=self.kubeconfig_path),
+        )
+        out = res.communicate(input=input_manifests)
+        
+        if res.wait() != 0:
+            raise KubeApplyOrDeleteError(
+                action=action,
+                returncode=res.returncode,
+                stdout=decode_bytes(out[0]),
+                stderr=decode_bytes(out[1]),
+            )
+        
+        return {
+            'output': decode_bytes(out[0]),
+        }
 
 
 class KustomizeClient:
@@ -227,10 +267,10 @@ class KustomizeClient:
         - KustomizeBinNotFound: If no Kustomize binary could not be found
         """
         if self.__kustomize_cmd_name is None:
-            if sys.executable("kustomize") is not None:
+            if shutil.which("kustomize") is not None:
                 self.__kustomize_cmd_name = ["kustomize"]
-            elif sys.executable("kubectl") is not None:
-                self.__kustomize_cmd_name = ["kubectl"]
+            elif shutil.which("kubectl") is not None:
+                self.__kustomize_cmd_name = ["kubectl", "kustomize"]
             else:
                 raise KustomizeBinNotFound()
 
@@ -248,7 +288,7 @@ class KustomizeClient:
         - KustomizeBuildError: If build encounters an error
         """        
         res = subprocess.Popen(
-            self.__build_cmd(["build", dir]),
+            self.__build_cmd([dir]),
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
         )
@@ -361,7 +401,7 @@ def render_and_apply_or_delete(
     if not no_diff and action == "apply":
         logging.info("Preparing diff")
 
-        diff_res = kubectl.diff()
+        diff_res = kubectl.diff(kustomize_build_str)
 
         if 'missing_namespaces' in diff_res:
             for ns in diff_res['missing_namespaces']:
@@ -394,25 +434,11 @@ def render_and_apply_or_delete(
 
     # Apply Kubernetes manifest
     logging.info("%s manifests", "Applying" if action == "apply" else "Deleting")
-    kubectl_action_res = subprocess.Popen(
-        ["kubectl", action, "-f", "-"],
-        stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        env=dict(os.environ, KUBECONFIG=KUBECONFIG_PATH),
-    )
-    kubectl_action_out = kubectl_action_res.communicate(input=kustomize_build_str)
     
-    if kubectl_action_res.wait() != 0:
-        raise KubeApplyOrDeleteError(
-            action=action,
-            returncode=kubectl_action_res.returncode,
-            stdout=decode_bytes(kubectl_action_out[0]),
-            stderr=decode_bytes(kubectl_action_out[1]),
-        )
+    apply_res = kubectl.apply(action, kustomize_build_str)
 
     logging.info("%s Kuberenetes manifests", "Applied" if action == "apply" else "Deleted")
-    for line in decode_bytes(kubectl_action_out[0]).split("\n"):
+    for line in apply_res['output'].split("\n"):
         if "unchanged" in line and not verbose or len(line.strip()) == 0:
             continue
 
