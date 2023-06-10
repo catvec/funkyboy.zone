@@ -11,7 +11,7 @@ bases:
   #- ./base/tektoncd
   - ./base/quay
   - ./base/cert-manager
-  #- ./base/minio/production
+  - ./base/minio
 
   # Services
   - ./base/gotify/production
