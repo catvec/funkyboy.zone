@@ -1,6 +1,14 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-resources:
-  - ./resources/operator-install.yaml
-  - ./resources/tenant-namespace.yaml
-  - ./resources/tenant.yaml
+
+secretGenerator:
+- name: storage-user
+  envs:
+  - storage-user-config.env
+- name: storage-configuration
+  files:
+  - config.env
+
+bases:
+- ./bases/operator
+- ./bases/tenant
