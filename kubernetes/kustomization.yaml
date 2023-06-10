@@ -9,7 +9,7 @@ bases:
   - ./base/operator-lifecycle-manager
   #- ./base/argocd
   #- ./base/tektoncd
-  #- ./base/quay
+  - ./base/quay
   - ./base/cert-manager
   #- ./base/minio/production
 
