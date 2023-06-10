@@ -1,9 +1,6 @@
 [submodule "secrets"]
 	path = secret
 	url = git@github.com:Noah-Huppert/funkyboy.zone-secrets
-[submodule "kubernetes/base/operator-lifecycle-manager/base/operator-lifecycle-manager"]
-	path = kubernetes/base/operator-lifecycle-manager/resources/operator-lifecycle-manager
-	url = git@github.com:operator-framework/operator-lifecycle-manager.git
 [submodule "kubernetes/base/teleport/base/teleport"]
 	path = kubernetes/base/teleport/resources/teleport
 	url = git@github.com:gravitational/teleport.git
