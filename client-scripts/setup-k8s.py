@@ -318,7 +318,7 @@ def main():
     parser.add_argument(
         "action",
         help="The action to run on the cluster",
-        choices=["apply", "delete"],
+        choices=["apply", "delete", "dry-run"],
         default="apply",
         nargs="?",
     )
@@ -364,7 +364,7 @@ def main():
     )
 
 def render_and_apply_or_delete(
-    action: Union[Literal["apply"], Literal["delete"]],
+    action: Union[Literal["apply"], Literal["delete"], Literal["dry-run"]],
     target_dir: str,
     no_validate: bool,
     no_diff: bool,
@@ -433,18 +433,23 @@ def render_and_apply_or_delete(
         logging.debug(str(kustomize_build_str).replace("\\n", "\n"))
 
     # Apply Kubernetes manifest
-    logging.info("%s manifests", "Applying" if action == "apply" else "Deleting")
+    if action == "apply" or action == "delete":
+        logging.info("%s manifests", "Applying" if action == "apply" else "Deleting")
     
-    apply_res = kubectl.apply(action, kustomize_build_str)
+        apply_res = kubectl.apply(action, kustomize_build_str)
+        
+        logging.info("%s Kuberenetes manifests", "Applied" if action == "apply" else "Deleted")
+        for line in apply_res['output'].split("\n"):
+            if "unchanged" in line and not verbose or len(line.strip()) == 0:
+                continue
 
-    logging.info("%s Kuberenetes manifests", "Applied" if action == "apply" else "Deleted")
-    for line in apply_res['output'].split("\n"):
-        if "unchanged" in line and not verbose or len(line.strip()) == 0:
-            continue
+            print(line)
 
-        print(line)
+        logging.info("Applied manifests")
+    else:
+        logging.info("Dry run, not action taken")
 
-    logging.info("Applied manifests")
+    
 
 if __name__ == '__main__':
     main()
