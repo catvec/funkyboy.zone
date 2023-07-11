@@ -10,8 +10,8 @@ Object storage.
 [Minio](https://min.io/) operator.
 
 # Instructions
-1. Make a copy of [`storage-user-config.example.env`](./storage-user-config.example.env) named `storage-user-config.env` and pick values
-2. Make a copy of [`config.example.env`](./config.example.env) named `config.env`
+1. Make a copy of [`bases/tenant/storage-config-secret-patch.example.yaml`](./bases/tenant/storage-config-secret-patch.example.yaml) named `storage-config-secret-patch.yaml and replace the values with your own base64 encoded values
+2. Make a copy of [`bases/tenant/storage-user-config-secret-patch.example.yaml`](./bases/tenant/storage-user-config-secret-patch.example.yaml) named `storage-user-config-secret-patch.yaml`, replace the values with your own base64 encoded values
 
 # Development
 [Minio Operator](https://operatorhub.io/operator/minio-operator) manifest from [this url](https://operatorhub.io/install/minio-operator.yaml).

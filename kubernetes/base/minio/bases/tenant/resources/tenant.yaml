@@ -1,8 +1,7 @@
 apiVersion: minio.min.io/v2
 kind: Tenant
 metadata:
-  name: myminio
-  namespace: minio-tenant
+  name: minio
   ## Optionally pass labels to be applied to the statefulset pods
   labels:
     app: minio
@@ -154,7 +153,7 @@ spec:
     ## Servers specifies the number of MinIO Tenant Pods / Servers in this pool.
     ## For standalone mode, supply 1. For distributed mode, supply 4 or more.
     ## Note that the operator does not support upgrading from standalone to distributed mode.
-    - servers: 2
+    - servers: 4
       ## custom name for the pool
       name: pool-0
       ## volumesPerServer specifies the number of volumes attached per MinIO Tenant Pod / Server.
@@ -185,7 +184,7 @@ spec:
             - ReadWriteOnce
           resources:
             requests:
-              storage: 1Ti
+              storage: 1Gi
           storageClassName: standard
         status: { }
       ## Configure security context

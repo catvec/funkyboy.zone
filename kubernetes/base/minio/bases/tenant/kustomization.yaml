@@ -3,6 +3,18 @@ kind: Kustomization
 
 namespace: minio
 
+patches:
+  - target:
+      kind: Secret
+      name: storage-user
+    path: ./storage-user-config-secret-patch.yaml
+  - target:
+      kind: Secret
+      name: storage-configuration
+    path: ./storage-config-secret-patch.yaml
+
 resources:
 - resources/namespace.yaml
 - resources/tenant.yaml
+- resources/storage-config-secret.yaml
+- resources/storage-user-config-secret.yaml
