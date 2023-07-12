@@ -9,9 +9,10 @@ bases:
   - ./base/operator-lifecycle-manager
   #- ./base/argocd
   #- ./base/tektoncd
+  - ./base/rook
   - ./base/quay
   - ./base/cert-manager
-  - ./base/minio
+  #- ./base/minio
 
   # Services
   - ./base/gotify/production
