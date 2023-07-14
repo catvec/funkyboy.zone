@@ -3,6 +3,4 @@ kind: Kustomization
 namespace: operators
 
 resources:
-  - ./resources/crds.yaml
-  - ./resources/common.yaml
   - ./resources/operator.yaml

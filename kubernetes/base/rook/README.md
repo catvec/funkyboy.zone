@@ -5,4 +5,8 @@ Ceph file and object storage operator.
 - [Development](#development)
 
 # Development
+Bases:
+- Operator
+  - The `operator.yaml` file was taken from operatorhub.io: https://operatorhub.io/install/rook-ceph.yaml
+
 The `crds.yaml`, `common.yaml`, `operator.yaml`, and `cluster-on-pvc.yaml` (renamed to `cluster.yaml`) files were downloaded from the `deploy/examples/` directory of the [Rook repository](https://github.com/rook/rook/).
