@@ -187,6 +187,9 @@ kind: OperatorGroup
 metadata:
   name: global-operators
   namespace: operators
+spec:
+  targetNamespaces:
+    - operators
 ---
 apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
