@@ -1,6 +1,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: operators
+namespace: rook-ceph
 
 resources:
+  - ./resources/namespace.yaml
+  - ./resources/common.yaml
+  - ./resources/crds.yaml
   - ./resources/operator.yaml

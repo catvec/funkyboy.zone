@@ -3,5 +3,4 @@ kind: Kustomization
 namespace: rook-ceph
 
 resources:
-  - ./resources/namespace.yaml
   - ./resources/cluster.yaml

@@ -3,4 +3,4 @@ kind: Kustomization
 
 bases:
   - ./bases/operator
-  #- ./bases/cluster
+  - ./bases/cluster

@@ -4,10 +4,11 @@ metadata:
   name: rook-ceph
 spec:
   cephVersion:
-    image: 'ceph/ceph:v14.2.4-20190917'
+    image: quay.io/ceph/ceph:v17.2.6
   dataDirHostPath: /var/lib/rook
   mon:
     count: 3
+    allowMultiplePerNode: true
     volumeClaimTemplate:
       spec:
         resources:
