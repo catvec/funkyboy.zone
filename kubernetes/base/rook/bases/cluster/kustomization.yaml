@@ -4,3 +4,5 @@ namespace: rook-ceph
 
 resources:
   - ./resources/cluster.yaml
+  - ./resources/ceph-block-pool.yaml
+  - ./resources/storageclass.yaml

@@ -6,7 +6,15 @@ Ceph file and object storage operator.
 - [Operation](#operation)
 
 # Development
-The `crds.yaml`, `common.yaml`, `operator.yaml`, and `cluster-on-pvc.yaml` (renamed to `cluster.yaml`) files were downloaded from the `deploy/examples/` directory of the [Rook repository](https://github.com/rook/rook/).
+The base files from which manifests were based on come from the [Rook repository](https://github.com/rook/rook/):
+
+- `/bases/operator/resources/`
+  - `crds.yaml` from Rook repo `/deploy/examples/crds.yaml`
+  - `common.yaml` from Rook repo `/deploy/examples/common.yaml`
+  - `operator.yaml` from Rook repo `/deploy/examples/operator.yaml`
+- `/bases/cluster/resources/`
+  - `cluster.yaml` from Rook repo `/deploy/examples/cluster-on-pvc.yaml`
+  - `storageclass.yaml` and `ceph-block-poo.yaml` from Rook repo `/deploy/examples/csi/rbd/storageclass.yaml`
 
 # Operation
 To access the dashboard port forward the `rook-ceph-mgr-dashboard` service:
