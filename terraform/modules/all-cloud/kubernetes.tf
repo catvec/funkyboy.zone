@@ -8,16 +8,9 @@ module "kubernetes_cluster" {
   kubeconfig_out_path = "${path.root}/../kubernetes/kubeconfig.yaml"
 
   primary_node_pool = {
-    name = "worker-pool-a"
-    size = "s-4vcpu-8gb"
-    node_count = 2
-  }
-  additional_node_pools = {
-    worker_pool_b = {
-      name = "worker-pool-b"
-      size = "s-2vcpu-4gb" # "s-4vcpu-8gb"
-      node_count = 4
-    }
+    name = "worker-pool-b"
+    size = "s-2vcpu-4gb" # "s-4vcpu-8gb"
+    node_count = 4
   }
 
   maintenance = {

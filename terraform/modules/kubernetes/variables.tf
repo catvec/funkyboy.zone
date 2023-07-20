@@ -44,6 +44,7 @@ variable "additional_node_pools" {
     node_count = number
   }))
   description = "Worker node pools in addition to the primary node pool, map keys are logical identifiers within Terraform and not used in node pool definitions"
+  default = {}
 }
 
 variable "maintenance" {
