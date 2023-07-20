@@ -28,13 +28,22 @@ variable "kubeconfig_out_path" {
   }
 }
 
-variable "node_pools" {
-  type = list(object({
+variable "primary_node_pool" {
+  type = object({
+    name = string
+    size = string
+    node_count = number
+  })
+  description = "The primary worker node pool definition"
+}
+
+variable "additional_node_pools" {
+  type = map(object({
     name = string
     size = string
     node_count = number
   }))
-  description = "Worker node pool definitions"
+  description = "Worker node pools in addition to the primary node pool, map keys are logical identifiers within Terraform and not used in node pool definitions"
 }
 
 variable "maintenance" {
