@@ -15,6 +15,7 @@ The base files from which manifests were based on come from the [Rook repository
 - `/bases/cluster/resources/`
   - `cluster.yaml` from Rook repo `/deploy/examples/cluster-on-pvc.yaml`
   - `storageclass.yaml` and `ceph-block-poo.yaml` from Rook repo `/deploy/examples/csi/rbd/storageclass.yaml`
+  - `filesystem.yaml` from Rook repo `/deploy/examples/filesystem.yaml`
 
 # Operation
 ## Dashboard
