@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: media-server
+      component: qbittorrent
+  template:
+    metadata:
+      labels:
+        project: media-server
+        component: qbittorrent
+    spec:
+      containers:
+        - name: qbittorrent
+          image: binhex/arch-qbittorrentvpn:4.5.4-1-03
+          ports:
+            - name: qb-web-ui
+              containerPort: 8080
+          env:
+            - name: VPN_ENABLED
+              value: yes
+            - name: VPN_PROV
+              value: pia
+            - name: VPN_CLIENT
+              value: openvpn
+            - name: STRICT_PORT_FORWARD
+              value: yes
+            - name: ENABLE_PRIVOXY
+              value: yes
+            - name: LAN_NETWORK
+              value: 192.168.1.0/24
+            - name: NAME_SERVERS
+              value: 8.8.8.8,1.1.1.1
+            - name: VPN_INPUT_PORTS
+              value: "1234"
+            - name: VPN_OUTPUT_PORTS
+              value: "5678"
+            - name: DEBUG
+              value: "false"
+            - name: WEBUI_PORT
+              value: "8080"
+            - name: VPN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pia-vpn-credentials
+                  key: VPN_USER
+            - name: VPN_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: pia-vpn-credentials
+                  key: VPN_PASS
+          volumeMounts:
+            - mountPath: /data
+              name: media
+      volumes:
+        - name: media
+          persistentVolumeClaim:
+            claimName: media-files

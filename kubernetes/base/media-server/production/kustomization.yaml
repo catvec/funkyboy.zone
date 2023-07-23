@@ -6,3 +6,4 @@ resources:
   - ./resources/namespace.yaml
 bases:
   - ../bases/emby
+  - ../bases/qbittorrent

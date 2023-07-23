@@ -2,7 +2,11 @@
 Setup to acquire and view TV and movies.
 
 # Table Of Contents
+- [Instructions](#setup)
 - [Operations](#operations)
+
+# Instructions
+1. Create a copy of [`./bases/qbittorrent/pia-vpn-secret-patch.example.yaml`](./bases/qbittorrent/pia-vpn-secret-patch.example.yaml) named `pia-vpn-secret-patch.yaml`, fill in your own values
 
 # Operations
 ## Emby Initial Setup
