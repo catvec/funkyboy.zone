@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: emby.k8s.funkyboy.zone
+  - host: view.media.k8s.funkyboy.zone
     http:
       paths:
       - path: /
@@ -21,6 +21,6 @@ spec:
             port:
               number: 80
   tls:
-  - hosts:
-    - emby.k8s.funkyboy.zone
-    secretName: emby-ingress-cert
+    - hosts:
+        - view.media.k8s.funkyboy.zone
+      secretName: emby-ingress-cert

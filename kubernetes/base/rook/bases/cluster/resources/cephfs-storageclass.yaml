@@ -1,7 +1,7 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: rook-cephfs
+  name: cephfs-media-server
 # Change "rook-ceph" provisioner prefix to match the operator namespace if needed
 provisioner: rook-ceph.cephfs.csi.ceph.com # driver:namespace:operator
 parameters:
@@ -10,11 +10,11 @@ parameters:
   clusterID: rook-ceph # namespace:cluster
 
   # CephFS filesystem name into which the volume shall be created
-  fsName: ceph-fs
+  fsName: cephfs-media-server
 
   # Ceph pool into which the volume shall be created
   # Required for provisionVolume: "true"
-  pool: cephfs-replicated
+  pool: cephfs-media-server-replicated
 
   # The secrets contain Ceph admin credentials. These are generated automatically by the operator
   # in the same namespace as the cluster.

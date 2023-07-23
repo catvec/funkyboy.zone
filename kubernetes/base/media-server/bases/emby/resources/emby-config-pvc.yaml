@@ -10,5 +10,5 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Mi
-  storageClassName: rook-cephfs
+      storage: 1Gi
+  storageClassName: cephfs-media-server
