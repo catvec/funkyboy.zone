@@ -9,6 +9,8 @@ patches:
 
 resources:
   - ./resources/pia-vpn-secret.yaml
+  - ./resources/pia-openvpn-config.yaml
+  
   - ./resources/deployment.yaml
   - ./resources/service.yaml
   - ./resources/ingress.yaml

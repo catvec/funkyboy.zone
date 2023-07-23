@@ -2,6 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: qbittorrent
+  labels:
+    project: media-server
+    component: qbittorrent
 spec:
   replicas: 1
   selector:
@@ -54,9 +57,17 @@ spec:
                   name: pia-vpn-credentials
                   key: VPN_PASS
           volumeMounts:
+            - mountPath: /config/openvpn
+              name: config
             - mountPath: /data
               name: media
       volumes:
+        - name: config
+          configMap:
+            name: pia-openvpn-config
+            items:
+              - key: us_east.ovpn
+                path: us_east.ovpn
         - name: media
           persistentVolumeClaim:
             claimName: media-files

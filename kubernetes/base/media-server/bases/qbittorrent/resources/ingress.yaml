@@ -10,17 +10,17 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: download.media.k8s.funkyboy.zone
+  - host: qbittorrent.media.k8s.funkyboy.zone
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: emby
+            name: qbittorrent
             port:
               number: 80
   tls:
     - hosts:
-        - download.media.k8s.funkyboy.zone
+        - qbittorrent.media.k8s.funkyboy.zone
       secretName: qb-web-ui-ingress-cert
