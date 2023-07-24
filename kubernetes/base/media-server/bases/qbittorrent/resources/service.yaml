@@ -13,4 +13,4 @@ spec:
     - name: qb-web-ui
       protocol: TCP
       port: 80
-      targetPort: http
+      targetPort: qb-web-ui
