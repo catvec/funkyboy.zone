@@ -14,4 +14,5 @@ resources:
   - ./resources/qbittorrent-config-secret.yaml
   
   - ./resources/deployment.yaml
+  - ./resources/network-policy.yaml
   - ./resources/service.yaml
