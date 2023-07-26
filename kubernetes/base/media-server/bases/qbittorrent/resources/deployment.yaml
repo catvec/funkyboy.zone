@@ -18,11 +18,21 @@ spec:
         component: qbittorrent
     spec:
       containers:
-        - name: curl
-          image: ubuntu:latest
-          command:
-            - sleep
-            - infinity
+        - name: qbittorrent
+          image: linuxserver/qbittorrent:4.5.4
+          ports:
+            - name: qb-web-ui
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: WEBUI_PORT
+              value: "8080"
+          volumeMounts:
+            - name: qbittorrent-configuration
+              mountPath: /config/qBittorrent/qBittorrent.conf
+              readOnly: true
+            - name: media
+              mountPath: /downloads
         - name: vpn
           image: qmcgaw/gluetun:v3.35.0
           securityContext:
@@ -45,6 +55,12 @@ spec:
                   name: pia-vpn-credentials
                   key: VPN_PASS
       volumes:
+        - name: qbittorrent-configuration
+          secret:
+            secretName: qbittorrent-configuration
+            items:
+              - key: qBittorrent.conf
+                path: qBittorrent.conf
         - name: media
           persistentVolumeClaim:
             claimName: media-files

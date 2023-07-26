@@ -10,6 +10,8 @@ patches:
 resources:
   - ./resources/pia-vpn-secret.yaml
   - ./resources/pia-openvpn-config.yaml
+
+  - ./resources/qbittorrent-config-secret.yaml
   
   - ./resources/deployment.yaml
   - ./resources/service.yaml
