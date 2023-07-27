@@ -12,3 +12,20 @@ spec:
       component: qbittorrent
   policyTypes:
     - Egress
+  egress:
+    # Allow Kubernetes API
+    # IP from: kubectl get endpoints
+    - to:
+        - ipBlock:
+            cidr: 100.65.22.242/32
+      ports:
+        - protocol: TCP
+          port: 443
+
+    # Allow DNS requests
+    - to:
+        - ipBlock:
+            cidr: 1.1.1.1/32
+      ports:
+        - protocol: UDP
+          port: 53

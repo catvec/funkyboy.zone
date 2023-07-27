@@ -18,6 +18,11 @@ spec:
         component: qbittorrent
     spec:
       containers:
+        - name: network-policy
+          image: bitnami/kubectl:1.25.12
+          command:
+            - /bin/bash
+            - -c
         - name: qbittorrent
           image: linuxserver/qbittorrent:4.5.4
           ports:
