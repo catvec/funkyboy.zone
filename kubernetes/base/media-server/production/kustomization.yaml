@@ -8,3 +8,4 @@ bases:
   - ../bases/emby
   - ../bases/qbittorrent
   - ../bases/jellyseerr
+  - ../bases/radarr
