@@ -38,4 +38,4 @@ data:
     # Required to allow access from ports besides 8080
     WebUI\HostHeaderValidation=false
 
-    #WebUI\Username=admin
+    WebUI\Username=admin
