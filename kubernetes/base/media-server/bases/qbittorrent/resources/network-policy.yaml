@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: qbittorrent-only-vpn
+  name: qbittorrent-internal-access
   labels:
     project: media-server
     component: qbittorrent
@@ -22,10 +22,12 @@ spec:
         - protocol: TCP
           port: 443
 
-    # Allow DNS requests
     - to:
-        - ipBlock:
-            cidr: 1.1.1.1/32
-      ports:
-        - protocol: UDP
-          port: 53
+        - podSelector:
+            matchLabels:
+              project: media-server
+              component: radarr
+        - podSelector:
+            matchLabels:
+              project: media-server
+              component: sonarr

@@ -18,7 +18,7 @@ spec:
         component: qbittorrent
     spec:
       containers:
-        - name: network-policy
+        - name: network-policy-manager
           image: bitnami/kubectl:1.25.12
           command:
             - /bin/bash
