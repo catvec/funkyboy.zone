@@ -18,11 +18,6 @@ spec:
         component: qbittorrent
     spec:
       containers:
-        - name: network-policy-manager
-          image: bitnami/kubectl:1.25.12
-          command:
-            - /bin/bash
-            - -c
         - name: qbittorrent
           image: linuxserver/qbittorrent:4.5.4
           ports:
@@ -50,6 +45,8 @@ spec:
               value: private internet access
             - name: SERVER_REGIONS
               value: US New York
+            - name: FIREWALL_INPUT_PORTS
+              value: "8080"
             - name: OPENVPN_USER
               valueFrom:
                 secretKeyRef:
