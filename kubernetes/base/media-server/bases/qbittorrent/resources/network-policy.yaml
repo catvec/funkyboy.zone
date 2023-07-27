@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: qbittorrent-internal-access
+  name: qbittorrent-access
   labels:
     project: media-server
     component: qbittorrent
@@ -11,17 +11,25 @@ spec:
       project: media-server
       component: qbittorrent
   policyTypes:
+    - Ingress
     - Egress
-  egress:
-    # Allow Kubernetes API
-    # IP from: kubectl get endpoints
-    - to:
-        - ipBlock:
-            cidr: 100.65.22.242/32
+  ingress:
+    # Requests from services which use qBittorrent
+    - from:
+        - podSelector:
+            matchLabels:
+              project: media-server
+              component: radarr
+        - podSelector:
+            matchLabels:
+              project: media-server
+              component: sonarr
       ports:
         - protocol: TCP
-          port: 443
-
+          port: 8080
+  
+  egress:
+    # Responses to services which use qBittorrent
     - to:
         - podSelector:
             matchLabels:
@@ -31,3 +39,31 @@ spec:
             matchLabels:
               project: media-server
               component: sonarr
+      ports:
+        - protocol: TCP
+          port: 8080
+
+    # VPN
+    - to:
+        - ipBlock:
+            cidr: 191.96.227.97/32
+        - ipBlock:
+            cidr: 191.96.227.117/32
+        - ipBlock:
+            cidr: 191.96.227.124/32
+        - ipBlock:
+            cidr: 191.96.227.103/32
+        - ipBlock:
+            cidr: 191.96.227.127/32
+        - ipBlock:
+            cidr: 191.96.227.105/32
+        - ipBlock:
+            cidr: 191.96.227.119/32
+        - ipBlock:
+            cidr: 191.96.227.90/32
+
+    - to:
+        - ipBlock:
+            cidr: 37.19.198.96/32
+        - ipBlock:
+            cidr: 37.19.198.95/32
