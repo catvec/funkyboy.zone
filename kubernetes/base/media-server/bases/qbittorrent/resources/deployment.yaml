@@ -28,8 +28,9 @@ spec:
             - name: WEBUI_PORT
               value: "8080"
           volumeMounts:
-            - name: qbittorrent-configuration
+            - name: qbittorrent-config
               mountPath: /config/qBittorrent/qBittorrent.conf
+              subPath: qBittorrent.conf
               readOnly: true
             - name: media
               mountPath: /downloads
@@ -55,12 +56,9 @@ spec:
                   name: pia-vpn-credentials
                   key: VPN_PASS
       volumes:
-        - name: qbittorrent-configuration
-          secret:
-            secretName: qbittorrent-configuration
-            items:
-              - key: qBittorrent.conf
-                path: qBittorrent.conf
+        - name: qbittorrent-config
+          configMap:
+            name: qbittorrent-config
         - name: media
           persistentVolumeClaim:
             claimName: media-files

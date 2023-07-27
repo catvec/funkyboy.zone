@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: qbittorrent-configuration
+  name: qbittorrent-config
   labels:
     project: media-server
     component: qbittorrent
 data:
-  qBittorrent.template.conf: |
+  qBittorrent.conf: |
     [AutoRun]
     enabled=false
     program=
@@ -34,6 +34,8 @@ data:
     WebUI\Address=*
     WebUI\Port=8080
     WebUI\ServerDomains=*
-    
-    WebUI\Username=admin
-    WebUI\Password_PBKDF2="@ByteArray($WEBUI_PASSWORD_HASH)"
+
+    # Required to allow access from ports besides 8080
+    WebUI\HostHeaderValidation=false
+
+    #WebUI\Username=admin
