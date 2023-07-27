@@ -14,6 +14,7 @@ Setup to acquire and view TV and movies.
 - Exec into the Emby pod to create a `/media/movies` and `/media/shows` directory. Then add those directories as libraries
 
 ## Jellyseerr Initial Setup
+- When Jellyseerr first starts you navigate to the dashboard and connect it to the Emby server
 
 ## qBittorrent Web UI
 To view the qBittorrent web UI use `kubectl` to forward the port locally:
