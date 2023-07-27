@@ -7,3 +7,4 @@ resources:
 bases:
   - ../bases/emby
   - ../bases/qbittorrent
+  - ../bases/jellyseerr
