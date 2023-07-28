@@ -29,9 +29,16 @@ After the manifests have been applied follow the [Initial Setup](#initial-setup)
 
   Ensure that all the directories are owned by the non root user (In qBittorrent you can chown for the `abc` user)
 - Ensure WebUI host header verification is not enabled. If it is then you need to access the web UI by port forwarding the same port the web UI is running on (`8080`). The default login for the web UI is `admin:adminadmin`
-- Ensure torrent management mode is manual
-- Set completed downloads to save in `/media/downloads/complete`
-- Set incomplete downloads to save in `/media/downloads/incomplete`
+- Set the following settings:
+  - Downloads
+    - Saving Management
+      - Default Torrent Management Mode: `Manual`
+      - Default Save Path: `/media/downloads/complete`
+      - Keep incomplete torrents in: On -> `/media/downloads/incomplete`
+  - BitTorrent
+    - Seeding Limits
+      - When ratio reaches: On -> `0`
+      - then: `Pause torrent`
 
 
 ### Sonarr Initial Setup
@@ -63,25 +70,26 @@ To view the qBittorrent web UI use `kubectl` to forward the port locally:
 kubectl -n media-server port-forward service/qbittorrent 8000:qb-web-ui
 ```
 
-### Radarr Web UI
-To view the Radarr web UI use `kubectl` to forward the port locally:
-
-```
-kubectl -n media-server port-forward service/radarr 8000:http
-```
-
 ### Sonarr Web UI
 To view the Sonarr web UI use `kubectl` to forward the port locally:
 
 ```
-kubectl -n media-server port-forward service/sonarrl 8000:http
+kubectl -n media-server port-forward service/sonarrl 8001:http
 ```
+
+### Radarr Web UI
+To view the Radarr web UI use `kubectl` to forward the port locally:
+
+```
+kubectl -n media-server port-forward service/radarr 8002:http
+```
+
 
 ### Prowlarr Web UI
 To view the Prowlarr web UI use `kubectl` to forward the port locally:
 
 ```
-kubectl -n media-server port-forward service/prowlarr 8000:http
+kubectl -n media-server port-forward service/prowlarr 8003:http
 ```
 
 # Development
