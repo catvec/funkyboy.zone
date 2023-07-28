@@ -31,6 +31,20 @@ To view the Radarr web UI use `kubectl` to forward the port locally:
 kubectl -n media-server port-forward service/radarr 8000:http
 ```
 
+## Sonarr Web UI
+To view the Sonarr web UI use `kubectl` to forward the port locally:
+
+```
+kubectl -n media-server port-forward service/sonarrl 8000:http
+```
+
+## Prowlarr Web UI
+To view the Prowlarr web UI use `kubectl` to forward the port locally:
+
+```
+kubectl -n media-server port-forward service/prowlarr 8000:http
+```
+
 # Development
 ## qBittorrent Pod Network Policies
 To restrict the qBittorrent application from being accessed or making requests that are not through the VPN a `NetworkPolicy` is put in place.
