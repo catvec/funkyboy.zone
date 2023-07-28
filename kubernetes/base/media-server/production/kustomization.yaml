@@ -10,3 +10,4 @@ bases:
   - ../bases/jellyseerr
   - ../bases/radarr
   - ../bases/sonarr
+  - ../bases/prowlarr
