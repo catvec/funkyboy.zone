@@ -25,10 +25,14 @@ spec:
               containerPort: 7878
           
           volumeMounts:
+            - name: config
+              mountPath: /config
             - name: media
-              mountPath: /movies
-              subPath: movies
+              mountPath: /downloads
       volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: radarr-config
         - name: media
           persistentVolumeClaim:
             claimName: media-files

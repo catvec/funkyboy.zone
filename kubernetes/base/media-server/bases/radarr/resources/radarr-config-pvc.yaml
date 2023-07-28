@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: jellyseerr-config
+  name: radarr-config
   labels:
     project: media-server
-    component: jellyseerr
+    component: radarr
 spec:
   accessModes:
     - ReadWriteOnce
