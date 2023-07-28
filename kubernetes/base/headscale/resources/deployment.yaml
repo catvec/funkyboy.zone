@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: headscale
+  labels:
+    project: headscale
+    component: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: headscale
+      component: server
+  template:
+    metadata:
+      labels:
+        project: headscale
+        component: server
+    spec:
+      initContainers:
+        - name: make-empty-sqlite-db
+          image: alpine:3.18.2
+          # Create empty SQLite DB:
+          # Docs: https://headscale.net/running-headscale-container/#configure-and-run-headscale
+          command:
+            - /bin/sh
+            - -c
+            - |
+              if [ ! -f /config/db.sqlite ]; then
+                echo "SQLite DB did not exist, creating empty DB"
+                touch /config/db.sqlite
+              else
+                echo "SQLite DB already exists"
+              fi
+          volumeMounts:
+            - name: config-dir
+              mountPath: /config
+      containers:
+        - name: headscale
+          image: headscale/headscale:0.22.3
+          args:
+            - headscale
+            - serve
+          ports:
+            - name: http
+              containerPort: 8080
+          volumeMounts:
+            - name: config-dir
+              mountPath: /etc/headscale
+            - name: config-yaml
+              mountPath: /etc/headscale/config.yaml
+              subPath: config.yaml
+            - name: run-data
+              mountPath: /var/lib/headscale
+      volumes:
+        - name: config-dir
+          persistentVolumeClaim:
+            claimName: headscale-config
+        - name: run-data
+          persistentVolumeClaim:
+            claimName: headscale-run-data
+        - name: config-yaml
+          configMap:
+            name: headscale-config
+            items:
+              - key: config.yaml
+                path: config.yaml

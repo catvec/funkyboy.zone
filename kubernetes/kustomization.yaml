@@ -18,3 +18,4 @@ bases:
   - ./base/gotify/production
   - ./base/chatgpt-discord-bot/deploy
   - ./base/media-server/production
+  - ./base/headscale
