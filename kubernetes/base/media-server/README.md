@@ -14,6 +14,20 @@ After the manifests have been applied follow the [Initial Setup](#initial-setup)
 # Operations
 ## Initial Setup
 ### qBittorrent
+- Exec into the qBittorrent container and create directories needed by qBittorrent and the rest of the services:
+  ```
+  kubectl -n media-server exec -it --container qbittorrent deployment/qbittorrent -- /bin/bash
+  ```
+
+  Directories:
+  - `/media`
+    - `/downloads`
+      - `/complete`
+      - `/incomplete`
+    - `/movies`
+    - `/shows`
+
+  Ensure that all the directories are owned by the non root user (In qBittorrent you can chown for the `abc` user)
 - Ensure WebUI host header verification is not enabled. If it is then you need to access the web UI by port forwarding the same port the web UI is running on (`8080`). The default login for the web UI is `admin:adminadmin`
 - Ensure torrent management mode is manual
 - Set completed downloads to save in `/media/downloads/complete`
@@ -34,7 +48,7 @@ After the manifests have been applied follow the [Initial Setup](#initial-setup)
 
 ### Emby Initial Setup
 - When Emby first starts you must navigate to its dashboard to create an initial user
-- Exec into the Emby pod to create a `/media/movies` and `/media/shows` directory. Then add those directories as libraries
+- Add the `/media/shows` and `/media/movies` directories as libraries
 
 ### Jellyseerr Initial Setup
 - When Jellyseerr first starts you navigate to the dashboard and connect it to the Emby server
