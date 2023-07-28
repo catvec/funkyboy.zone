@@ -9,3 +9,4 @@ bases:
   - ../bases/qbittorrent
   - ../bases/jellyseerr
   - ../bases/radarr
+  - ../bases/sonarr
