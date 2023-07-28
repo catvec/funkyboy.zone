@@ -30,16 +30,8 @@ spec:
           volumeMounts:
             - name: qbittorrent-config-dir
               mountPath: /config/qBittorrent
-            - name: qbittorrent-config
-              mountPath: /config/qBittorrent/qBittorrent.conf
-              subPath: qBittorrent.conf
-              readOnly: true
-            - name: qbittorrent-config
-              mountPath: /config/qBittorrent/categories.json
-              subPath: categories.json
-              readOnly: true
             - name: media
-              mountPath: /downloads
+              mountPath: /media
         - name: vpn
           image: qmcgaw/gluetun:v3.35.0
           securityContext:
