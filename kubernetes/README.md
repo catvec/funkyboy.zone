@@ -17,6 +17,8 @@ Provides the following services:
     - [Operator Lifecycle Manager](./base/operator-lifecycle-manager)
 - [Gotify](./base/gotify/)
 - [ChatGPT3 Discord Bot](./base/chatgpt-discord-bot/)
+- [Rook Ceph](./base/rook/)
+- [Emby](./base/media-server/)
 
 # Instructions
 1. Follow setup instructions in:
