@@ -28,9 +28,15 @@ spec:
             - name: WEBUI_PORT
               value: "8080"
           volumeMounts:
+            - name: qbittorrent-config-dir
+              mountPath: /config/qBittorrent
             - name: qbittorrent-config
               mountPath: /config/qBittorrent/qBittorrent.conf
               subPath: qBittorrent.conf
+              readOnly: true
+            - name: qbittorrent-config
+              mountPath: /config/qBittorrent/categories.json
+              subPath: categories.json
               readOnly: true
             - name: media
               mountPath: /downloads
@@ -61,6 +67,9 @@ spec:
         - name: qbittorrent-config
           configMap:
             name: qbittorrent-config
+        - name: qbittorrent-config-dir
+          persistentVolumeClaim:
+            claimName: qbittorrent-config
         - name: media
           persistentVolumeClaim:
             claimName: media-files

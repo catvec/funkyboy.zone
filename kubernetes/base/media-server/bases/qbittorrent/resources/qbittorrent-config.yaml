@@ -16,6 +16,8 @@ data:
     Session\Port=6881
     Session\QueueingSystemEnabled=true
     Session\TempPath=/downloads/incomplete/
+    Session\GlobalMaxRatio=0
+    Session\DisableAutoTMMByDefault=false
 
     [LegalNotice]
     Accepted=true
@@ -39,3 +41,13 @@ data:
     WebUI\HostHeaderValidation=false
 
     WebUI\Username=admin
+
+  categories.json: |
+    {
+        "radarr": {
+            "save_path": "/downloads/movies"
+        },
+        "tv-sonarr": {
+            "save_path": "/downloads/tv"
+        }
+    }
