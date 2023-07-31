@@ -22,7 +22,7 @@ The base files from which manifests were based on come from the [Rook repository
 To access the dashboard port forward the `rook-ceph-mgr-dashboard` service:
 
 ```
-kubectl -n rook-ceph port-forward service/rook-ceph-mgr-dashboard :7000
+kubectl -n rook-ceph port-forward service/rook-ceph-mgr-dashboard 7000:7000
 ```
 
 To login use the `admin` username and the password stored in the `rook-ceph-dashboard-password` secret, which can be retrieved via:
@@ -34,16 +34,10 @@ kubectl -n rook-ceph get secret rook-ceph-dashboard-password -o jsonpath="{['dat
 ## Toolbox
 A pod with Ceph credentials and the Ceph CLI is running under the deployment `rook-ceph-tools`.
 
-Get the pod's name:
+Create a bash prompt:
 
 ```
-kubectl -n rook-ceph get pod -l app=rook-ceph-tools
-```
-
-Create a bash prompt in the pod:
-
-```
-kubectl -n rook-ceph exec it <POD NAME> /bin/bash
+kubectl -n rook-ceph exec -it deployment/rook-ceph-tools -- /bin/bash
 ```
 
 ## Changing Dashboard Config
