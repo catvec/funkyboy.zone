@@ -2,14 +2,10 @@ apiVersion: monitoring.coreos.com/v1
 kind: Prometheus
 metadata:
   name: prometheus
-  labels:
-    project: monitoring
-    component: prometheus
 spec:
-  replicas: 2
-  serviceAccountName: prometheus-k8s
+  serviceAccountName: prometheus
   serviceMonitorSelector: {}
-  ruleSelector: {}
-  podMonitorSelector: {}
-  probeSelector: {}
-  alerting: {}
+  resources:
+    requests:
+      memory: 400Mi
+  enableAdminAPI: false
