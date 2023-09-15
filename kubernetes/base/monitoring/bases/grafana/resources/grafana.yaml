@@ -1,0 +1,13 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: Grafana
+metadata:
+  labels:
+    project: monitoring
+    component: grafana
+  name: grafana
+spec:
+  config:
+    auth:
+      disable_login_form: 'true'
+    log:
+      mode: console

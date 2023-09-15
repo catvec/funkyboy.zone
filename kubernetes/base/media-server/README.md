@@ -74,7 +74,7 @@ kubectl -n media-server port-forward service/qbittorrent 8000:qb-web-ui
 To view the Sonarr web UI use `kubectl` to forward the port locally:
 
 ```
-kubectl -n media-server port-forward service/sonarrl 8001:http
+kubectl -n media-server port-forward service/sonarr 8001:http
 ```
 
 ### Radarr Web UI
