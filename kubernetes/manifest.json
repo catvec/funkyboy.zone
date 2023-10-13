@@ -1,0 +1,12 @@
+{
+  "kustomizations": [
+    {
+      "path": "./kustomization.yaml",
+      "strategy": "diff"
+    },
+    {
+      "path": "./base/monitoring/overlays/production/kustomization.yaml",
+      "strategy": "recreate"
+    }
+  ]
+}

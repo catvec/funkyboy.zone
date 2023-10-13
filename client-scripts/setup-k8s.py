@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+from enum import Enum
 import subprocess
 import logging
 import os
@@ -7,6 +8,7 @@ from typing import Optional, Literal, Union, List, TypedDict
 import re
 import sys
 import shutil
+import json
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -16,6 +18,8 @@ logging.basicConfig(
 PROG_DIR = os.path.dirname(os.path.realpath(__file__))
 KUBERNETES_DIR = os.path.join(PROG_DIR, "../kubernetes")
 KUBECONFIG_PATH = os.path.join(KUBERNETES_DIR, "kubeconfig.yaml")
+
+DEFAULT_MANIFEST = os.path.join(KUBERNETES_DIR, "manifest.yaml")
 
 # Errors
 class KustomizeBuildError(Exception):
@@ -302,6 +306,25 @@ class KustomizeClient:
             )
         
         return out[0]
+    
+class ManifestKustomizationStrategy(str, Enum):
+    """ Indicates how changes in the kustomization should be treated.
+    - DIFF: Uses the kubectl apply method to find differences in the resources and patch the resources
+    - RECREATE: Completely deletes and creates resources when there is a change
+    """
+    DIFF = "diff"
+    RECREATE = "recreate"
+    
+class ManifestKustomization(TypedDict):
+    """ Specifies which kustomization to load and how to treat it.
+    """
+    path: str
+    strategy: ManifestKustomizationStrategy
+    
+class Manifest(TypedDict):
+    """ Specifies which kustomizations to load and perform actions on.
+    """
+    kustomizations: List[ManifestKustomization]
 
 def main():
     """ Entrypoint.
@@ -341,9 +364,10 @@ def main():
         default=False,
     )
     parser.add_argument(
-        "--target-dir",
-        help="Which Kustomization directory to build",
-        default=KUBERNETES_DIR,
+        "--manifest",
+        help="Manifest file which specifies which Kustomizations to load",
+        default=DEFAULT_MANIFEST,
+        dest='manifest_path',
     )
     parser.add_argument(
         "--verbose",
@@ -356,7 +380,7 @@ def main():
 
     render_and_apply_or_delete(
         action=args.action,
-        target_dir=args.target_dir,
+        manifest_path=args.manifest_path,
         no_validate=args.no_validate,
         no_diff=args.no_diff,
         show_manifests=args.show_manifests,
@@ -365,7 +389,7 @@ def main():
 
 def render_and_apply_or_delete(
     action: Union[Literal["apply"], Literal["delete"], Literal["dry-run"]],
-    target_dir: str,
+    manifest_path: str,
     no_validate: bool,
     no_diff: bool,
     show_manifests: bool,
@@ -373,6 +397,15 @@ def render_and_apply_or_delete(
 ):
     kubectl = KubectlClient(kubeconfig_path=KUBECONFIG_PATH)
     kustomize = KustomizeClient()
+
+    # Load manifest
+    manifest: Manifest = {
+        "kustomizations": []
+    }
+    with open(manifest_path, 'r') as f:
+        manifest = json.load(f)
+
+    # For each item in the manifest
     
     # Render Kubernetes manifests
     logging.info("Building manifests with Kustomize")
