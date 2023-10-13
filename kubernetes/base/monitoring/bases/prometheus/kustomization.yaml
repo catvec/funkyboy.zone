@@ -5,7 +5,13 @@ commonLabels:
   project: monitoring
   component: prometheus
 
+configMapGenerator:
+- name: prometheus
+  files:
+  - ./config/prometheus.yml
+
 resources:
   - ./resources/pvc.yaml
+  - ./resources/rbac.yaml
   - ./resources/deployment.yaml
   - ./resources/service.yaml
