@@ -4,7 +4,7 @@ bases:
   # Base
   - ./base/nginx-ingress
   - ./base/kubernetes-dashboard
-  #- ./base/monitoring/overlays/production
+  - ./base/monitoring/overlays/production
 
   # Operators
   - ./base/operator-lifecycle-manager

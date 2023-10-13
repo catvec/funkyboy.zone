@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: monitoring
+      component: prometheus
+  template:
+    metadata:
+      labels:
+        project: monitoring
+        component: prometheus
+    spec:
+      containers:
+        - name: prometheus
+          image: bitnami/prometheus:2.47.2
+          ports:
+            - containerPort: 9090
+          volumeMounts:
+            - mountPath: /opt/bitnami/prometheus/data
+              name: prometheus-data
+      volumes:
+      - name: prometheus-data
+        persistentVolumeClaim:
+          claimName: prometheus-data
