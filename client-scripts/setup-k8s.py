@@ -19,7 +19,7 @@ PROG_DIR = os.path.dirname(os.path.realpath(__file__))
 KUBERNETES_DIR = os.path.join(PROG_DIR, "../kubernetes")
 KUBECONFIG_PATH = os.path.join(KUBERNETES_DIR, "kubeconfig.yaml")
 
-DEFAULT_MANIFEST = os.path.join(KUBERNETES_DIR, "manifest.yaml")
+DEFAULT_COMPONENTS_SPEC = os.path.join(KUBERNETES_DIR, "components.json")
 
 # Errors
 class KustomizeBuildError(Exception):
@@ -307,7 +307,7 @@ class KustomizeClient:
         
         return out[0]
     
-class ManifestKustomizationStrategy(str, Enum):
+class ComponentsSpecStrategy(str, Enum):
     """ Indicates how changes in the kustomization should be treated.
     - DIFF: Uses the kubectl apply method to find differences in the resources and patch the resources
     - RECREATE: Completely deletes and creates resources when there is a change
@@ -315,16 +315,16 @@ class ManifestKustomizationStrategy(str, Enum):
     DIFF = "diff"
     RECREATE = "recreate"
     
-class ManifestKustomization(TypedDict):
+class ComponentsSpecItem(TypedDict):
     """ Specifies which kustomization to load and how to treat it.
     """
     path: str
-    strategy: ManifestKustomizationStrategy
+    strategy: ComponentsSpecStrategy
     
-class Manifest(TypedDict):
+class ComponentsSpec(TypedDict):
     """ Specifies which kustomizations to load and perform actions on.
     """
-    kustomizations: List[ManifestKustomization]
+    components: List[ComponentsSpecItem]
 
 def main():
     """ Entrypoint.
@@ -364,10 +364,10 @@ def main():
         default=False,
     )
     parser.add_argument(
-        "--manifest",
-        help="Manifest file which specifies which Kustomizations to load",
-        default=DEFAULT_MANIFEST,
-        dest='manifest_path',
+        "--components-spec",
+        help="JSON file following ComponentsSpec class structure which specifies which Kustomizations to load",
+        default=DEFAULT_COMPONENTS_SPEC,
+        dest='components_spec_path',
     )
     parser.add_argument(
         "--verbose",
@@ -380,7 +380,7 @@ def main():
 
     render_and_apply_or_delete(
         action=args.action,
-        manifest_path=args.manifest_path,
+        components_spec_path=args.components_spec_path,
         no_validate=args.no_validate,
         no_diff=args.no_diff,
         show_manifests=args.show_manifests,
@@ -389,7 +389,7 @@ def main():
 
 def render_and_apply_or_delete(
     action: Union[Literal["apply"], Literal["delete"], Literal["dry-run"]],
-    manifest_path: str,
+    components_spec_path: str,
     no_validate: bool,
     no_diff: bool,
     show_manifests: bool,
@@ -398,89 +398,93 @@ def render_and_apply_or_delete(
     kubectl = KubectlClient(kubeconfig_path=KUBECONFIG_PATH)
     kustomize = KustomizeClient()
 
-    # Load manifest
-    manifest: Manifest = {
-        "kustomizations": []
+    # Load components spec
+    logging.info("Loading components spec %s", components_spec_path)
+
+    components: ComponentsSpec = {
+        "components": []
     }
-    with open(manifest_path, 'r') as f:
-        manifest = json.load(f)
+    with open(components_spec_path, 'r') as f:
+        components = json.load(f)
+
+    logging.info("Successfully loaded %d item(s) from the components spec", len(components["components"]))
 
     # For each item in the manifest
-    
-    # Render Kubernetes manifests
-    logging.info("Building manifests with Kustomize")
-    
-    kustomize_build_str = kustomize.build(target_dir)
-
-    logging.info("Successfully built manifests")
-
-    # Validate manifests
-    if not no_validate:
-        logging.info("Validating manifests")
-
-        dry_run_res = kubectl.dry_run(action, kustomize_build_str)
+    for component in components["components"]:
+        # Render Kubernetes manifests
+        logging.info("Building manifests with Kustomize")
         
-        if 'missing_namespaces' in dry_run_res:
-            for ns in dry_run_res['missing_namespaces']:
-                logging.warning("Must create namespace: %s", ns)
+        kustomize_build_str = kustomize.build(component["path"])
 
-            logging.warning("Validation might not be accurate because resource(s) were specified in namespace(s) which do not exist")
+        logging.info("Successfully built manifests")
+
+        # Validate manifests
+        if not no_validate:
+            logging.info("Validating manifests")
+
+            dry_run_res = kubectl.dry_run(action, kustomize_build_str)
+            
+            if 'missing_namespaces' in dry_run_res:
+                for ns in dry_run_res['missing_namespaces']:
+                    logging.warning("Must create namespace: %s", ns)
+
+                logging.warning("Validation might not be accurate because resource(s) were specified in namespace(s) which do not exist")
+            
+            logging.info("Validated manifests")
+        else:
+            logging.info("Not validating manifests")
+
+        # Show manifest diff    
+        if not no_diff and action == "apply":
+            logging.info("Preparing diff")
+
+            diff_res = kubectl.diff(kustomize_build_str)
+
+            if 'missing_namespaces' in diff_res:
+                for ns in diff_res['missing_namespaces']:
+                    logging.warning("Must create namespace: %s", ns)
+
+                logging.warning("Diff might not be accurate because resource(s) were specified in namespace(s) which do not exist")
+
+            logging.info("Proposed manifest changes")
+            logging.info(diff_res['diff'])
+            
+            logging.info("Confirm changes [y/N]")
+            confirm_in = input().strip().lower()
+
+            if confirm_in != "y":
+                raise KubeDiffConfirmFail()
+        elif action == "delete":
+            logging.info("Cannot compute diff for delete, displaying manifests which will be passed to delete command: \n%s", decode_bytes(kustomize_build_str).replace("\\n", "\n"))
+            logging.info("Confirm delete of manifests? [y/N]")
+
+            confirm_in = input().strip().lower()
+            if confirm_in != "y":
+                raise KubeDiffConfirmFail()
+        else:
+            logging.info("Not computing Kubernetes manifest differences")
+
+        # Show manifests
+        if show_manifests:
+            logging.debug("Kubernetes manifests")
+            logging.debug(str(kustomize_build_str).replace("\\n", "\n"))
+
+        # Apply Kubernetes manifest
+        if action == "apply" or action == "delete":
+            logging.info("%s manifests", "Applying" if action == "apply" else "Deleting")
         
-        logging.info("Validated manifests")
-    else:
-        logging.info("Not validating manifests")
+            apply_res = kubectl.apply(action, kustomize_build_str)
+            
+            logging.info("%s Kuberenetes manifests", "Applied" if action == "apply" else "Deleted")
+            for line in apply_res['output'].split("\n"):
+                if "unchanged" in line and not verbose or len(line.strip()) == 0:
+                    continue
 
-    # Show manifest diff    
-    if not no_diff and action == "apply":
-        logging.info("Preparing diff")
+                print(line)
 
-        diff_res = kubectl.diff(kustomize_build_str)
-
-        if 'missing_namespaces' in diff_res:
-            for ns in diff_res['missing_namespaces']:
-                logging.warning("Must create namespace: %s", ns)
-
-            logging.warning("Diff might not be accurate because resource(s) were specified in namespace(s) which do not exist")
-
-        logging.info("Proposed manifest changes")
-        logging.info(diff_res['diff'])
-        
-        logging.info("Confirm changes [y/N]")
-        confirm_in = input().strip().lower()
-
-        if confirm_in != "y":
-            raise KubeDiffConfirmFail()
-    elif action == "delete":
-        logging.info("Cannot compute diff for delete, displaying manifests which will be passed to delete command: \n%s", decode_bytes(kustomize_build_str).replace("\\n", "\n"))
-        logging.info("Confirm delete of manifests? [y/N]")
-
-        confirm_in = input().strip().lower()
-        if confirm_in != "y":
-            raise KubeDiffConfirmFail()
-    else:
-        logging.info("Not computing Kubernetes manifest differences")
-
-    # Show manifests
-    if show_manifests:
-        logging.debug("Kubernetes manifests")
-        logging.debug(str(kustomize_build_str).replace("\\n", "\n"))
-
-    # Apply Kubernetes manifest
-    if action == "apply" or action == "delete":
-        logging.info("%s manifests", "Applying" if action == "apply" else "Deleting")
-    
-        apply_res = kubectl.apply(action, kustomize_build_str)
-        
-        logging.info("%s Kuberenetes manifests", "Applied" if action == "apply" else "Deleted")
-        for line in apply_res['output'].split("\n"):
-            if "unchanged" in line and not verbose or len(line.strip()) == 0:
-                continue
-
-            print(line)
-
-        logging.info("Applied manifests")
-    else:
-        logging.info("Dry run, not action taken")
+            logging.info("Applied manifests")
+        else:
+            logging.info("Dry run, not action taken")
 
     
 

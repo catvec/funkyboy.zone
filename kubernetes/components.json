@@ -1,5 +1,5 @@
 {
-  "kustomizations": [
+  "components": [
     {
       "path": "./kustomization.yaml",
       "strategy": "diff"
