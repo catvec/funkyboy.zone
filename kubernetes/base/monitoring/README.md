@@ -5,7 +5,4 @@ Observability tools.
 - [Development](#development)
 
 # Development
-Files downloaded from remote sources:
-
-- [`bases/operators/resources/prometheus.yaml`](./bases/operators/resources/prometheus.yaml) from https://operatorhub.io/install/prometheus.yaml
-- [`bases/operators/resources/grafana.yaml`](./bases/operators/resources/grafana.yaml) from https://operatorhub.io/install/grafana-operator.yaml
+The Prometheus container needs the `65534` file system group to access files on the mount.

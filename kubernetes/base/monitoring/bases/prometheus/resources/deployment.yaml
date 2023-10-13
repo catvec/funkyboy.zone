@@ -14,13 +14,15 @@ spec:
         project: monitoring
         component: prometheus
     spec:
+      securityContext:
+        fsGroup: 65534
       containers:
         - name: prometheus
-          image: bitnami/prometheus:2.47.2
+          image: prom/prometheus:v2.47.2
           ports:
             - containerPort: 9090
           volumeMounts:
-            - mountPath: /opt/bitnami/prometheus/data
+            - mountPath: /prometheus
               name: prometheus-data
       volumes:
       - name: prometheus-data
