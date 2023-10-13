@@ -36,7 +36,7 @@ scrape_configs:
     # Prometheus. The discovery auth config is automatic if Prometheus runs inside
     # the cluster. Otherwise, more config options have to be provided within the
     # <kubernetes_sd_config>.
-    #tls_config:
+    tls_config:
     #  ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       # If your node certificates are self-signed or use a different CA to the
       # master CA, then disable certificate verification below. Note that
@@ -44,7 +44,7 @@ scrape_configs:
       # so this should only be disabled in a controlled environment. You can
       # disable certificate verification by uncommenting the line below.
       #
-      # insecure_skip_verify: true
+      insecure_skip_verify: true
     #authorization:
     #  credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token
 
@@ -66,7 +66,7 @@ scrape_configs:
 
     # Default to scraping over https. If required, just disable this or change to
     # `http`.
-    #scheme: https
+    scheme: https
 
     # This TLS & authorization config is used to connect to the actual scrape
     # endpoints for cluster components. This is separate to discovery auth
@@ -74,7 +74,7 @@ scrape_configs:
     # Prometheus. The discovery auth config is automatic if Prometheus runs inside
     # the cluster. Otherwise, more config options have to be provided within the
     # <kubernetes_sd_config>.
-    #tls_config:
+    tls_config:
     #  ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       # If your node certificates are self-signed or use a different CA to the
       # master CA, then disable certificate verification below. Note that
@@ -82,7 +82,7 @@ scrape_configs:
       # so this should only be disabled in a controlled environment. You can
       # disable certificate verification by uncommenting the line below.
       #
-      # insecure_skip_verify: true
+      insecure_skip_verify: true
     #authorization:
     #  credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token
 
@@ -111,7 +111,7 @@ scrape_configs:
 
     # Default to scraping over https. If required, just disable this or change to
     # `http`.
-    #scheme: https
+    scheme: https
 
     # Starting Kubernetes 1.7.3 the cAdvisor metrics are under /metrics/cadvisor.
     # Kubernetes CIS Benchmark recommends against enabling the insecure HTTP
@@ -125,7 +125,7 @@ scrape_configs:
     # Prometheus. The discovery auth config is automatic if Prometheus runs inside
     # the cluster. Otherwise, more config options have to be provided within the
     # <kubernetes_sd_config>.
-    #tls_config:
+    tls_config:
     #  ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       # If your node certificates are self-signed or use a different CA to the
       # master CA, then disable certificate verification below. Note that
@@ -133,7 +133,7 @@ scrape_configs:
       # so this should only be disabled in a controlled environment. You can
       # disable certificate verification by uncommenting the line below.
       #
-      # insecure_skip_verify: true
+      insecure_skip_verify: true
     #authorization:
     #  credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token
 
