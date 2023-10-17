@@ -5,5 +5,4 @@ commonLabels:
   project: monitoring
   component: prometheus
 
-resources:
-  - ./resources/bundle.yaml
+resources: []

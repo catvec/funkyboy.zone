@@ -1,0 +1,5 @@
+components:
+  - path: ./
+    strategy: diff
+  - path: ./base/monitoring/overlays/operators/
+    strategy: recreate
