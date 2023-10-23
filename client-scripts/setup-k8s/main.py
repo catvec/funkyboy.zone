@@ -11,9 +11,9 @@ import yaml
 
 import pydantic
 
-from .kubectl import KubectlClient
-from .kustomize import KustomizeClient
-from .strategies import ComponentStrategy, DiffComponentStrategy, ComponentAction
+from setup_k8s.kubectl import KubectlClient
+from setup_k8s.kustomize import KustomizeClient
+from setup_k8s.strategies import ComponentStrategy, DiffComponentStrategy, ComponentAction
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -35,10 +35,10 @@ class DiffConfirmFail(Exception):
 class ComponentsSpecStrategy(str, Enum):
     """ Indicates how changes in the kustomization should be treated.
     - DIFF: Uses the kubectl apply method to find differences in the resources and patch the resources
-    - RECREATE: Completely deletes and creates resources when there is a change
+    - BIG_DIFF: Diff technique for manifests larger than kubectl apply's maximum size, computes diffs client side and sends patches to server
     """
     DIFF = "diff"
-    RECREATE = "recreate"
+    BIG_DIFF = "big-diff"
     
 class ComponentsSpecItem(pydantic.BaseModel):
     """ Specifies which kustomization to load and how to treat it.
@@ -162,8 +162,6 @@ def render_and_apply_or_delete(
             for component in components_spec.components
         ],
     )
-
-    logging.info("only_component_paths=%s", normalized_only_component_paths)
 
     # For each item in the manifest
     for component in normalized_components_spec.components:

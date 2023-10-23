@@ -1,9 +1,19 @@
 import os
 import re
 import subprocess
-from typing import List, Literal, Optional, Set, TypedDict, Union
+from enum import Enum
+from typing import Any, Dict, List, Optional, Set, TypedDict, Union
+
+import yaml
 
 from .bytes_util import decode_bytes
+
+class SendManifestsAction(str, Enum):
+    """ Indicates what action should be taken on the manifest which are sent.
+    """
+    APPLY = "apply"
+    DELETE = "delete"
+    CREATE = "create"
 
 class KubeDryRunError(Exception):
     """ Indicates that running Kubectl in dry run mode failed.
@@ -18,11 +28,23 @@ class KubeDiffError(Exception):
     def __init__(self, returncode: int, stdout: Optional[str], stderr: Optional[str]):
         super().__init__(f"Failed to compute diff of Kubernetes manifests (exit code: {returncode}), stdout={stdout}, stderr{stderr}")
 
-class KubeApplyOrDeleteError(Exception):
+class KubeSendManifestsError(Exception):
     """ Indicates kubectl apply failed.
     """
-    def __init__(self, action: Union[Literal["apply"], Literal["delete"]], returncode: int, stdout: Optional[str], stderr: Optional[str]):
+    def __init__(self, action: SendManifestsAction, returncode: int, stdout: Optional[str], stderr: Optional[str]):
         super().__init__(f"Failed to {action} Kubernetes manifests (exit code: {returncode}), stdout={stdout}, stderr={stderr}")
+
+class KubeGetError(Exception):
+    """ Indicates kubectl get failed.
+    """
+    def __init__(self, namespace: str, kind: str, name: str, returncode: int, stdout: Optional[str], stderr: Optional[str]):
+        super().__init__(f"Failed to get {kind}/{name} from {namespace} namespace (exit code: {returncode}), stdout={stdout}, stderr={stderr}")
+
+class KubePatchError(Exception):
+    """ Indicates kubectl patch failed.
+    """
+    def __init__(self, namespace: str, kind: str, name: str, returncode: int, stdout: Optional[str], stderr: Optional[str]):
+        super().__init__(f"Failed to patch {kind}/{name} from {namespace} namespace (exit code: {returncode}), stdout={stdout}, stderr={stderr}")
 
 class KubeDryRunRes(TypedDict):
     """ Results of Kubectl dry run.
@@ -102,7 +124,7 @@ class KubectlClient:
             'only_missing_namespaces_errors': only_namespace_errors,
         }
 
-    def dry_run(self, action: Union[Literal["apply"], Literal["delete"]], input_manifests: str) -> KubeDryRunRes:
+    def send_manifests_dry_run(self, action: SendManifestsAction, input_manifests: str) -> KubeDryRunRes:
         """ Dry run applying manifests against the server.
         Arguments:
         - action: Whether the dry run should simulate an apply or delete
@@ -182,11 +204,11 @@ class KubectlClient:
             'diff': decode_bytes(out[0]),
         }
     
-    def apply_or_delete(self, action: Union[Literal["apply"], Literal["delete"]], input_manifests: str) -> KubeApplyRes:
+    def send_manifests(self, action: SendManifestsAction, input_manifests: str) -> KubeApplyRes:
         """ Apply manifests to server.
         Arguments:
         - action: Whether the apply should create or delete resources
-        - input_manifests: YAML mainfests of resources
+        - input_manifests: YAML manifests of resources
 
         Returns: Result of apply
 
@@ -203,7 +225,7 @@ class KubectlClient:
         out = res.communicate(input=input_manifests.encode("utf-8"))
         
         if res.wait() != 0:
-            raise KubeApplyOrDeleteError(
+            raise KubeSendManifestsError(
                 action=action,
                 returncode=res.returncode,
                 stdout=decode_bytes(out[0]),
@@ -213,3 +235,69 @@ class KubectlClient:
         return {
             'output': decode_bytes(out[0]),
         }
+    
+    def patch(self, namespace: str, kind: str, name: str, patch: str, dry_run=False) -> KubeApplyRes:
+        args = ["kubectl", "-n", namespace, "patch", kind, name, "--type", "json", "-p", "-"]
+
+        if dry_run:
+            args.extend(["--dry-run", "server"])
+
+        res = subprocess.Popen(
+            args,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            env=dict(os.environ, KUBECONFIG=self.kubeconfig_path),
+        )
+        out = res.communicate(input=patch.encode("utf-8"))
+        
+        if res.wait() != 0:
+            raise KubePatchError(
+                namespace=namespace,
+                kind=kind,
+                name=name,
+                returncode=res.returncode,
+                stdout=decode_bytes(out[0]),
+                stderr=decode_bytes(out[1]),
+            )
+        
+        return {
+            'output': decode_bytes(out[0]),
+        }
+    
+    def get(self, namespace: str, kind: str, name: str) -> Optional[Dict[str, Any]]:
+        """ Get a resource from a namespace.
+        """
+        res = subprocess.Popen(
+            ["kubectl", "-n", namespace, "get", "-o", "yaml", kind, name],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            env=dict(os.environ, KUBECONFIG=self.kubeconfig_path),
+        )
+        out = res.communicate()
+        
+        if res.wait() > 1:
+            stderr = decode_bytes(out[1])
+            if stderr is not None:
+                if "(NotFound)" in stderr:
+                    return None
+                elif "doesn't have a resource type" in stderr:
+                    return None
+
+            raise KubeGetError(
+                namespace=namespace,
+                kind=kind,
+                name=name,
+                returncode=res.returncode,
+                stdout=decode_bytes(out[0]),
+                stderr=stderr,
+            )
+        
+        stdout = decode_bytes(out[0])
+        if stdout is None:
+            return None
+        
+        return yaml.safe_load(stdout)
+            
+        
