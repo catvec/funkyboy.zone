@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 import logging
 import json
-from typing import Any, Dict, List, TypedDict, Union
+from typing import Any, Dict, List, Optional, TypedDict, Union
 from setup_k8s.yaml import load_all_yaml
 
 import yaml
@@ -18,6 +18,11 @@ class ComponentAction(str, Enum):
     DELETE = "delete"
 
 class ComponentStrategy(ABC):
+    input_manifests: str
+
+    def __init__(self, input_manifests: str):
+        self.input_manifests = input_manifests
+
     @abstractmethod
     def validate(self, action: ComponentAction, manifests: str) -> None:
         raise NotImplementedError()
@@ -35,13 +40,13 @@ class DiffComponentStrategy(ComponentStrategy):
     """
     _kubectl: KubectlClient
 
-    def __init__(self, kubectl: KubectlClient) -> None:
-        super().__init__()
+    def __init__(self, kubectl: KubectlClient, input_manifests: str) -> None:
+        super().__init__(input_manifests=input_manifests)
         self._kubectl = kubectl
 
-    def validate(self, action: ComponentAction, manifests: str) -> None:
+    def validate(self, action: ComponentAction) -> None:
         kubectl_action = SendManifestsAction.APPLY if action == ComponentAction.CREATE else SendManifestsAction.DELETE
-        dry_run_res = self._kubectl.send_manifests_dry_run(kubectl_action, manifests)
+        dry_run_res = self._kubectl.send_manifests_dry_run(kubectl_action, self.input_manifests)
         
         if dry_run_res["missing_namespaces"] is not None:
             for ns in dry_run_res['missing_namespaces']:
@@ -51,9 +56,9 @@ class DiffComponentStrategy(ComponentStrategy):
         
         logging.info("Validated manifests")
     
-    def diff(self, action: ComponentAction, manifests: str) -> None:
+    def diff(self, action: ComponentAction) -> None:
         if action == ComponentAction.CREATE:
-            diff_res = self._kubectl.diff(manifests)
+            diff_res = self._kubectl.diff(self.input_manifests)
 
             if diff_res["missing_namespaces"] is not None:
                 for ns in diff_res['missing_namespaces']:
@@ -64,11 +69,11 @@ class DiffComponentStrategy(ComponentStrategy):
             logging.info("Proposed manifest changes")
             logging.info(diff_res['diff'])
         elif action == ComponentAction.DELETE:
-            logging.info("Cannot compute diff for delete, displaying manifests which will be passed to delete command: \n%s", manifests.replace("\\n", "\n"))
+            logging.info("Cannot compute diff for delete, displaying manifests which will be passed to delete command: \n%s", self.input_manifests.replace("\\n", "\n"))
     
-    def do_action(self, action: ComponentAction, manifests: str) -> None:
+    def do_action(self, action: ComponentAction) -> None:
         kubectl_action = SendManifestsAction.APPLY if action == ComponentAction.CREATE else SendManifestsAction.DELETE
-        apply_res = self._kubectl.send_manifests(kubectl_action, manifests)
+        apply_res = self._kubectl.send_manifests(kubectl_action, self.input_manifests)
 
         logging.info("%s Kuberenetes manifests", "Applied" if action == "apply" else "Deleted")
 
@@ -115,7 +120,7 @@ class ManifestResource(TypedDict):
     parsed_manifest: Dict[str, Any]
     kind: str
     name: str
-    namespace: str
+    namespace: Optional[str]
 
 INPUT_MANIFEST_HASH_ANNOTATION = "funkyboy.zone/input-manifest-hash"
 
@@ -123,10 +128,12 @@ class BigDiffComponentStrategy(ComponentStrategy):
     """ When resources are created the hash of the input manifest is stored as an annotation. If the hash of the input manifest changes the resource is wholesale created.
     """
     _kubectl: KubectlClient
+    _plans: List[BigDiffPlan]
 
-    def __init__(self, kubectl: KubectlClient) -> None:
-        super().__init__()
+    def __init__(self, kubectl: KubectlClient, input_manifests: str) -> None:
+        super().__init__(input_manifests=input_manifests)
         self._kubectl = kubectl
+        self._plans = self._generate_plans(self.input_manifests)
 
     def _hash_dict(self, value: Dict[str, Any]) -> str:
         """ Given a dictionary produce a hash of its contents.
@@ -146,7 +153,7 @@ class BigDiffComponentStrategy(ComponentStrategy):
             parsed_manifest = parsed_manifests[manifest_i]
 
             # Get namespace
-            ns = "default"
+            ns = None
             if "namespace" in parsed_manifest["metadata"]:
                 ns = parsed_manifest["metadata"]["namespace"]
 
@@ -186,6 +193,7 @@ class BigDiffComponentStrategy(ComponentStrategy):
             # Get remote resource
             remote_res = self._kubectl.get(resource["namespace"], resource["kind"], resource["name"])
             if remote_res is None:
+                logging.info("PLAN: need to create %s - %s/%s", resource["namespace"], resource["kind"], resource["name"])
                 # Resource doesn't exist, create it
                 plans.append(BigDiffPlan(
                     action=BigDiffPlanAction.CREATE,
@@ -196,6 +204,8 @@ class BigDiffComponentStrategy(ComponentStrategy):
                 remote_input_hash = None
                 if "annotations" in resource["parsed_manifest"]["metadata"] and INPUT_MANIFEST_HASH_ANNOTATION in resource["parsed_manifest"]["metadata"]["annotations"]:
                     remote_input_hash = resource["parsed_manifest"]["metadata"]["annotations"][INPUT_MANIFEST_HASH_ANNOTATION]
+
+                logging.info("PLAN: hashed %s - %s/%s: remote=%s, input=%s", resource["namespace"], resource["kind"], resource["name"], remote_input_hash, manifest_hash)
                 
                 if remote_input_hash != manifest_hash:
                     # Replace resource because input manifest changed
@@ -209,6 +219,7 @@ class BigDiffComponentStrategy(ComponentStrategy):
     def _perform_plans(self, plans: List[BigDiffPlan]) -> List[KubeApplyRes]:
         outputs = []
         for plan in plans:
+            logging.info("performed plan: %s", plan["action"].to_send_manifest_action())
             outputs.append(self._kubectl.send_manifests(plan["action"].to_send_manifest_action(), plan["manifest"]))
 
         return outputs
@@ -220,8 +231,8 @@ class BigDiffComponentStrategy(ComponentStrategy):
 
         return outputs 
 
-    def validate(self, action: ComponentAction, manifests: str) -> None:
-        dry_run_results = self._dry_run_plans(self._generate_plans(manifests))
+    def validate(self, action: ComponentAction) -> None:
+        dry_run_results = self._dry_run_plans(self._plans)
         
         for res in dry_run_results:    
             if res["missing_namespaces"] is not None:
@@ -232,8 +243,8 @@ class BigDiffComponentStrategy(ComponentStrategy):
         
         logging.info("Validated manifests")
     
-    def diff(self, action: ComponentAction, manifests: str) -> None:
-        dry_run_results = self._dry_run_plans(self._generate_plans(manifests))
+    def diff(self, action: ComponentAction) -> None:
+        dry_run_results = self._dry_run_plans(self._plans)
 
         for res in dry_run_results:
             if res["missing_namespaces"] is not None:
@@ -245,9 +256,9 @@ class BigDiffComponentStrategy(ComponentStrategy):
             logging.info("Proposed manifest changes")
             logging.info(res["output"])
     
-    def do_action(self, action: ComponentAction, manifests: str) -> None:
+    def do_action(self, action: ComponentAction) -> None:
         if action == ComponentAction.CREATE:
-            results = self._perform_plans(self._generate_plans(manifests))
+            results = self._perform_plans(self._plans)
 
             logging.info("Applied Kuberenetes manifests")
 
@@ -262,7 +273,7 @@ class BigDiffComponentStrategy(ComponentStrategy):
                         print(line)
         else:
             # Delete
-            res = self._kubectl.send_manifests(SendManifestsAction.DELETE, manifests)
+            res = self._kubectl.send_manifests(SendManifestsAction.DELETE, self.input_manifests)
 
             if res["output"] is None:
                 logging.info("not output")

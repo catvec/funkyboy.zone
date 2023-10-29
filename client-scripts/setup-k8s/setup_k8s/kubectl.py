@@ -237,11 +237,16 @@ class KubectlClient:
             'output': decode_bytes(out[0]),
         }
     
-    def get(self, namespace: str, kind: str, name: str) -> Optional[Dict[str, Any]]:
+    def get(self, namespace: Optional[str], kind: str, name: str) -> Optional[Dict[str, Any]]:
         """ Get a resource from a namespace.
         """
+        args = ["kubectl"]
+        if namespace is not None:
+            args.extend(["-n", namespace])
+            
+        args.extend(["get", "-o", "yaml", kind, name])
         res = subprocess.Popen(
-            ["kubectl", "-n", namespace, "get", "-o", "yaml", kind, name],
+            args,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,

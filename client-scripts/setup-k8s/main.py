@@ -71,8 +71,8 @@ def main():
     parser.add_argument(
         "action",
         help="The action to run on the cluster",
-        choices=["apply", "delete"],
-        default="apply",
+        choices=list(ComponentAction),
+        default=ComponentAction.CREATE,
         nargs="?",
     )
     parser.add_argument(
@@ -186,9 +186,9 @@ def render_and_apply_or_delete(
         # Create strategy
         strategy = None
         if component.strategy == ComponentsSpecStrategy.DIFF:
-            strategy = DiffComponentStrategy(kubectl=kubectl)
+            strategy = DiffComponentStrategy(kubectl=kubectl, input_manifests=kustomize_build_str)
         elif component.strategy == ComponentsSpecStrategy.BIG_DIFF:
-            strategy = BigDiffComponentStrategy(kubectl=kubectl)
+            strategy = BigDiffComponentStrategy(kubectl=kubectl, input_manifests=kustomize_build_str)
         else:
             logging.fatal("No strategy found for component: %s", component.strategy)
             return
@@ -197,13 +197,13 @@ def render_and_apply_or_delete(
         if not no_validate:
             logging.info("Validating manifests")
 
-            strategy.validate(action, kustomize_build_str)
+            strategy.validate(action)
         else:
             logging.info("Not validating manifests")
 
         # Show manifest diff
         if not no_diff:
-            strategy.diff(action, kustomize_build_str)
+            strategy.diff(action)
 
             logging.info("Confirm changes [y/N]")
             confirm_in = input().strip().lower()
@@ -219,18 +219,12 @@ def render_and_apply_or_delete(
             logging.debug(str(kustomize_build_str).replace("\\n", "\n"))
 
         # Apply Kubernetes manifest
-        if component.strategy == ComponentsSpecStrategy.DIFF:
-            logging.info("%s manifests", "Applying" if action == "apply" else "Deleting")
-        
-            strategy.do_action(action, kustomize_build_str)
-
-            logging.info("Applied manifests")
-        else:
-            # Get the hash of each object 
-            parsed = yaml.safe_load_all(kustomize_build_str)
-            for item in parsed:
-                print(item)
+        logging.info("%s manifests", "Applying" if action == ComponentAction.CREATE else "Deleting")
     
+        strategy.do_action(action)
+
+        logging.info("Applied manifests")
+
 
 if __name__ == '__main__':
     main()
