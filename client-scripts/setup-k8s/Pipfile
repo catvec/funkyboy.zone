@@ -6,7 +6,6 @@ name = "pypi"
 [packages]
 pyyaml = "*"
 pydantic = "*"
-jsonpatch = "*"
 
 [dev-packages]
 mypy = "*"

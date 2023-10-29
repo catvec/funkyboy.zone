@@ -2,12 +2,12 @@ from abc import ABC, abstractmethod
 from enum import Enum
 import logging
 import json
-from typing import Any, Dict, List, TypedDict
+from typing import Any, Dict, List, TypedDict, Union
+from setup_k8s.yaml import load_all_yaml
 
 import yaml
-import jsonpatch
 
-from .kubectl import KubectlClient, SendManifestsAction
+from .kubectl import KubeApplyRes, KubeDiffRes, KubeDryRunRes, KubectlClient, SendManifestsAction
 
 class ComponentAction(str, Enum):
     """ An action to be taken on a component.
@@ -94,7 +94,13 @@ class BigDiffPlanAction(str, Enum):
     """ Indicates what action should be taken for a plan.
     """
     CREATE = "create"
-    PATCH = "patch"
+    REPLACE = "replace"
+
+    def to_send_manifest_action(self) -> SendManifestsAction:
+        if self == BigDiffPlanAction.CREATE:
+            return SendManifestsAction.CREATE
+        else:
+            return SendManifestsAction.REPLACE
 
 class BigDiffPlan(TypedDict):
     """ Represents what must happen to reconcile differences in a manifest.
@@ -105,9 +111,16 @@ class BigDiffPlan(TypedDict):
     action: BigDiffPlanAction
     manifest: str
 
+class ManifestResource(TypedDict):
+    parsed_manifest: Dict[str, Any]
+    kind: str
+    name: str
+    namespace: str
+
+INPUT_MANIFEST_HASH_ANNOTATION = "funkyboy.zone/input-manifest-hash"
+
 class BigDiffComponentStrategy(ComponentStrategy):
-    """ Computes the difference in manifests on the client side, saves hash of manifest in an annotation to quickly determine if anything has changed.
-    Doesn't prune resources which exist but are left out of manifests.
+    """ When resources are created the hash of the input manifest is stored as an annotation. If the hash of the input manifest changes the resource is wholesale created.
     """
     _kubectl: KubectlClient
 
@@ -122,93 +135,140 @@ class BigDiffComponentStrategy(ComponentStrategy):
 
         Returns: Hash
         """
-        return str(hash(json.dumps(value, sorted_keys=True)))
+        return str(hash(json.dumps(value, sort_keys=True)))
+    
+    def _parse_manifests(self, in_manifests: str) -> List[ManifestResource]:
+        parsed_manifests = load_all_yaml(in_manifests)
 
-    def _hash_yaml_manifests(self, manifests: str) -> List[HashedManifest]:
-        """ Given a set of manifests hash each one.
-        """
-        res = []
+        resources = []
 
-        parsed_manifests = yaml.safe_load_all(manifests)
-        for manifest in parsed_manifests:
-            res.append(HashedManifest(
-                manifest=manifest,
-                hash=self._hash_dict(manifest),
+        for manifest_i in range(len(parsed_manifests)):
+            parsed_manifest = parsed_manifests[manifest_i]
+
+            # Get namespace
+            ns = "default"
+            if "namespace" in parsed_manifest["metadata"]:
+                ns = parsed_manifest["metadata"]["namespace"]
+
+            # Get kind and name
+            kind = parsed_manifest["kind"]
+            name = parsed_manifest["metadata"]["name"]
+
+            resources.append(ManifestResource(
+                parsed_manifest=parsed_manifest,
+                kind=kind,
+                name=name,
+                namespace=ns,
             ))
 
-        return res
+        return resources
     
     def _generate_plans(self, in_manifests: str) -> List[BigDiffPlan]:
         """ Given a set desired states determine what must be sent to the server to make the remote manifests match.
         """
+        resources = self._parse_manifests(in_manifests)
+
         plans = []
 
-        in_hashes = self._hash_yaml_manifests(in_manifests)
-        for in_hash in in_hashes:
-            # Get namespace
-            ns = "default"
-            if "namespace" in in_hash["manifest"]["metadata"]:
-                ns = in_hash["manifest"]["metadata"]["namespace"]
+        for resource in resources:
+            # Hash manifest
+            manifest_hash = self._hash_dict(resource["parsed_manifest"])
 
-            kind = in_hash["manifest"]["kind"]
-            name = in_hash["manifest"]["metadata"]["name"]
+            # Modify manifest to include hash annotation
+            annotated_manifest = resource["parsed_manifest"]
+            if "annotations" not in annotated_manifest["metadata"]:
+                annotated_manifest["metadata"]["annotations"] = {}
+
+            annotated_manifest["metadata"]["annotations"][INPUT_MANIFEST_HASH_ANNOTATION] = manifest_hash
+
+            annotated_manifest_str = yaml.dump(annotated_manifest)
 
             # Get remote resource
-            remote_res = self._kubectl.get(ns, kind, name)
+            remote_res = self._kubectl.get(resource["namespace"], resource["kind"], resource["name"])
             if remote_res is None:
                 # Resource doesn't exist, create it
                 plans.append(BigDiffPlan(
                     action=BigDiffPlanAction.CREATE,
-                    manifest=yaml.dump(in_hash["manifest"]),
+                    manifest=annotated_manifest_str,
                 ))
             else:
-                patch = jsonpatch.make_patch(remote_res, in_hash["manifest"]).to_string()
-
-                plans.append(BigDiffPlan(
-                    action=BigDiffPlanAction.PATCH,
-                    manifest=patch,
-                ))
+                # Resource exists check if input manifest hash differs
+                remote_input_hash = None
+                if "annotations" in resource["parsed_manifest"]["metadata"] and INPUT_MANIFEST_HASH_ANNOTATION in resource["parsed_manifest"]["metadata"]["annotations"]:
+                    remote_input_hash = resource["parsed_manifest"]["metadata"]["annotations"][INPUT_MANIFEST_HASH_ANNOTATION]
+                
+                if remote_input_hash != manifest_hash:
+                    # Replace resource because input manifest changed
+                    plans.append(BigDiffPlan(
+                        action=BigDiffPlanAction.REPLACE,
+                        manifest=annotated_manifest_str,
+                    ))
 
         return plans
+    
+    def _perform_plans(self, plans: List[BigDiffPlan]) -> List[KubeApplyRes]:
+        outputs = []
+        for plan in plans:
+            outputs.append(self._kubectl.send_manifests(plan["action"].to_send_manifest_action(), plan["manifest"]))
+
+        return outputs
+    
+    def _dry_run_plans(self, plans: List[BigDiffPlan]) -> List[KubeDryRunRes]:
+        outputs = []
+        for plan in plans:
+            outputs.append(self._kubectl.send_manifests_dry_run(plan["action"].to_send_manifest_action(), plan["manifest"]))
+
+        return outputs 
 
     def validate(self, action: ComponentAction, manifests: str) -> None:
-        dry_run_res = self._kubectl.send_manifests_dry_run(SendManifestsAction.CREATE, manifests)
+        dry_run_results = self._dry_run_plans(self._generate_plans(manifests))
         
-        if dry_run_res["missing_namespaces"] is not None:
-            for ns in dry_run_res['missing_namespaces']:
-                logging.warning("Must create namespace: %s", ns)
+        for res in dry_run_results:    
+            if res["missing_namespaces"] is not None:
+                for ns in res['missing_namespaces']:
+                    logging.warning("Must create namespace: %s", ns)
 
-            logging.warning("Validation might not be accurate because resource(s) were specified in namespace(s) which do not exist")
+                logging.warning("Validation might not be accurate because resource(s) were specified in namespace(s) which do not exist")
         
         logging.info("Validated manifests")
     
     def diff(self, action: ComponentAction, manifests: str) -> None:
-        """ """
-        if action == ComponentAction.CREATE:
-            diff_res = self._kubectl.diff(manifests)
+        dry_run_results = self._dry_run_plans(self._generate_plans(manifests))
 
-            if diff_res["missing_namespaces"] is not None:
-                for ns in diff_res['missing_namespaces']:
+        for res in dry_run_results:
+            if res["missing_namespaces"] is not None:
+                for ns in res['missing_namespaces']:
                     logging.warning("Must create namespace: %s", ns)
 
                 logging.warning("Diff might not be accurate because resource(s) were specified in namespace(s) which do not exist")
 
             logging.info("Proposed manifest changes")
-            logging.info(diff_res['diff'])
-        elif action == ComponentAction.DELETE:
-            logging.info("Cannot compute diff for delete, displaying manifests which will be passed to delete command: \n%s", manifests.replace("\\n", "\n"))
+            logging.info(res["output"])
     
     def do_action(self, action: ComponentAction, manifests: str) -> None:
-        kubectl_action = SendManifestsAction.APPLY if action == ComponentAction.CREATE else SendManifestsAction.DELETE
-        apply_res = self._kubectl.send_manifests(kubectl_action, manifests)
+        if action == ComponentAction.CREATE:
+            results = self._perform_plans(self._generate_plans(manifests))
 
-        logging.info("%s Kuberenetes manifests", "Applied" if action == "apply" else "Deleted")
+            logging.info("Applied Kuberenetes manifests")
 
-        if apply_res["output"] is None:
-            logging.info("not output")
+            for res in results:
+                if res["output"] is None:
+                    logging.info("not output")
+                else:
+                    for line in res['output'].split("\n"):
+                        if "unchanged" in line or len(line.strip()) == 0:
+                            continue
+
+                        print(line)
         else:
-            for line in apply_res['output'].split("\n"):
-                if "unchanged" in line or len(line.strip()) == 0:
-                    continue
+            # Delete
+            res = self._kubectl.send_manifests(SendManifestsAction.DELETE, manifests)
 
-                print(line)
+            if res["output"] is None:
+                logging.info("not output")
+            else:
+                for line in res['output'].split("\n"):
+                    if "unchanged" in line or len(line.strip()) == 0:
+                        continue
+
+                    print(line)

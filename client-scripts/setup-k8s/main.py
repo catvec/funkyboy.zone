@@ -13,7 +13,7 @@ import pydantic
 
 from setup_k8s.kubectl import KubectlClient
 from setup_k8s.kustomize import KustomizeClient
-from setup_k8s.strategies import ComponentStrategy, DiffComponentStrategy, ComponentAction
+from setup_k8s.strategies import BigDiffComponentStrategy, DiffComponentStrategy, ComponentAction
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -187,6 +187,8 @@ def render_and_apply_or_delete(
         strategy = None
         if component.strategy == ComponentsSpecStrategy.DIFF:
             strategy = DiffComponentStrategy(kubectl=kubectl)
+        elif component.strategy == ComponentsSpecStrategy.BIG_DIFF:
+            strategy = BigDiffComponentStrategy(kubectl=kubectl)
         else:
             logging.fatal("No strategy found for component: %s", component.strategy)
             return

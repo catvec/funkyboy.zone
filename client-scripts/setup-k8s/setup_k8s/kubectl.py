@@ -14,6 +14,7 @@ class SendManifestsAction(str, Enum):
     APPLY = "apply"
     DELETE = "delete"
     CREATE = "create"
+    REPLACE = "replace"
 
 class KubeDryRunError(Exception):
     """ Indicates that running Kubectl in dry run mode failed.
@@ -236,35 +237,6 @@ class KubectlClient:
             'output': decode_bytes(out[0]),
         }
     
-    def patch(self, namespace: str, kind: str, name: str, patch: str, dry_run=False) -> KubeApplyRes:
-        args = ["kubectl", "-n", namespace, "patch", kind, name, "--type", "json", "-p", "-"]
-
-        if dry_run:
-            args.extend(["--dry-run", "server"])
-
-        res = subprocess.Popen(
-            args,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            env=dict(os.environ, KUBECONFIG=self.kubeconfig_path),
-        )
-        out = res.communicate(input=patch.encode("utf-8"))
-        
-        if res.wait() != 0:
-            raise KubePatchError(
-                namespace=namespace,
-                kind=kind,
-                name=name,
-                returncode=res.returncode,
-                stdout=decode_bytes(out[0]),
-                stderr=decode_bytes(out[1]),
-            )
-        
-        return {
-            'output': decode_bytes(out[0]),
-        }
-    
     def get(self, namespace: str, kind: str, name: str) -> Optional[Dict[str, Any]]:
         """ Get a resource from a namespace.
         """
@@ -299,5 +271,4 @@ class KubectlClient:
             return None
         
         return yaml.safe_load(stdout)
-            
         
