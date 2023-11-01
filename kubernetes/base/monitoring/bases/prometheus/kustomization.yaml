@@ -5,4 +5,8 @@ commonLabels:
   project: monitoring
   component: prometheus
 
-resources: []
+resources:
+  - ./resources/service-account.yaml
+  - ./resources/cluster-role.yaml
+  - ./resources/prometheus.yaml
+  - ./resources/scrape-config.yaml
