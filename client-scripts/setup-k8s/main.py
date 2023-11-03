@@ -100,7 +100,7 @@ def main():
         dest='components_spec_path',
     )
     parser.add_argument(
-        "--only-component-path",
+        "--only-component-path", "-o",
         help="Only components with the specified path(s) will be processed",
         action='append',
         default=None,
