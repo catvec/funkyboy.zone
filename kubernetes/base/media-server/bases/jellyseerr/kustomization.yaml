@@ -2,7 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - ./resources/jellyseerr-config-pvc-ceph.yaml
   - ./resources/jellyseerr-config-pvc-do-block.yaml
   - ./resources/deployment.yaml
   - ./resources/service.yaml
