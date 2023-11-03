@@ -17,6 +17,20 @@ spec:
         project: media-server
         component: qbittorrent
     spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: project
+                    operator: In
+                    values:
+                      - media-server
+                  - key: component
+                    operator: In
+                    values:
+                      - emby
+              topologyKey: kubernetes.io/hostname
       containers:
         - name: qbittorrent
           image: linuxserver/qbittorrent:4.5.4
@@ -30,7 +44,7 @@ spec:
           volumeMounts:
             - name: qbittorrent-config-dir-do-block
               mountPath: /config/qBittorrent
-            - name: media
+            - name: media-do-block
               mountPath: /media
         - name: vpn
           image: qmcgaw/gluetun:v3.35.0
@@ -62,6 +76,6 @@ spec:
         - name: qbittorrent-config-dir-do-block
           persistentVolumeClaim:
             claimName: qbittorrent-config-do-block
-        - name: media
+        - name: media-do-block
           persistentVolumeClaim:
-            claimName: media-files
+            claimName: media-files-do-block

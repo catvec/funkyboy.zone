@@ -17,6 +17,20 @@ spec:
         project: media-server
         component: radarr
     spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: project
+                    operator: In
+                    values:
+                      - media-server
+                  - key: component
+                    operator: In
+                    values:
+                      - emby
+              topologyKey: kubernetes.io/hostname
       containers:
         - name: radarr
           image: linuxserver/radarr:version-4.6.4.7568
@@ -27,12 +41,12 @@ spec:
           volumeMounts:
             - name: config-do-block
               mountPath: /config
-            - name: media
+            - name: media-do-block
               mountPath: /media
       volumes:
         - name: config-do-block
           persistentVolumeClaim:
             claimName: radarr-config-do-block
-        - name: media
+        - name: media-do-block
           persistentVolumeClaim:
-            claimName: media-files
+            claimName: media-files-do-block

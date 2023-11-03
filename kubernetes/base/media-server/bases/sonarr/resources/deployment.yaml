@@ -17,6 +17,20 @@ spec:
         project: media-server
         component: sonarr
     spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: project
+                    operator: In
+                    values:
+                      - media-server
+                  - key: component
+                    operator: In
+                    values:
+                      - emby
+              topologyKey: kubernetes.io/hostname
       containers:
         - name: sonarr
           image: linuxserver/sonarr:3.0.10
@@ -27,12 +41,12 @@ spec:
           volumeMounts:
             - name: config-do-block
               mountPath: /config
-            - name: media
+            - name: media-do-block
               mountPath: /media
       volumes:
         - name: config-do-block
           persistentVolumeClaim:
             claimName: sonarr-config-do-block
-        - name: media
+        - name: media-do-block
           persistentVolumeClaim:
-            claimName: media-files
+            claimName: media-files-do-block
