@@ -25,8 +25,8 @@ spec:
               containerPort: 5055
           volumeMounts:
             - mountPath: /app/config
-              name: jellyseerr-config
+              name: jellyseerr-config-do-block
       volumes:
-        - name: jellyseerr-config
+        - name: jellyseerr-config-do-block
           persistentVolumeClaim:
-            claimName: jellyseerr-config
+            claimName: jellyseerr-config-do-block

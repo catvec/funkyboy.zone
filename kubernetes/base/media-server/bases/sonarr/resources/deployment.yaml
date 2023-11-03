@@ -25,14 +25,14 @@ spec:
               containerPort: 8989
           
           volumeMounts:
-            - name: config
+            - name: config-do-block
               mountPath: /config
             - name: media
               mountPath: /media
       volumes:
-        - name: config
+        - name: config-do-block
           persistentVolumeClaim:
-            claimName: sonarr-config
+            claimName: sonarr-config-do-block
         - name: media
           persistentVolumeClaim:
             claimName: media-files

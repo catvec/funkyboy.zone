@@ -1,0 +1,20 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: media-files-do-block
+  annotations:
+    # fake it by indicating this is provisioned dynamically, so the system
+    # works properly
+    pv.kubernetes.io/provisioned-by: dobs.csi.digitalocean.com
+spec:
+  storageClassName: do-block-storage
+  capacity:
+    storage: 300Gi
+  accessModes:
+    - ReadWriteMany
+  csi:
+    driver: dobs.csi.digitalocean.com
+    fsType: ext4
+    volumeHandle: 98fa6d92-79e0-11ee-ac0f-0a58ac144bcb
+    volumeAttributes:
+      com.digitalocean.csi/noformat: "true"

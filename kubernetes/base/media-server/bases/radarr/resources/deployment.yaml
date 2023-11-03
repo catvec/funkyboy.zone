@@ -25,14 +25,14 @@ spec:
               containerPort: 7878
           
           volumeMounts:
-            - name: config
+            - name: config-do-block
               mountPath: /config
             - name: media
               mountPath: /media
       volumes:
-        - name: config
+        - name: config-do-block
           persistentVolumeClaim:
-            claimName: radarr-config
+            claimName: radarr-config-do-block
         - name: media
           persistentVolumeClaim:
             claimName: media-files

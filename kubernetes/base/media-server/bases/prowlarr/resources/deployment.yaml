@@ -25,9 +25,9 @@ spec:
               containerPort: 9696
           
           volumeMounts:
-            - name: config
+            - name: config-do-block
               mountPath: /config
       volumes:
-        - name: config
+        - name: config-do-block
           persistentVolumeClaim:
-            claimName: prowlarr-config
+            claimName: prowlarr-config-do-block

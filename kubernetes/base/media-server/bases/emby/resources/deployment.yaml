@@ -18,6 +18,15 @@ spec:
         component: emby
     spec:
       containers:
+        - name: rsync
+          image: alpine:latest
+          volumeMounts:
+            - mountPath: /media
+              name: media-ceph
+            - mountPath: /media-do-block
+              name: media-do-block
+          command: ["/bin/sh", "-c"]
+          args: ["sleep infinity"]
         - name: emby
           image: emby/embyserver:4.8.0.39
           ports:
@@ -25,13 +34,28 @@ spec:
               containerPort: 8096
           volumeMounts:
             - mountPath: /config
-              name: emby-config
+              name: emby-config-do-block
             - mountPath: /media
-              name: media
+              name: media-ceph
+            - mountPath: /media-do-block
+              name: media-do-block
+      #affinity:
+      #  podAffinity:
+      #    requiredDuringSchedulingIgnoredDuringExecution:
+      #      - labelSelector:
+      #          matchExpressions:
+      #            - key: project
+      #              operator: In
+      #              values:
+      #                - media-server
+      #        topologyKey: kubernetes.io/hostname
       volumes:
-        - name: emby-config
+        - name: emby-config-do-block
           persistentVolumeClaim:
-            claimName: emby-config
-        - name: media
+            claimName: emby-config-do-block
+        - name: media-ceph
           persistentVolumeClaim:
             claimName: media-files
+        - name: media-do-block
+          persistentVolumeClaim:
+            claimName: media-files-do-block
