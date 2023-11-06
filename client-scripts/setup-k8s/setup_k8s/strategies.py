@@ -204,8 +204,6 @@ class BigDiffComponentStrategy(ComponentStrategy):
                 remote_input_hash = None
                 if "annotations" in resource["parsed_manifest"]["metadata"] and INPUT_MANIFEST_HASH_ANNOTATION in resource["parsed_manifest"]["metadata"]["annotations"]:
                     remote_input_hash = resource["parsed_manifest"]["metadata"]["annotations"][INPUT_MANIFEST_HASH_ANNOTATION]
-
-                logging.info("PLAN: hashed %s - %s/%s: remote=%s, input=%s", resource["namespace"], resource["kind"], resource["name"], remote_input_hash, manifest_hash)
                 
                 if remote_input_hash != manifest_hash:
                     # Replace resource because input manifest changed
