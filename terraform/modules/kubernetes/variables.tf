@@ -32,7 +32,13 @@ variable "primary_node_pool" {
   type = object({
     name = string
     size = string
-    node_count = number
+    node_count = object({
+      autoscale = optional(object({
+        min = number
+        max = number
+      }))
+      count = optional(number)
+    })
   })
   description = "The primary worker node pool definition"
 }
@@ -41,7 +47,13 @@ variable "additional_node_pools" {
   type = map(object({
     name = string
     size = string
-    node_count = number
+    node_count = object({
+      autoscale = optional(object({
+        min = number
+        max = number
+      }))
+      count = optional(number)
+    })
   }))
   description = "Worker node pools in addition to the primary node pool, map keys are logical identifiers within Terraform and not used in node pool definitions"
   default = {}

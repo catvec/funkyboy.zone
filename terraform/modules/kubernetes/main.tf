@@ -6,9 +6,14 @@ resource "digitalocean_kubernetes_cluster" "cluster" {
   dynamic "node_pool" {
     for_each = toset([ var.primary_node_pool ])
     content {
-	 name = node_pool.value.name
-	 size = node_pool.value.size
-	 node_count = node_pool.value.node_count
+      name = node_pool.value.name
+      size = node_pool.value.size
+
+      node_count = lookup(node_pool.value.node_count, "count", null)
+
+      auto_scale = node_pool.value.node_count.autoscale != null
+      min_nodes = node_pool.value.node_count.autoscale != null ? node_pool.value.node_count.autoscale.min : null
+      max_nodes = node_pool.value.node_count.autoscale != null ? node_pool.value.node_count.autoscale.max : null
     }
   }
 
@@ -26,7 +31,12 @@ resource "digitalocean_kubernetes_node_pool" "node_pool" {
 
   name = each.value.name
   size = each.value.size
-  node_count = each.value.node_count
+
+  node_count = lookup(each.value.node_count, "count", null)
+
+  auto_scale = each.value.node_count.autoscale != null
+  min_nodes = each.value.node_count.autoscale != null ? each.value.node_count.autoscale.min : null
+  max_nodes = each.value.node_count.autoscale != null ? each.value.node_count.autoscale.max : null
 }
 
 resource "local_sensitive_file" "kubeconfig" {

@@ -10,7 +10,12 @@ module "kubernetes_cluster" {
   primary_node_pool = {
     name = "worker-pool-b"
     size = "s-2vcpu-4gb" # "s-4vcpu-8gb"
-    node_count = 4
+    node_count = {
+      autoscale = {
+        min = 1
+        max = 4
+      }
+    }
   }
 
   maintenance = {
