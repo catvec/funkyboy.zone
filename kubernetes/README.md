@@ -30,15 +30,6 @@ Provides the following services:
    ./clients-scripts/setup-k8s.py
    ```
 
-## Kubernetes Dashboard
-To access the dashboard run the Kubernetes proxy (The `--address` option is not needed if not in the dev container):
-
-```
-kubectl proxy --address 0.0.0.0
-```
-
-Then access the Dashboard: [here](http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/)
-
 # Planning
 ## Standard Labels
 All applications in the cluster should have the following labels:
