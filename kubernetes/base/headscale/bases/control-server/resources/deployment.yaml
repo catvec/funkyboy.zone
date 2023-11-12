@@ -11,6 +11,8 @@ spec:
     matchLabels:
       project: headscale
       component: server
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
