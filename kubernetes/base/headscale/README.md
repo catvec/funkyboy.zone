@@ -28,3 +28,16 @@ When you click the login button the user will see a command in this form to run:
 ```
 headscale nodes register --user <USER> --key nodekey:<KEY>
 ```
+
+To login with the Tailscale CLI:
+
+```
+tailscale up --login-server https://control.headscale.k8s.funkyboy.zone
+```
+
+## API Key
+For the web ui to work it needs an API key, generate it:
+
+```
+headscale apikeys create --expiration 90d
+```

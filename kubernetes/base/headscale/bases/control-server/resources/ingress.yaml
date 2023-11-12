@@ -7,6 +7,8 @@ metadata:
     component: server
   annotations:
     cert-manager.io/cluster-issuer: lets-encrypt-production-http01
+    nginx.ingress.kubernetes.io/enable-cors: true
+    nginx.ingress.kubernetes.io/cors-allow-origin: https://dashboard.headscale.k8s.funkyboy.zone
 spec:
   ingressClassName: nginx
   rules:
