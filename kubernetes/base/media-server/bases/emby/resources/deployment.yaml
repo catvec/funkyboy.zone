@@ -7,6 +7,8 @@ metadata:
     component: emby
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       project: media-server
@@ -17,12 +19,21 @@ spec:
         project: media-server
         component: emby
     spec:
+      #securityContext:
+      #  runAsUser: 911
+      #  runAsGroup: 911
+      #  fsGroup: 911
       containers:
         - name: emby
           image: emby/embyserver:4.8.0.39
           ports:
             - name: http
               containerPort: 8096
+          env:
+            - name: PUID
+              value: "911"
+            - name: PGID
+              value: "911"
           volumeMounts:
             - mountPath: /config
               name: emby-config-do-block
