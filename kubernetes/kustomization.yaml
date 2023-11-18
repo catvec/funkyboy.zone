@@ -20,3 +20,4 @@ bases:
   - ./base/chatgpt-discord-bot/deploy
   - ./base/media-server/production
   - ./base/headscale/overlay
+  - ./base/kimai/overlay

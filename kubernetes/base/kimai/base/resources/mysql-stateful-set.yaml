@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kimai-mysql
+  labels:
+    component: db
+spec:
+  selector:
+    matchLabels:
+      project: kimai
+      component: db
+  serviceName: kimai-mysql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        project: kimai
+        component: db
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.2.0
+          envFrom:
+            - secretRef:
+                name: kimai-mysql
+          ports:
+            - name: mysql
+              containerPort: 3306
+          volumeMounts:
+            - name: kimai-mysql-data
+              mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+    - metadata:
+        name: kimai-mysql-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: do-block-storage
+        resources:
+          requests:
+            storage: 1Gi

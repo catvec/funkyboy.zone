@@ -25,6 +25,7 @@ Provides the following services:
     - [`base/cert-manager/README.md`](./base/cert-manager/README.md#instructions)
     - [`base/chatgpt-discord-bot/README.md`](./base/chatgpt-discord-bot/README.md#instructions)
     - [`base/media-server/README.md`](./base/media-server/README.md#instructions)
+    - [`base/kimai/README.md`](./base/kimai/README.md#instructions)
 2. Run the `setup-k8s.py` script from the root of the repository:
    ```
    ./clients-scripts/setup-k8s.py

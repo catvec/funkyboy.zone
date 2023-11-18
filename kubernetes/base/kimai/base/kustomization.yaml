@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+secretGenerator:
+  - name: kimai-mysql
+    envs:
+      - ./conf/mysql.env
+  - name: kimai
+    envs:
+      - ./conf/kimai.env
+
+commonLabels:
+  project: kimai
+
+resources:
+  - ./resources/mysql-stateful-set.yaml
+  - ./resources/mysql-svc.yaml
+
+  - ./resources/kimai-deployment.yaml
+  - ./resources/kimai-svc.yaml
+  - ./resources/kimai-ingress.yaml

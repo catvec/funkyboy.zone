@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kimai
+  labels:
+    components: kimai
+spec:
+  selector:
+    project: kimai
+    component: kimai
+  ports:
+    - port: 8001
+      name: http

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kimai
+  labels:
+    component: kimai
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      project: kimai
+      component: kimai
+  template:
+    metadata:
+      labels:
+        project: kimai
+        component: kimai
+    spec:
+      containers:
+        - name: kimai
+          image: kimai/kimai2:apache-2.3.0-prod
+          envFrom:
+            - secretRef:
+                name: kimai
+          ports:
+            - name: http
+              containerPort: 8001
