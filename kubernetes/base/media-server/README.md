@@ -39,6 +39,9 @@ After the manifests have been applied follow the [Initial Setup](#initial-setup)
     - Seeding Limits
       - When ratio reaches: On -> `0`
       - then: `Pause torrent`
+  - Web UI
+    - Security
+      - Enable Host header validation: Off (This allows us to kubectl port-forward to access the web ui)
 
 
 ### Sonarr Initial Setup
