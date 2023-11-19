@@ -23,6 +23,7 @@ spec:
       #  runAsUser: 911
       #  runAsGroup: 911
       #  fsGroup: 911
+      priorityClassName: streaming
       containers:
         - name: emby
           image: emby/embyserver:4.8.0.39
