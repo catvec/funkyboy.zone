@@ -9,6 +9,11 @@ secretGenerator:
     envs:
       - ./conf/kimai.env
 
+configMapGenerator:
+  - name: custom-kimai-templates
+    files:
+      - ./conf/custom-invoice.html.twig
+
 commonLabels:
   project: kimai
 
