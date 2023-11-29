@@ -95,6 +95,13 @@ To view the Prowlarr web UI use `kubectl` to forward the port locally:
 kubectl -n media-server port-forward service/prowlarr 8003:http
 ```
 
+### YouTube DL Web UI
+To view the YouTube DL web UI use `kubectl` to forward the port locally:
+
+```
+kubectl -n media-server port-forward service/youtube-dl 8004:http
+```
+
 # Development
 ## qBittorrent Pod Network Policies
 To restrict the qBittorrent application from being accessed or making requests that are not through the VPN a `NetworkPolicy` is put in place.
