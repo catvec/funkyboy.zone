@@ -26,14 +26,14 @@ spec:
       priorityClassName: streaming
       containers:
         - name: emby
-          image: emby/embyserver:4.8.0.39
+          image: emby/embyserver:4.8.0.61
           ports:
             - name: http
               containerPort: 8096
           env:
-            - name: PUID
+            - name: UID
               value: "911"
-            - name: PGID
+            - name: GID
               value: "911"
           volumeMounts:
             - mountPath: /config
