@@ -66,6 +66,18 @@ After the manifests have been applied follow the [Initial Setup](#initial-setup)
 - Add Radarr as a service (Host: `radarr`, port `80`)
 
 ## Web UIs
+To access all common web UI's:
+
+```
+kubectl -n media-server port-forward service/qbittorrent 8000:qb-web-ui &
+kubectl -n media-server port-forward service/sonarr 8001:http &
+kubectl -n media-server port-forward service/radarr 8002:http &
+```
+
+- [qBittorrent](http://localhost:8000)
+- [Sonarr](http://localhost:8001)
+- [Radarr](http://localhost:8002)
+
 ### qBittorrent Web UI
 To view the qBittorrent web UI use `kubectl` to forward the port locally:
 
