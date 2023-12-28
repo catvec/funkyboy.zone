@@ -1,0 +1,7 @@
+apiVersion: vpn.wireguard-operator.io/v1alpha1
+kind: Wireguard
+metadata:
+  name: wireguard
+spec:
+  mtu: "1420"
+  serviceType: NodePort # Required since DigitalOcean load balancers don't support UDP
