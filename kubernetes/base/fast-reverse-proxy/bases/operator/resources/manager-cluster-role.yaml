@@ -1,12 +1,11 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ .Release.Name }}-manager-role
+  name: frp-operator-manager-role
   labels:
-    app.kubernetes.io/name: {{ .Release.Name }}
-    helm.sh/chart: {{ template "frp-operator.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    app.kubernetes.io/name: frp-operator
+    app.kubernetes.io/instance: frp-operator
+    app.kubernetes.io/managed-by: frp-operator
 rules:
 - apiGroups:
   - ""

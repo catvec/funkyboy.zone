@@ -3,21 +3,20 @@ kind: Deployment
 metadata:
   labels:
     control-plane: controller-manager
-    app.kubernetes.io/name: {{ .Release.Name }}
-    helm.sh/chart: {{ template "frp-operator.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-  name: {{ .Release.Name }}-controller-manager
+    app.kubernetes.io/name: frp-operator
+    app.kubernetes.io/instance: frp-operator
+    app.kubernetes.io/managed-by: frp-operator
+  name: frp-operator-controller-manager
 spec:
-  replicas: {{ .Values.operator.replica }}
+  replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ .Release.Name }}
+      app.kubernetes.io/name: frp-operator
       control-plane: controller-manager
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ .Release.Name }}
+        app.kubernetes.io/name: frp-operator
         control-plane: controller-manager
     spec:
       containers:
@@ -38,7 +37,7 @@ spec:
         - --leader-elect
         command:
         - /manager
-        image: "{{ .Values.operator.image }}:{{ .Values.operator.tag }}"
+        image: "zufardhiyaulhaq/frp-operator:v0.2.0"
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
@@ -53,10 +52,16 @@ spec:
             port: 8081
           initialDelaySeconds: 5
           periodSeconds: 10
-        resources: {{ .Values.resources | toYaml  | nindent 10 }}
+        resources:
+          limits:
+            cpu: 200m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 20Mi
         securityContext:
           allowPrivilegeEscalation: false
       securityContext:
         runAsNonRoot: true
-      serviceAccountName: {{ .Release.Name }}-controller-manager
+      serviceAccountName: frp-operator-controller-manager
       terminationGracePeriodSeconds: 10

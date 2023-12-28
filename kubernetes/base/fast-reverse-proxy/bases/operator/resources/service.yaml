@@ -3,11 +3,10 @@ kind: Service
 metadata:
   labels:
     control-plane: controller-manager
-    app.kubernetes.io/name: {{ .Release.Name }}
-    helm.sh/chart: {{ template "frp-operator.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-  name: {{ .Release.Name }}-controller-manager-metrics-service
+    app.kubernetes.io/name: frp-operator
+    app.kubernetes.io/instance: frp-operator
+    app.kubernetes.io/managed-by: frp-operator
+  name: frp-operator-controller-manager-metrics-service
 spec:
   ports:
   - name: https
@@ -15,5 +14,5 @@ spec:
     protocol: TCP
     targetPort: https
   selector:
-    app.kubernetes.io/name: {{ .Release.Name }}
+    app.kubernetes.io/name: frp-operator
     control-plane: controller-manager

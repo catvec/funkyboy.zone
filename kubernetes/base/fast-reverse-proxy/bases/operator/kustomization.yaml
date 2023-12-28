@@ -18,6 +18,6 @@ resources:
   - ./resources/service.yaml
 
 configMapGenerator:
-  - name: {{ .Release.Name }}-manager-config
+  - name: fpc-manager-config
     files:
       - ./conf/controller_manager_config.yaml
