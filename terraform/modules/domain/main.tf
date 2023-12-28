@@ -38,51 +38,23 @@ resource "digitalocean_record" "record_keybase" {
   value = var.keybase_verification
 }
 
-resource "digitalocean_record" "record_protonmail_mx10" {
-  count = length(var.mx) > 0 ? 1 : 0
+resource "digitalocean_record" "record_protonmail_mx" {
+  for_each = var.mx
   domain = var.name
   type = "MX"
   ttl = "1800" # seconds
   name = "@"
-  priority = 10
-  value = var.mx[0]
+  priority = each.value.priority
+  value = each.value.value
 }
 
-resource "digitalocean_record" "record_protonmail_mx20" {
-  count = length(var.mx) > 0 ? 1 : 0
+resource "digitalocean_record" "record_protonmail_dkim" {
+  for_each = var.dkim
   domain = var.name
-  type = "MX"
-  ttl = "1800" # seconds
-  name = "@"
-  priority = 20
-  value = var.mx[1]
-}
-
-resource "digitalocean_record" "record_protonmail_dkim1" {
-  count = length(var.mx) > 0 ? 1 : 0
-  domain = var.name
-  type = "CNAME"
+  type = "TXT"
   ttl = "60" # seconds
-  name = var.dkim[0][0]
-  value = var.dkim[0][1]
-}
-
-resource "digitalocean_record" "record_protonmail_dkim2" {
-  count = length(var.mx) > 0 ? 1 : 0
-  domain = var.name
-  type = "CNAME"
-  ttl = "60" # seconds
-  name = var.dkim[1][0]
-  value = var.dkim[1][1]
-}
-
-resource "digitalocean_record" "record_protonmail_dkim3" {
-  count = length(var.mx) > 0 ? 1 : 0
-  domain = var.name
-  type = "CNAME"
-  ttl = "60" # seconds
-  name = var.dkim[2][0]
-  value = var.dkim[2][1]
+  name = each.value.name
+  value = each.value.value
 }
 
 resource "digitalocean_record" "record_protonmail_dmarc" {
@@ -101,4 +73,13 @@ resource "digitalocean_record" "record_protonmail_verification" {
   ttl = "1800" # seconds
   name = "@"
   value = var.protonmail_verification
+}
+
+resource "digitalocean_record" "record_google_verification" {
+  count = length(var.mx) > 0 && var.google_verification != null ? 1 : 0
+  domain = var.name
+  type = "TXT"
+  ttl = "1800" # seconds
+  name = "@"
+  value = var.google_verification
 }

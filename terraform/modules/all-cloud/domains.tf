@@ -29,7 +29,7 @@ variable "keybase_verification" {
 variable "spf_email" {
   type = string
   description = "SPF value if email is enabled for a domain."
-  default = "v=spf1 include:_spf.protonmail.ch mx ~all"
+  default = "v=spf1 include:_spf.google.com ~all"
 }
 
 variable "spf_no_email" {
@@ -39,62 +39,56 @@ variable "spf_no_email" {
 }
 
 variable "mx" {
-  type = map(list(string))
+  type = map(map(object({
+    priority = number
+    value = string
+  })))
   description = "Mail server MX DNS records."
   default = {
-    "funkyboy.zone": [],
-    "noahh.io": [
-	 "mail.protonmail.ch.",
-	 "mailsec.protonmail.ch.",
-    ],
-    "noahhuppert.com": [
-	 "mail.protonmail.ch.",
-	 "mailsec.protonmail.ch.",
-    ],
-    "goldblum.zone": [],
-    "oliversgame.deals": [],
-    "4e48.dev": [],
-    "turtle.wiki": [],
+    "funkyboy.zone": {},
+    "noahh.io": {
+      primary = {
+        priority = 1
+        value = "smtp.google.com."
+      }
+    },
+    "noahhuppert.com": {
+      primary = {
+        priority = 1
+        value = "smtp.google.com."
+      }
+    },
+    "goldblum.zone": {},
+    "oliversgame.deals": {},
+    "4e48.dev": {},
+    "turtle.wiki": {},
   }
 }
 
 variable "dkim" {
-  type = map(list(tuple([string, string])))
+  type = map(map(object({
+    name = string
+    value = string
+  })))
   description = "DKIM DNS entries for domains."
   default = {
-    "funkyboy.zone": [],
-    "noahh.io": [
-	 [
-	   "protonmail._domainkey",
-	   "protonmail.domainkey.dhngagtoz5n6777wkmvw6ll2aqlow4wpnwisycw6oabxgrxih5m6a.domains.proton.ch.",
-	 ],
-	 [
-	   "protonmail2._domainkey",
-	   "protonmail2.domainkey.dhngagtoz5n6777wkmvw6ll2aqlow4wpnwisycw6oabxgrxih5m6a.domains.proton.ch.",
-	 ],
-	 [
-	   "protonmail3._domainkey",
-	   "protonmail3.domainkey.dhngagtoz5n6777wkmvw6ll2aqlow4wpnwisycw6oabxgrxih5m6a.domains.proton.ch.",
-	 ],
-    ], 
-    "noahhuppert.com": [
-	 [
-	   "protonmail._domainkey",
-	   "protonmail.domainkey.d2i3l6setswma5tygpxpd7llkrjpntekxmytca5etovoacggdmrka.domains.proton.ch."
-	 ],
-	 [
-	   "protonmail2._domainkey",
-	   "protonmail2.domainkey.d2i3l6setswma5tygpxpd7llkrjpntekxmytca5etovoacggdmrka.domains.proton.ch."
-	 ],
-	 [
-	   "protonmail3._domainkey",
-	   "protonmail3.domainkey.d2i3l6setswma5tygpxpd7llkrjpntekxmytca5etovoacggdmrka.domains.proton.ch."
-	 ],
-    ],
-    "goldblum.zone": [],
-    "oliversgame.deals": [],
-    "4e48.dev": [],
-    "turtle.wiki": [],
+    "funkyboy.zone" = {},
+    "noahh.io" = {
+      primary = {
+        name = "google._domainkey"
+        value = "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAglt8qyzwlzFOqM3mr4iv+Qs6trp7jq6HVbpwtrfxloFtqMXhiNquBLa/2EyL1LNS/2MknXTWq4Wa3rz/lQy1oagW2aFE9ZKpre6dl2wXv++mzyP6lLCYFcn/24IFzRYzHkJpmZru8MbZtIEVtas0ZDXRZicKqhKGfM21E9lxDWD80uRRSuuDl92uPkLaNXjoWHAIyqhcd6+uluqqW0/aItVE1XoaiV6VticNHdEZlGSNdXGCxMUMFYvcerGSWLeuFpmb4YchwS0DZT9o5kBCUpDSBuMG1zOGYoAoDB2Olq7vdRgh5CjCLr/ImtIoqL2MgEtOEp3rCuXhf9hMYPRlNQIDAQAB",
+      }
+    } 
+    "noahhuppert.com": {
+      primary = {
+        name = "google._domainkey"
+        value = "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAglt8qyzwlzFOqM3mr4iv+Qs6trp7jq6HVbpwtrfxloFtqMXhiNquBLa/2EyL1LNS/2MknXTWq4Wa3rz/lQy1oagW2aFE9ZKpre6dl2wXv++mzyP6lLCYFcn/24IFzRYzHkJpmZru8MbZtIEVtas0ZDXRZicKqhKGfM21E9lxDWD80uRRSuuDl92uPkLaNXjoWHAIyqhcd6+uluqqW0/aItVE1XoaiV6VticNHdEZlGSNdXGCxMUMFYvcerGSWLeuFpmb4YchwS0DZT9o5kBCUpDSBuMG1zOGYoAoDB2Olq7vdRgh5CjCLr/ImtIoqL2MgEtOEp3rCuXhf9hMYPRlNQIDAQAB"
+      }
+    },
+    "goldblum.zone": {},
+    "oliversgame.deals": {},
+    "4e48.dev": {},
+    "turtle.wiki": {},
   }
 }
 
@@ -126,6 +120,20 @@ variable "protonmail_verification" {
   }
 }
 
+variable "google_verification" {
+  type = map(string)
+  description = "Google domain ownership verification."
+  default = {
+    "funkyboy.zone": null,
+    "noahh.io": "google-site-verification=vK90NUyqv5bx45cdFezI3tKOtAMJZBteDHVTRUvEu9o",
+    "noahhuppert.com": "google-site-verification=ROilJT-7D-FpAfySybb64ZNk3iAwuAgpl67rCnnPIKc",
+    "goldblum.zone": null,
+    "oliversgame.deals": null,
+    "4e48.dev": null,
+    "turtle.wiki": null,
+  }
+}
+
 module "domains" {
   source = "../domain"
   for_each = toset(var.domains)
@@ -138,4 +146,5 @@ module "domains" {
   dkim = var.dkim[each.key]
   dmarc = var.dmarc[each.key]
   protonmail_verification = var.protonmail_verification[each.key]
+  google_verification = var.google_verification[each.key]
 }
