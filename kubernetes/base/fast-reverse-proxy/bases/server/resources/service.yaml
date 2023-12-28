@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fast-reverse-proxy
+  labels:
+    project: fast-reverse-proxy
+    component: server
+spec:
+  type: LoadBalancer
+  selector:
+    project: fast-reverse-proxy
+    component: server
+  ports:
+    - protocol: TCP
+      port: 7000
+      targetPort: 7000

@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fast-reverse-proxy
+  labels:
+    project: fast-reverse-proxy
+    component: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: fast-reverse-proxy
+      component: server
+  template:
+    metadata:
+      labels:
+        project: fast-reverse-proxy
+        component: server
+    spec:
+      containers:
+        - name: server
+          image: snowdreamtech/frps:0.53.2
+          ports:
+            - containerPort: 7000
+          volumeMounts:
+            - name: server-secret
+              mountPath: /etc/frp
+              readOnly: true
+      volumes:
+        - name: server-secret
+          secret:
+            secretName: fast-reverse-proxy-server-secret

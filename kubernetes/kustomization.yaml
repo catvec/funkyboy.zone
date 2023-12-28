@@ -22,3 +22,4 @@ bases:
   - ./base/media-server/production
   #- ./base/headscale/overlay
   - ./base/kimai/overlay
+  - ./base/fast-reverse-proxy/overlays/prod
