@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: protonmail-bridge
+  labels:
+    project: protonmail-bridge
+    component: bridge
+spec:
+  type: LoadBalancer
+  selector:
+    project: protonmail-bridge
+    component: bridge
+  ports:
+    - name: smtp
+      protocol: TCP
+      port: 25
+      targetPort: smtp
+    - name: imap
+      protocol: TCP
+      port: 143
+      targetPort: imap
+    - name: imap-ssl
+      protocol: TCP
+      port: 993
+      targetPort: imap

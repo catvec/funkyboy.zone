@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: protonmail-bridge
+  labels:
+    project: protonmail-bridge
+    component: bridge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: protonmail-bridge
+      component: bridge
+  template:
+    metadata:
+      labels:
+        project: protonmail-bridge
+        component: bridge
+    spec:
+      containers:
+        - name: bridge
+          image: noahhuppert/proton-bridge:all-host-5 # shenxn/protonmail-bridge:latest
+          command:
+            - /bin/sh
+          args:
+            - -c
+            - sleep infinity
+          ports:
+            - name: smtp
+              containerPort: 1025
+            - name: imap
+              containerPort: 1143
+          volumeMounts:
+            - name: data
+              mountPath: /root
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: protonmail-bridge

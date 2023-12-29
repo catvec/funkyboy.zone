@@ -1,0 +1,88 @@
+diff --git a/Dockerfile b/Dockerfile
+new file mode 100644
+index 00000000..6545a7a8
+--- /dev/null
++++ b/Dockerfile
+@@ -0,0 +1,14 @@
++FROM archlinux:base-20231112.0.191179
++
++RUN pacman -Sy --noconfirm bash make base-devel libsecret go pass socat
++
++RUN mkdir /opt/proton-bridge
++COPY ./ /opt/proton-bridge
++
++WORKDIR /opt/proton-bridge
++RUN make install-dev-dependencies
++RUN make build-nogui
++RUN mv ./bridge /usr/local/bin
++
++RUN mkdir /protonmail
++COPY ./docker-conf/entrypoint.sh ./docker-conf/gpgparams /protonmail/
+diff --git a/docker-conf/entrypoint.sh b/docker-conf/entrypoint.sh
+new file mode 100644
+index 00000000..e87679dd
+--- /dev/null
++++ b/docker-conf/entrypoint.sh
+@@ -0,0 +1,46 @@
++#!/bin/bash
++
++set -ex
++
++while getopts "s" opt; do
++    case "$opt" in
++        s) opt_socat="true" ;;
++    esac
++done
++
++shift $((OPTIND-1))
++
++# Initialize
++if [[ $1 == init ]]; then
++
++    # Initialize pass
++    gpg --generate-key --batch /protonmail/gpgparams
++    pass init pass-key
++    
++    # Kill the other instance as only one can be running at a time.
++    # This allows users to run entrypoint init inside a running conainter
++    # which is useful in a k8s environment.
++    # || true to make sure this would not fail in case there is no running instance.
++    pkill bridge || true
++
++    # Login
++    bridge --cli $@
++
++else
++    if [[ -n "$opt_socat" ]]; then
++        echo "Running socat"
++
++        # socat will make the conn appear to come from 127.0.0.1
++        # ProtonMail Bridge currently expects that.
++        # It also allows us to bind to the real ports :)
++        socat TCP-LISTEN:25,fork TCP:127.0.0.1:1025 &
++        socat TCP-LISTEN:143,fork TCP:127.0.0.1:1143 &
++    fi
++
++    # Start protonmail
++    # Fake a terminal, so it does not quit because of EOF...
++    rm -f faketty
++    mkfifo faketty
++    cat faketty | bridge --cli $@
++
++fi
+\ No newline at end of file
+diff --git a/docker-conf/gpgparams b/docker-conf/gpgparams
+new file mode 100644
+index 00000000..720ad376
+--- /dev/null
++++ b/docker-conf/gpgparams
+@@ -0,0 +1,8 @@
++%no-protection
++%echo Generating a basic OpenPGP key
++Key-Type: RSA
++Key-Length: 2048
++Name-Real: pass-key
++Expire-Date: 0
++%commit
++%echo done
+\ No newline at end of file
