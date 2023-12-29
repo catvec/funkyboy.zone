@@ -7,7 +7,7 @@ Runs the ProtonMail Bridge in an externally accessible way.
 # Overview
 Migrating out of ProtonMail to another email provider can be a tricky process. ProtonMail easily provides `.eml` files. However to import those files into another provider you often need third party tools. Often requiring enterprise like applications and potentially per user licensing.
 
-Email providers, like Google Workspaces, often provide migration services included in their offerings. Often these tools work by connecting to your old email server (using a protocol like IMAP) and then pulling in all your old emails. This ends up being problematic if you are migrating from ProtonMail. As ProtonMail does not provide public servers which implement IMAP. Instead all communications regarding your email inbox content is done via custom ProtonMail protocols. 
+Email providers, like Google Workspaces, frequently provide migration services included in their offerings. These tools work by connecting to your old email server (using a protocol like IMAP) and then pulling in all your old emails. This ends up being problematic if you are migrating from ProtonMail. As ProtonMail does not provide public servers which implement IMAP. Instead all communications regarding your email inbox content is done via custom ProtonMail protocols. 
 
 There is a way around this. ProtonMail recognizes that many would like to use their own email clients (ex., Thunderbird or Mutt) which speak IMAP. To accomodate this use case ProtonMail provides a [bridge application](https://proton.me/mail/bridge). This application connects to ProtonMail via their custom protocol and then hosts a locally available IMAP (and SMTP) email server.
 
@@ -55,14 +55,16 @@ To run ProtonMail Bridge so that it can be externally accessible for IMAP migrat
 9. Setup ProtonMail bridge:
    - First exec into the Kubernetes deployment running your container, deployment just provides a dev toolbox with the patched bridge ready to go, you will still have to run commands to start it. To exec into the deployment run:
      ```
-	 kubectl -n protonmail-bridge exec -it deployment/protonmail-bridge -- /protonmail/entrypoint.sh
+	 kubectl -n protonmail-bridge exec -it deployment/protonmail-bridge -- /bin/bash
 	 ```
-	 This will start a REPL like interface for the ProtonMail Brisge, run all the following sub-steps within this step in this new shell.
+	 This will start a bash shell in the container.
+	 Then run `protonmail/entrypoint.sh`. This will start a REPL like interface for the ProtonMail Brisge, run all the following sub-steps within this step in this new shell.
    - Login to your ProtonMail account by running `login`, once you have entered your credentails the bridge program will automatically start a synchronization process (It will print its progress via log statements). Wait for this synchronization process to complete before moving on to the next step (It might take a few hours)
    - Run `info` to see details about the local email servers its running, in the "IMAP Settings" check the following:
      - Ensure `Address` says `0.0.0.0`, if it doesn't this means the patch to allow listening on all address is not working, probably because ProtonMail have changed the bridge source code and a patch is required. If this is the case then go back to the first step and keep trying to make a new patch until you pass this step
 	 - Ensure `Security` says `SSL`, if it doesn't then run `change imap-security`. It should ask you if you want to change from `STARTTLS` to `SSL`, say `yes`. Then re-run `info` and ensure `SSL` is the new value
 	 - Take note of the `Username` and `Password` values as you will need to give those to anything that wants to connect to the ProtonMail Bridge IMAP server
+   - Run `cert import` and pass the paths to `/root/tls.cert` and `/root/tls.key` for the certificate and key respectively. ProtonMail Bridge might tell you that you now need to restart the bridge. Exit by entering `CTRL-C` and then re run `protonmail/entrypoint.sh`
    - Leave this terminal open for the rest of the instruction, if you close it it will stop the ProtonMail Bridge program, and your new email provider will not be able to read your old emails
  10. The ProtonMail Bridge program should now be running an IMAP server with SSL under your domain name
     - To test this run:
