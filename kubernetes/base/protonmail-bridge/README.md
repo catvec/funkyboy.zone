@@ -53,12 +53,13 @@ To run ProtonMail Bridge so that it can be externally accessible for IMAP migrat
 	 ```
 	 Be sure to replace `POD` with the name of the pod created for the deployment (Find this by running `kubectl -n protonmail-bridge get pods`)
 9. Setup ProtonMail bridge:
-   - First exec into the Kubernetes deployment running your container, deployment just provides a dev toolbox with the patched bridge ready to go, you will still have to run commands to start it. To exec into the deployment run:
+   - First exec into the Kubernetes deployment running your container, the deployment just provides a dev toolbox with the patched bridge ready to go, you will still have to run commands to start it.  
+     To exec into the deployment run:
      ```
 	 kubectl -n protonmail-bridge exec -it deployment/protonmail-bridge -- /bin/bash
 	 ```
-	 This will start a bash shell in the container.
-	 Then run `protonmail/entrypoint.sh`. This will start a REPL like interface for the ProtonMail Brisge, run all the following sub-steps within this step in this new shell.
+	 This will start a bash shell in the container.  
+	 Then run `protonmail/entrypoint.sh`. This will start a REPL like interface for the ProtonMail Bridge, run all the following sub-steps within this step in this new shell.
    - Login to your ProtonMail account by running `login`, once you have entered your credentails the bridge program will automatically start a synchronization process (It will print its progress via log statements). Wait for this synchronization process to complete before moving on to the next step (It might take a few hours)
    - Run `info` to see details about the local email servers its running, in the "IMAP Settings" check the following:
      - Ensure `Address` says `0.0.0.0`, if it doesn't this means the patch to allow listening on all address is not working, probably because ProtonMail have changed the bridge source code and a patch is required. If this is the case then go back to the first step and keep trying to make a new patch until you pass this step
