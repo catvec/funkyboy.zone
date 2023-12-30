@@ -97,8 +97,8 @@ variable "dmarc" {
   description = "DMARC policies for domains."
   default = {
     "funkyboy.zone": "",
-    "noahh.io": "v=DMARC1; p=none; rua=mailto:contact@noahh.io",
-    "noahhuppert.com": "v=DMARC1; p=none; rua=mailto:contact@noahhuppert.com",
+    "noahh.io": "v=DMARC1; p=none; rua=mailto:webmaster@noahh.io",
+    "noahhuppert.com": "v=DMARC1; p=none; rua=mailto:webmaster@noahhuppert.com",
     "goldblum.zone": "",
     "oliversgame.deals": "",
     "4e48.dev": "",
