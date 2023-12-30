@@ -11,6 +11,8 @@ spec:
     matchLabels:
       project: protonmail-bridge
       component: bridge
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -21,10 +23,9 @@ spec:
         - name: bridge
           image: noahhuppert/proton-bridge:all-host-5 # shenxn/protonmail-bridge:latest
           command:
-            - /bin/sh
-          args:
-            - -c
-            - sleep infinity
+            - /bin/bash
+            - /protonmail/entrypoint.sh
+          #args: [ "-c", "sleep infinity" ]
           ports:
             - name: smtp
               containerPort: 1025
