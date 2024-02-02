@@ -6,7 +6,10 @@ commonLabels:
   component: prometheus
 
 resources:
-  - ./resources/service-account.yaml
-  - ./resources/cluster-role.yaml
+  #- ./resources/service-account.yaml
+  #- ./resources/cluster-role.yaml
   - ./resources/prometheus.yaml
+  - ./resources/alert-manager.yaml
+  - ./resources/alert-manager-config.yaml
+  
   - ./resources/scrape-config.yaml

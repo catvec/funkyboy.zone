@@ -16,5 +16,6 @@ The [example Kubernetes service discovery configuration](https://github.com/prom
 To access the Prometheus dashboard run:
 
 ```
-kubectl -n prometheus port-forward service/prometheus 9090:9090
+kubectl -n monitoring port-forward service/prometheus-operated 9090:9090 &
+kubectl -n monitoring port-forward service/alertmanager-operated 9093:9093 &
 ```

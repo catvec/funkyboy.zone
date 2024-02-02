@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: alertmanager
+  labels:
+    alertmanagerConfig: alertmanager
+spec:
+  route:
+    groupBy: ['job']
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 12h
+    receiver: email
+  receivers:
+  - name: email
+    emailConfigs:
+      - send_resolved: true
+        to: noah@noahh.io
+        from: alertmanager@k8s.funkyboy.zone

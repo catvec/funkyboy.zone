@@ -5,3 +5,8 @@ metadata:
 spec:
   serviceAccountName: prometheus
   enableAdminAPI: false
+  alerting:
+    alertmanagers:
+    - namespace: monitoring
+      name: alertmanager
+      port: web
