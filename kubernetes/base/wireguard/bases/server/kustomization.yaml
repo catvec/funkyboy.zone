@@ -1,5 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: wireguard
 
 resources:
-  - ./resources/operator.yaml
+  - ./resources/namespace.yaml
+  - ./resources/server.yaml
+
+  - ./resources/pascal-peer.yaml
+  - ./resources/media-server-sidecar-peer.yaml

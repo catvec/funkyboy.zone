@@ -19,7 +19,7 @@ bases:
   # Services
   - ./base/gotify/production
   - ./base/chatgpt-discord-bot/deploy
-  - ./base/media-server/production
+  #- ./base/media-server/production
   #- ./base/headscale/overlay
   - ./base/kimai/overlay
   #- ./base/fast-reverse-proxy/overlays/prod
