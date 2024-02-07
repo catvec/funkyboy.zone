@@ -1,6 +1,6 @@
 apiVersion: vpn.wireguard-operator.io/v1alpha1
 kind: WireguardPeer
 metadata:
-  name: media-server-sidecar
+  name: noah-s23
 spec:
   wireguardRef: wireguard

@@ -5,7 +5,6 @@ namespace: wireguard
 resources:
   - ./resources/namespace.yaml
   - ./resources/server.yaml
-
-  - ./resources/cluster-role.yaml
+  
   - ./resources/pascal-peer.yaml
-  - ./resources/media-server-sidecar-peer.yaml
+  - ./resources/noah-s23-peer.yaml
