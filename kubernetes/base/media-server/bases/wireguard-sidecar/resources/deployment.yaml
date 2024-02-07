@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wireguard-sidecar
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: media-server
+      component: wireguard-sidecar
+  template:
+    metadata:
+      labels:
+        project: media-server
+        component: wireguard-sidecar
+    spec:
+      containers:
+      - name: wireguard-sidecar
+        image: noahhuppert/wireguard-sidecar:latest
+        env:
+          - name: WIREGUARD_PEER
+            value: "media-server-sidecar-peer.yaml"
