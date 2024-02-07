@@ -14,9 +14,16 @@ spec:
         project: media-server
         component: wireguard-sidecar
     spec:
+      serviceAccountName: wireguard-sidecar
       containers:
       - name: wireguard-sidecar
         image: noahhuppert/wireguard-sidecar:latest
+        imagePullPolicy: Always
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+          privileged: true
         env:
           - name: WIREGUARD_PEER
-            value: "media-server-sidecar-peer.yaml"
+            value: media-server-sidecar
