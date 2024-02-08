@@ -1,26 +1,23 @@
-class bcolors:
-    HEADER = '\033[95m'
-    BLUE = '\033[94m'
-    CYAN = '\033[96m'
-    GREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+from typing import Optional
+
+COLOR_GREEN = "\033[92m"
+COLOR_RED = "\033[91m"
+COLOR_RESET = "\033[0m"
 
 
-def print_diff(lines: str):
+def print_diff(lines: Optional[str]):
     """ Output a multi-line diff to sysout
     """
+    if lines is None:
+        return
     for line in lines.split("\n"):
         color = ""
         if len(line) == 0:
             pass
         elif line[0] == "+":
-            color = bcolors.GREEN
+            color = COLOR_GREEN
         elif line[0] == "-":
-            color = bcolors.FAIL
+            color = COLOR_RED
 
-        print(color + line + bcolors.ENDC)
+        print(color + line + COLOR_RESET)
             
