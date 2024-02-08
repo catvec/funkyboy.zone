@@ -14,7 +14,7 @@ spec:
     - Ingress
     - Egress
   ingress:
-    # Requests from services which use qBittorrent
+    # Requests from -arr services which use qBittorrent
     - from:
         - podSelector:
             matchLabels:
@@ -27,9 +27,18 @@ spec:
       ports:
         - protocol: TCP
           port: 8080
+
+    # Requests from Wireguard VPN
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: wireguard
+      ports:
+        - protocol: TCP
+          port: 8080
   
   egress:
-    # Responses to services which use qBittorrent
+    # Responses to -arr services which use qBittorrent
     - to:
         - podSelector:
             matchLabels:
@@ -39,6 +48,15 @@ spec:
             matchLabels:
               project: media-server
               component: sonarr
+      ports:
+        - protocol: TCP
+          port: 8080
+
+    # Responses to Wireguard VPN
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: wireguard
       ports:
         - protocol: TCP
           port: 8080
