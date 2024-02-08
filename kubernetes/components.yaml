@@ -5,5 +5,7 @@ components:
     strategy: diff
   - path: ./base/media-server/
     strategy: diff
+  - path: ./base/kimai/
+    strategy: diff
   - path: ./base/monitoring/overlays/operators/
     strategy: big-diff

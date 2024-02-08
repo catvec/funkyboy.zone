@@ -23,4 +23,4 @@ resources:
 
   - ./resources/kimai-deployment.yaml
   - ./resources/kimai-svc.yaml
-  - ./resources/kimai-ingress.yaml
+  #- ./resources/kimai-ingress.yaml

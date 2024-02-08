@@ -3,7 +3,5 @@ kind: Kustomization
 
 namespace: kimai
 resources:
-  - ./resources/namespace.yaml
-
-bases:
-  - ../base
+  - ./namespace.yaml
+  - ./base
