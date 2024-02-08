@@ -12,4 +12,3 @@ resources:
   - bases/sonarr
   - bases/prowlarr
   - bases/youtube-dl
-  - bases/wireguard-sidecar
