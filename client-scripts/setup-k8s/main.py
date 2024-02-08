@@ -46,7 +46,7 @@ class ComponentsSpecItem(pydantic.BaseModel):
     """ Specifies which kustomization to load and how to treat it.
     """
     path: str
-    strategy: ComponentsSpecStrategy
+    strategy: ComponentsSpecStrategy = ComponentsSpecStrategy.DIFF
     
 class ComponentsSpec(pydantic.BaseModel):
     """ Specifies which kustomizations to load and perform actions on.
