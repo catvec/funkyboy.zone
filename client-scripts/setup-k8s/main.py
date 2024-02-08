@@ -2,12 +2,13 @@
 import argparse
 from enum import Enum
 import subprocess
-import logging
+from loguru import logger as logging
 import os
 from typing import Optional, Literal, Set, Union, List, TypedDict
 import re
 import shutil
 import yaml
+import sys
 
 import pydantic
 
@@ -15,9 +16,9 @@ from setup_k8s.kubectl import KubectlClient
 from setup_k8s.kustomize import KustomizeClient
 from setup_k8s.strategies import BigDiffComponentStrategy, DiffComponentStrategy, ComponentAction
 
-logging.basicConfig(
-    level=logging.DEBUG,
-)
+# Setup logger
+logging.remove()
+logging.add(sys.stdout, colorize=True, format="<green>{time:HH:mm:ss}</green> <level>{message}</level>")
 
 # Kubernetes manifests directory
 PROG_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -138,11 +139,11 @@ def render_and_apply_or_delete(
     kustomize = KustomizeClient()
 
     # Load components spec
-    logging.info("Loading components spec %s", components_spec_path)
+    logging.info("Loading components spec {}", components_spec_path)
 
     components_spec = ComponentsSpec.from_yaml_file(components_spec_path)
 
-    logging.info("Successfully loaded %d item(s) from the components spec", len(components_spec.components))
+    logging.info("Successfully loaded {} item(s) from the components spec", len(components_spec.components))
 
     components_spec_dir = os.path.dirname(os.path.realpath(components_spec_path))
 
@@ -167,14 +168,14 @@ def render_and_apply_or_delete(
     for component in normalized_components_spec.components:
         # Filter components to process
         if normalized_only_component_paths is not None and component.path not in normalized_only_component_paths:
-            logging.info("Ignoring component %s", component)
+            logging.info("Ignoring component {}", component)
             continue
         
         # Render Kubernetes manifests
-        logging.info("Building component: %s", component)
+        logging.info("Building component: {}", component)
 
         kustomize_file_path = os.path.join(components_spec_dir, component.path)
-        logging.info("Building manifests with Kustomize %s", kustomize_file_path)
+        logging.info("Building manifests with Kustomize {}", kustomize_file_path)
         
         kustomize_build_str = kustomize.build(kustomize_file_path)
         if kustomize_build_str is None:
@@ -190,7 +191,7 @@ def render_and_apply_or_delete(
         elif component.strategy == ComponentsSpecStrategy.BIG_DIFF:
             strategy = BigDiffComponentStrategy(kubectl=kubectl, input_manifests=kustomize_build_str)
         else:
-            logging.fatal("No strategy found for component: %s", component.strategy)
+            logging.fatal("No strategy found for component: {}", component.strategy)
             return
 
         # Validate manifests
@@ -219,7 +220,7 @@ def render_and_apply_or_delete(
             logging.debug(str(kustomize_build_str).replace("\\n", "\n"))
 
         # Apply Kubernetes manifest
-        logging.info("%s manifests", "Applying" if action == ComponentAction.CREATE else "Deleting")
+        logging.info("{} manifests", "Applying" if action == ComponentAction.CREATE else "Deleting")
     
         strategy.do_action(action)
 

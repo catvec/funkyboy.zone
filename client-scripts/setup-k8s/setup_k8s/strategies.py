@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from enum import Enum
-import logging
+from loguru import logger as logging
 import json
 from typing import Any, Dict, List, Optional, TypedDict, Union
 from setup_k8s.yaml import load_all_yaml
@@ -8,6 +8,7 @@ from setup_k8s.yaml import load_all_yaml
 import yaml
 
 from .kubectl import KubeApplyRes, KubeDiffRes, KubeDryRunRes, KubectlClient, SendManifestsAction
+from .print_diff import print_diff
 
 class ComponentAction(str, Enum):
     """ An action to be taken on a component.
@@ -50,7 +51,7 @@ class DiffComponentStrategy(ComponentStrategy):
         
         if dry_run_res["missing_namespaces"] is not None:
             for ns in dry_run_res['missing_namespaces']:
-                logging.warning("Must create namespace: %s", ns)
+                logging.warning("Must create namespace: {}", ns)
 
             logging.warning("Validation might not be accurate because resource(s) were specified in namespace(s) which do not exist")
         
@@ -62,20 +63,20 @@ class DiffComponentStrategy(ComponentStrategy):
 
             if diff_res["missing_namespaces"] is not None:
                 for ns in diff_res['missing_namespaces']:
-                    logging.warning("Must create namespace: %s", ns)
+                    logging.warning("Must create namespace: {}", ns)
 
                 logging.warning("Diff might not be accurate because resource(s) were specified in namespace(s) which do not exist")
 
             logging.info("Proposed manifest changes")
-            logging.info(diff_res['diff'])
+            logging.info(print_diff(diff_res['diff']))
         elif action == ComponentAction.DELETE:
-            logging.info("Cannot compute diff for delete, displaying manifests which will be passed to delete command: \n%s", self.input_manifests.replace("\\n", "\n"))
+            logging.info("Cannot compute diff for delete, displaying manifests which will be passed to delete command: \n{}", self.input_manifests.replace("\\n", "\n"))
     
     def do_action(self, action: ComponentAction) -> None:
         kubectl_action = SendManifestsAction.APPLY if action == ComponentAction.CREATE else SendManifestsAction.DELETE
         apply_res = self._kubectl.send_manifests(kubectl_action, self.input_manifests)
 
-        logging.info("%s Kuberenetes manifests", "Applied" if action == "apply" else "Deleted")
+        logging.info("{} Kuberenetes manifests", "Applied" if action == "apply" else "Deleted")
 
         if apply_res["output"] is None:
             logging.info("not output")
@@ -193,7 +194,7 @@ class BigDiffComponentStrategy(ComponentStrategy):
             # Get remote resource
             remote_res = self._kubectl.get(resource["namespace"], resource["kind"], resource["name"])
             if remote_res is None:
-                logging.info("PLAN: need to create %s - %s/%s", resource["namespace"], resource["kind"], resource["name"])
+                logging.info("PLAN: need to create {} - {}/{}", resource["namespace"], resource["kind"], resource["name"])
                 # Resource doesn't exist, create it
                 plans.append(BigDiffPlan(
                     action=BigDiffPlanAction.CREATE,
@@ -217,7 +218,7 @@ class BigDiffComponentStrategy(ComponentStrategy):
     def _perform_plans(self, plans: List[BigDiffPlan]) -> List[KubeApplyRes]:
         outputs = []
         for plan in plans:
-            logging.info("performed plan: %s", plan["action"].to_send_manifest_action())
+            logging.info("performed plan: {}", plan["action"].to_send_manifest_action())
             outputs.append(self._kubectl.send_manifests(plan["action"].to_send_manifest_action(), plan["manifest"]))
 
         return outputs
@@ -235,7 +236,7 @@ class BigDiffComponentStrategy(ComponentStrategy):
         for res in dry_run_results:    
             if res["missing_namespaces"] is not None:
                 for ns in res['missing_namespaces']:
-                    logging.warning("Must create namespace: %s", ns)
+                    logging.warning("Must create namespace: {}", ns)
 
                 logging.warning("Validation might not be accurate because resource(s) were specified in namespace(s) which do not exist")
         
@@ -247,12 +248,12 @@ class BigDiffComponentStrategy(ComponentStrategy):
         for res in dry_run_results:
             if res["missing_namespaces"] is not None:
                 for ns in res['missing_namespaces']:
-                    logging.warning("Must create namespace: %s", ns)
+                    logging.warning("Must create namespace: {}", ns)
 
                 logging.warning("Diff might not be accurate because resource(s) were specified in namespace(s) which do not exist")
 
             logging.info("Proposed manifest changes")
-            logging.info(res["output"])
+            logging.info(print_diff(res["output"]))
     
     def do_action(self, action: ComponentAction) -> None:
         if action == ComponentAction.CREATE:
