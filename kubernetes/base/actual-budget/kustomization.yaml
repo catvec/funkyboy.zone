@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: actual-budget
+commonLabels:
+  project: actual-budget
+resources:
+- resources/namespace.yaml
+
+- resources/persistent-volume-claim.yaml
+- resources/deployment.yaml
+- resources/service.yaml
+- resources/ingress.yaml

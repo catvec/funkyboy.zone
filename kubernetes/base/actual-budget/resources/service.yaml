@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: actual-budget
+spec:
+  selector:
+    project: actual-budget
+    component: server
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: http

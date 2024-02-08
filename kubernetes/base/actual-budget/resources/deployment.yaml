@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: actual-budget
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: actual-budget
+      component: server
+  template:
+    metadata:
+      labels:
+        project: actual-budget
+        component: server
+    spec:
+      containers:
+      - name: actual-budget
+        image: actualbudget/actual-server:24.2.0-alpine
+        ports:
+          - name: http
+            containerPort: 5006
+        volumeMounts:
+        - mountPath: /data
+          name: actual-budget-data
+      volumes:
+      - name: actual-budget-data
+        persistentVolumeClaim:
+          claimName: actual-budget-data
