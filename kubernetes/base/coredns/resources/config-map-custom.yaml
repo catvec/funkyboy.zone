@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system
+data:
+  infolive.server: |
+    infoline.funkyboy.zone:53 {
+        file /etc/coredns/custom/infoline.db
+        log
+        errors
+    }
+  infoline.db: |
+    ;SOA identifying record
+    ;Name TTL   ??    Type    Primary NS        Webmaster contact        Serial     Refresh    Retry Expire TTL
+    @	    60    IN    SOA     funkyboy.zone.    webmaster.funkyboy.zone. 0000000001 7200 3600 1209600 60
+
+    sonarr.infoline.funkyboy.zone.      IN      CNAME   sonarr.media-server.svc.cluster.local.
+
+    ;service.example.org.    IN      SRV     8080 10 10 example.org. 

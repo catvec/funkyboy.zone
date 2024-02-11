@@ -4,19 +4,13 @@ data "digitalocean_domain" "domain" {
 }
 
 resource "digitalocean_record" "record_wildcard" {
-  domain = var.name
-  type = "A"
-  ttl = "60" # seconds
-  name = "*"
-  value = var.target
-}
+  for_each = var.target
 
-resource "digitalocean_record" "record_apex" {
   domain = var.name
-  type = "A"
-  ttl = "60" # seconds
-  name = "@"
-  value = var.target
+  type = each.value.type
+  ttl = each.value.ttl # seconds
+  name = each.key
+  value = each.value.value
 }
 
 # Verification records

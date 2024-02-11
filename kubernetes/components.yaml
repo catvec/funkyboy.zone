@@ -4,6 +4,7 @@ components:
   - path: ./base/media-server/
   - path: ./base/kimai/
   - path: ./base/actual-budget/
+  - path: ./base/coredns/
 
   - path: ./base/monitoring/overlays/operators/
     strategy: big-diff

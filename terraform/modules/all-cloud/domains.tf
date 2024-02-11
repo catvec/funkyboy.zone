@@ -12,6 +12,40 @@ variable "domains" {
   ]
 }
 
+locals {
+  pod_target = {
+    type = "A"
+    value = digitalocean_droplet.funkyboy_zone.ipv4_address
+    ttl = 60
+  }
+  default_target = {
+    "*": local.pod_target,
+    "@": local.pod_target,
+  }
+  targets = {
+    "funkyboy.zone" = {
+      "@": local.pod_target,
+      "www": local.pod_target,
+      /* "sonarr.infoline" = {
+        type = "CNAME"
+        value = "sonarr.media-server.svc.cluster.local."
+        ttl = 60
+      } */
+      "infoline" = {
+        type = "NS"
+        value = "k8s.funkyboy.zone."
+        ttl = 60
+      }
+    }
+    "noahh.io" = local.default_target
+    "noahhuppert.com" = local.default_target
+    "goldblum.zone" = local.default_target
+    "oliversgame.deals" = local.default_target
+    "4e48.dev" = local.default_target
+    "turtle.wiki" = local.default_target
+  }
+}
+
 variable "keybase_verification" {
   type = map(string)
   description = "Keybase DNS ownership verification entries."
@@ -139,7 +173,7 @@ module "domains" {
   for_each = toset(var.domains)
 
   name = each.key
-  target = digitalocean_droplet.funkyboy_zone.ipv4_address
+  target = local.targets[each.key]
   spf = length(var.mx[each.key]) > 0 ? var.spf_email : var.spf_no_email
   keybase_verification = var.keybase_verification[each.key]
   mx = var.mx[each.key]

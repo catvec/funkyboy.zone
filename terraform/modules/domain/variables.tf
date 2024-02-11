@@ -5,8 +5,12 @@ variable "name" {
 }
 
 variable "target" {
-  type = string
-  description = "Target IPv4 address to which all traffic will be sent."
+  type = map(object({
+    type = string
+    value = string
+    ttl = number
+  }))
+  description = "Keys are sub-domains, values are domain name entry specification"
 }
 
 variable "spf" {
