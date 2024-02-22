@@ -52,11 +52,15 @@ spec:
             capabilities:
               add:
                 - NET_ADMIN
+          ports:
+            - name: control
+              containerPort: 8000
+              protocol: TCP
           env:
             - name: VPN_SERVICE_PROVIDER
               value: private internet access
             - name: SERVER_REGIONS
-              value: US New York
+              value: CA Montreal
             - name: FIREWALL_INPUT_PORTS
               value: "8080"
             - name: OPENVPN_USER
@@ -69,6 +73,8 @@ spec:
                 secretKeyRef:
                   name: pia-vpn-credentials
                   key: VPN_PASS
+            - name: VPN_PORT_FORWARDING
+              value: "on"
       volumes:
         - name: qbittorrent-config
           configMap:

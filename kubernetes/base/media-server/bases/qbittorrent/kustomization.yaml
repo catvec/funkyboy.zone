@@ -13,4 +13,5 @@ resources:
   
   - ./resources/deployment.yaml
   - ./resources/network-policy.yaml
-  - ./resources/service.yaml
+  - ./resources/qbittorrent-service.yaml
+  - ./resources/gluten-service.yaml
