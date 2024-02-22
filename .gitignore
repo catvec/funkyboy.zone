@@ -7,3 +7,6 @@
 
 # Kubeconfig
 kubeconfig.yaml
+
+# Editor
+.idea/
