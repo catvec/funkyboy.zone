@@ -8,3 +8,4 @@ resources:
   
   - ./resources/pascal-peer.yaml
   - ./resources/noah-s23-peer.yaml
+  - ./resources/olympius-peer.yaml

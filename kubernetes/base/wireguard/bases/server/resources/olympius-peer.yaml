@@ -1,0 +1,6 @@
+apiVersion: vpn.wireguard-operator.io/v1alpha1
+kind: WireguardPeer
+metadata:
+  name: olympius
+spec:
+  wireguardRef: wireguard
