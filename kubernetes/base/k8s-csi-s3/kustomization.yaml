@@ -5,3 +5,5 @@ resources:
   - ./resources/provisioner.yaml
   - ./resources/driver.yaml
   - ./resources/csi-s3.yaml
+  - ./resources/storage-class.yaml
+  - ./resources/csi-s3-secret.yaml
