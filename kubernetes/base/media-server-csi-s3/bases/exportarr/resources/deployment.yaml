@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exportarr
+  labels:
+    project: media-server
+    component: exportarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: media-server
+      component: exportarr
+  template:
+    metadata:
+      labels:
+        project: media-server
+        component: exportarr
+    spec:
+      containers:
+        - name: exportarr
+          image: ghcr.io/onedr0p/exportarr:v1.6.1
+          ports:
+            - name: scrape
+              containerPort: 9707
+          
+      #    volumeMounts:
+      #      - name: config-do-block
+      #        mountPath: /config
+      #volumes:
+      #  - name: config-do-block
+      #    persistentVolumeClaim:
+      #      claimName: exportarr-config-do-block

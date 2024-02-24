@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: emby
+  labels:
+    project: media-server
+    component: emby
+spec:
+  selector:
+    project: media-server
+    component: emby
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http

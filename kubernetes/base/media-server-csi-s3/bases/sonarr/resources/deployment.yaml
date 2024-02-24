@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarr
+  labels:
+    project: media-server
+    component: sonarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: media-server
+      component: sonarr
+  template:
+    metadata:
+      labels:
+        project: media-server
+        component: sonarr
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: project
+                    operator: In
+                    values:
+                      - media-server
+                  - key: component
+                    operator: In
+                    values:
+                      - emby
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: sonarr
+          image: linuxserver/sonarr:3.0.10
+          ports:
+            - name: http
+              containerPort: 8989
+          
+          volumeMounts:
+            - name: config-csi-s3
+              mountPath: /config
+            - name: media-csi-s3
+              mountPath: /media
+      volumes:
+        - name: config-csi-s3
+          persistentVolumeClaim:
+            claimName: sonarr-config-csi-s3
+        - name: media-csi-s3
+          persistentVolumeClaim:
+            claimName: media-files-csi-s3

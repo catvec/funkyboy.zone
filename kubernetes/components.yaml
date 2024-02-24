@@ -6,6 +6,7 @@ components:
   - path: ./base/actual-budget/
   - path: ./base/coredns/
   - path: ./base/k8s-csi-s3/
+  - path: ./base/media-server-csi-s3/
 
   - path: ./base/monitoring/overlays/operators/
     strategy: big-diff

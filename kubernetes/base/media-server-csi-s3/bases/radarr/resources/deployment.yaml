@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: radarr
+  labels:
+    project: media-server
+    component: radarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: media-server
+      component: radarr
+  template:
+    metadata:
+      labels:
+        project: media-server
+        component: radarr
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: project
+                    operator: In
+                    values:
+                      - media-server
+                  - key: component
+                    operator: In
+                    values:
+                      - emby
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: radarr
+          image: linuxserver/radarr:version-4.6.4.7568
+          ports:
+            - name: http
+              containerPort: 7878
+          
+          volumeMounts:
+            - name: config-csi-s3
+              mountPath: /config
+            - name: media-csi-s3
+              mountPath: /media
+      volumes:
+        - name: config-csi-s3
+          persistentVolumeClaim:
+            claimName: radarr-config-csi-s3
+        - name: media-csi-s3
+          persistentVolumeClaim:
+            claimName: media-files-csi-s3

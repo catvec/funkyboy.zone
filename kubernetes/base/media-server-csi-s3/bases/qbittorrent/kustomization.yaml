@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+patches:
+  - target:
+      kind: Secret
+      name: pia-vpn-credentials
+    path: ./pia-vpn-secret-patch.yaml
+
+resources:
+  - ./resources/pia-vpn-secret.yaml
+  - ./resources/qbittorrent-config-pvc-csi-s3.yaml
+  
+  - ./resources/deployment.yaml
+  - ./resources/network-policy.yaml
+  - ./resources/qbittorrent-service.yaml
+  - ./resources/gluten-service.yaml

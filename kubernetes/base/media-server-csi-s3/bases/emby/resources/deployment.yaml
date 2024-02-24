@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emby
+  labels:
+    project: media-server
+    component: emby
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      project: media-server
+      component: emby
+  template:
+    metadata:
+      labels:
+        project: media-server
+        component: emby
+    spec:
+      #securityContext:
+      #  runAsUser: 911
+      #  runAsGroup: 911
+      #  fsGroup: 911
+      priorityClassName: streaming
+      containers:
+        - name: emby
+          image: emby/embyserver:4.8.0.61
+          ports:
+            - name: http
+              containerPort: 8096
+          env:
+            - name: UID
+              value: "911"
+            - name: GID
+              value: "911"
+          volumeMounts:
+            - mountPath: /config
+              name: emby-config-csi-s3
+            - mountPath: /media
+              name: media-csi-s3
+      volumes:
+        - name: emby-config-csi-s3
+          persistentVolumeClaim:
+            claimName: emby-config-csi-s3
+        - name: media-csi-s3
+          persistentVolumeClaim:
+            claimName: media-files-csi-s3
