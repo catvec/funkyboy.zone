@@ -1,0 +1,60 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: s3cmd
+  generateName: s3cmd
+spec:
+  template:
+    metadata:
+      name: s3cmd
+      labels:
+        project: media-server
+        component: s3cmd
+    spec:
+      restartPolicy: OnFailure
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: project
+                    operator: In
+                    values:
+                      - media-server
+                  - key: component
+                    operator: In
+                    values:
+                      - emby
+              topologyKey: kubernetes.io/hostname
+      containers:
+        - name: s3cmd
+          image: d3fk/s3cmd:latest
+          command:
+            - /bin/sh
+          args:
+            - -c
+            - "s3cmd sync --human --verbose ${S3CMD_SRC_PATH} s3://${S3CMD_DEST_BUCKET}"
+            #- --human
+            #- --verbose
+            #- ${S3CMD_SRC_PATH}
+            #- s3://${S3CMD_DEST_BUCKET}
+          env:
+            - name: S3CMD_SRC_PATH
+              value: /mnt/media-do-block/
+            - name: S3CMD_DEST_BUCKET
+              value: pvc-4a90bd11-f0f0-481d-9c0c-3626fe8d1efd
+          volumeMounts:
+            - mountPath: /mnt/media-do-block/
+              name: media-do-block
+            - mountPath: /root/
+              name: s3cmd-config
+      volumes:
+        - name: media-do-block
+          persistentVolumeClaim:
+            claimName: media-files-do-block
+        - name: s3cmd-config
+          secret:
+            secretName: s3cmd-config
+            items:
+              - key: s3cfg
+                path: .s3cfg
