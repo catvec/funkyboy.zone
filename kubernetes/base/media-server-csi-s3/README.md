@@ -19,13 +19,7 @@ After the manifests have been applied follow the [Initial Setup](#initial-setup)
   kubectl -n media-server exec -it --container qbittorrent deployment/qbittorrent -- /bin/bash
   ```
 
-  Directories:
-  - `/media`
-    - `/downloads`
-      - `/complete`
-      - `/incomplete`
-    - `/movies`
-    - `/shows`
+ 
 
   Ensure that all the directories are owned by the non root user (In qBittorrent you can chown for the `abc` user)
 - Ensure WebUI host header verification is not enabled. If it is then you need to access the web UI by port forwarding the same port the web UI is running on (`8080`). The default login for the web UI is `admin:adminadmin`
@@ -125,3 +119,15 @@ curl -L https://github.com/qdm12/gluetun/raw/eecfb3952f202c0de3867d88e96d80c6b0f
 ```
 
 (Be sure to get the correct SHA for the URL based on the version of Gluetun being used, additionally update the region if needed)
+
+## Directories
+The `emby` pods is the "owner" of the media PVC. If other pods want to access the media directory they must come to where the Emby pod is. If the PVC is backed by a physical disk this means other pods must run on the same node as emby.
+
+The directory structure is:
+
+- `/media`
+  - `/downloads`
+    - `/complete`
+    - `/incomplete`
+  - `/movies`
+  - `/shows`

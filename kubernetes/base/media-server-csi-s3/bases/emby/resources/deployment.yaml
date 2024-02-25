@@ -24,6 +24,13 @@ spec:
       #  runAsGroup: 911
       #  fsGroup: 911
       priorityClassName: streaming
+      initContainers:
+        - name: mkdirs
+          image: alpine:3.19.1
+          command:
+            - /bin/sh 
+            - -c
+            - "mkdir -p /media/{downloads/complete,downloads/incomplete,movies,shows} && chown -R 911 /media && chgrp 911 /media"
       containers:
         - name: emby
           image: emby/embyserver:4.8.0.61
