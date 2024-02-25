@@ -92,6 +92,14 @@ def get_pod_from_labels(ns: str, labels: str) -> str:
 def get_local_containing_dir(containing_dir: str, pod: str, dir: str) -> str:
     """ Given a local containing dir and a dir with an absolute path return the path of the dir in the containing dir.
     """
+    if len(pod) == 0:
+        raise ValueError("pod cannot be empty")
+
+    if len(dir) == 0:
+        raise ValueError("dir cannot be empty")
+    
+    if dir[0] == "/":
+        dir = dir[1:]
     return os.path.join(containing_dir, pod, dir.replace("/", "-"))
 
 def cp_pod_to_pod(
@@ -125,7 +133,7 @@ def cp_pod_to_pod(
         dir=src_pod_dir,
     )
 
-    logging.info("Downloading '%s' from '%s/%s' to '%s'", src_pod_dir, src_pod_ns, src_pod_name, tmp_dir)
+    logging.info("Downloading '%s' from '%s/%s' to '%s' locally", src_pod_dir, src_pod_ns, src_pod_name, tmp_dir)
     kubectl([
         "-n",
         src_pod_ns,
@@ -135,7 +143,7 @@ def cp_pod_to_pod(
     ])
     logging.info("Successfully copied '%s' from '%s/%s' to '%s' locally", src_pod_dir, src_pod_ns, src_pod_name, tmp_dir)
 
-    logging.info("Uploading '%s' from local to '%s' in '%s/%s'", tmp_dir, dst_pod_ns, dst_pod_dir, dst_pod_ns, dst_pod_name)
+    logging.info("Uploading '%s' from local to '%s' in '%s/%s'", tmp_dir, dst_pod_dir, dst_pod_ns, dst_pod_name)
     kubectl([
         "-n",
         dst_pod_ns,
@@ -149,7 +157,7 @@ def cp_pod_to_pod(
     logging.info("Successfully copied '%s' from '%s/%s' (%s) to '%s' in '%s/%s' (%s)", src_pod_dir, src_pod_ns, src_pod_name, src_pod_labels, dst_pod_dir, dst_pod_ns, dst_pod_name, dst_pod_labels)
 
 
-ARGPARSE_TYPE_NS_LABELS_DIR_HUMAN_FMT = "<namespace>/<labels>:<dir>"
+ARGPARSE_TYPE_NS_LABELS_DIR_HUMAN_FMT = "<namespace>/<labels>:<dir>, where the namespace and labels specify the pod"
 _ns_labels_dir_regex = re.compile("(.*)\/(.*):(.*)")
 
 def argparse_type_ns_labels_dir(value: str) -> Tuple[str, str, str]:
