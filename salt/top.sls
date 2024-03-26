@@ -81,7 +81,7 @@ base:
     - wiki-website
     - wallet-service
     - activism-website
-    - turtle-wiki-website
+    #- turtle-wiki-website
     - discord-azure-boot
 
     # Service logging
