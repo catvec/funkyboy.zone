@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discord-azure-boot
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: discord-azure-boot
+          image: noahhuppert/discord-azure-boot:v0.0.3-dev
+          env:
+            - name: DISCORD_AZURE_BOOT_CONFIG_FILE
+              value: "/etc/discord-azure-boot/config.json5"
+          volumeMounts:
+            - name: discord-azure-boot-config
+              mountPath: /etc/discord-azure-boot
+      volumes:
+        - name: discord-azure-boot-config
+          configMap:
+            name: discord-azure-boot-config

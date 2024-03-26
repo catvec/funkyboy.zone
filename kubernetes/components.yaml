@@ -7,6 +7,7 @@ components:
   - path: ./base/coredns/
   - path: ./base/k8s-csi-s3/
   - path: ./base/media-server-csi-s3/
+  - path: ./base/discord-azure-boot/
 
   - path: ./base/monitoring/overlays/operators/
     strategy: big-diff
