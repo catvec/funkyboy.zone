@@ -129,9 +129,3 @@ caddy:
       www_dir: activism
       hosts:
         - act.funkyboy.zone
-
-    # Gaming website
-    turtle_wiki:
-      www_dir: turtle-wiki
-      hosts:
-        - turtle.wiki
