@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from typing import List, Tuple
+from typing import List, Tuple, TypeVar, Iterable
 import re
 import os
 import argparse
@@ -26,11 +26,13 @@ def kubectl(args: List[str]) -> str:
     Raises:
         - KubectlRunError: If command exits with non-zero code
     """
+    args = [
+        "kubectl",
+        *args,
+    ]
+    logging.debug("run: %s", args)
     proc = subprocess.Popen(
-        args=[
-            "kubectl",
-            *args,
-        ],
+        args=args,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         env=os.environ,
@@ -160,7 +162,9 @@ def cp_pod_to_pod(
 ARGPARSE_TYPE_NS_LABELS_DIR_HUMAN_FMT = "<namespace>/<labels>:<dir>, where the namespace and labels specify the pod"
 _ns_labels_dir_regex = re.compile("(.*)\/(.*):(.*)")
 
-def argparse_type_ns_labels_dir(value: str) -> Tuple[str, str, str]:
+NSLabelsDir = Tuple[str, str, str]
+
+def argparse_type_ns_labels_dir(value: str) -> NSLabelsDir:
     """Parses a string in the format <ns>/<labels>:<dir> out to a tuple
     Arguments:
         - value: To parse
@@ -172,6 +176,35 @@ def argparse_type_ns_labels_dir(value: str) -> Tuple[str, str, str]:
         raise argparse.ArgumentTypeError(f"Must be in format: {ARGPARSE_TYPE_NS_LABELS_DIR_HUMAN_FMT}")
     
     return (matches[0][0], matches[0][1], matches[0][2])
+
+def fill_in_ns_labels_dir(a: NSLabelsDir, b: NSLabelsDir) -> Tuple[NSLabelsDir, NSLabelsDir]:
+    # Check
+    a = list(map(lambda val: val if len(val) > 0 else None, a))
+    b = list(map(lambda val: val if len(val) > 0 else None, b))
+    
+    if a[0] is None and b[0] is None:
+        raise ValueError("Both namespaces cannot be empty")
+    
+    if a[1] is None and b[1] is None:
+        raise ValueError("Both pod labels cannot be empty")
+    
+    if a[2] is None and b[2] is None:
+        raise ValueError("Both pod directories cannot be empty")
+    
+    # Set defaults
+    a_out = a
+    b_out = b
+
+    for i in range(len(a_out)):
+        #  Only a or b can have a None here
+        if a_out[i] is None:
+            a_out[i] = b_out[i]
+
+        if b_out[i] is None:
+            b_out[i] = a_out[i]
+
+    return (a_out, b_out,)
+        
 
 if __name__ == "__main__":
     # Parse arguments
@@ -194,14 +227,17 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
+
+    src, dst = fill_in_ns_labels_dir(args.src, args.dst) # (args.src, args.dst,)
+    download_containing_dir = os.path.abspath(args.host_download_dir)
     
     # Run logic
     cp_pod_to_pod(
-        src_pod_ns=args.src[0],
-        src_pod_labels=args.src[1],
-        src_pod_dir=args.src[2],
-        dst_pod_ns=args.dst[0],
-        dst_pod_labels=args.dst[1],
-        dst_pod_dir=args.dst[2],
-        download_containing_dir=args.host_download_dir,
+        src_pod_ns=src[0],
+        src_pod_labels=src[1],
+        src_pod_dir=src[2],
+        dst_pod_ns=dst[0],
+        dst_pod_labels=dst[1],
+        dst_pod_dir=dst[2],
+        download_containing_dir=download_containing_dir,
     )
