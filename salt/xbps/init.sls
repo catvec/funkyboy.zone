@@ -1,2 +1,2 @@
 {{ pillar.xbps.pkg }}:
-  pkg.latest
+  pkg.installed

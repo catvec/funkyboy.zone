@@ -1,4 +1,4 @@
 # Install nodejs
 
 nodejs:
-  pkg.latest
+  pkg.installed
