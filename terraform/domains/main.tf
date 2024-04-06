@@ -39,20 +39,12 @@ locals {
     },
     "noahh.io" = {
       "@": local.k8s_record,
-      "www": {
-        type = "CNAME"
-        value = "noahh.io."
-        ttl = 60
-      },
+      "www": local.k8s_record,
       "*": local.pod_record,
     },
     "noahhuppert.com" = {
       "@": local.k8s_record,
-      "www": {
-        type = "CNAME"
-        value = "noahhuppert.com."
-        ttl = 60
-      },
+      "www": local.k8s_record,
       "*": local.pod_record,
     },
     "goldblum.zone" = local.default_targets
