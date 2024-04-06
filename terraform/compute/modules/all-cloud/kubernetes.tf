@@ -1,7 +1,7 @@
 module "kubernetes_cluster" {
   source = "../kubernetes"
 
-  name = "funkyboy"
+  name = var.kubernetes_cluster_name
   region = "nyc1"
   kubernetes_version = "1.27.4-do.0"
 

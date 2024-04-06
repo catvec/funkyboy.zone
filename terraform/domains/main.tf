@@ -19,8 +19,8 @@ locals {
     ttl = 60
   }
   k8s_record = {
-    type = "CNAME"
-    value = "k8s.funkyboy.zone."
+    type = "A"
+    value = module.kubernetes_loadbalancer.kubernetes_loadbalancer_ipv4
     ttl = 60
   }
   default_targets = {
@@ -31,6 +31,11 @@ locals {
     "funkyboy.zone" = {
       "@": local.pod_record,
       "www": local.pod_record,
+      "*.k8s": {
+        type = "A",
+        value = module.kubernetes_loadbalancer.kubernetes_loadbalancer_ipv4
+        ttl = 60
+      }
     },
     "noahh.io" = {
       "@": local.k8s_record,
@@ -177,6 +182,12 @@ variable "google_verification" {
     "4e48.dev": null,
     "turtle.wiki": null,
   }
+}
+
+module "kubernetes_loadbalancer" {
+  source = "./modules/kubernetes_loadbalancer"
+
+  digitalocean_kubernetes_cluster_name = data.terraform_remote_state.compute.outputs.kubernetes_cluster_name
 }
 
 module "domains" {
