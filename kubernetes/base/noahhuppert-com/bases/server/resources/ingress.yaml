@@ -10,19 +10,50 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: noahhuppert-com
-            port:
-              number: 80
+    - host: www.noahh.io
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: noahhuppert-com
+              port:
+                number: 80
+    - host: noahh.io
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: noahhuppert-com
+              port:
+                number: 80
+    - host: noahhuppert.com
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: noahhuppert-com
+              port:
+                number: 80
+    - host: www.noahhuppert.com
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: noahhuppert-com
+              port:
+                number: 80
   tls:
     - hosts:
+        - www.noahh.io
+        - noahh.io
         - noahhuppert.com
         - www.noahhuppert.com
-        - noahh.io
-        - www.noahh.io
       secretName: noahhuppert-com-ingress-cert
