@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: noahhuppert-com
+  labels:
+    project: noahhuppert-com
+    component: server
+  annotations:
+    cert-manager.io/cluster-issuer: lets-encrypt-production-http01
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: noahhuppert-com
+            port:
+              number: 80
+  tls:
+    - hosts:
+        - noahhuppert.com
+        - www.noahhuppert.com
+        - noahh.io
+        - www.noahh.io
+      secretName: noahhuppert-com-ingress-cert

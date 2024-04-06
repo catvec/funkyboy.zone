@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: noahhuppert-com
+  labels:
+    projects: noahhuppert-com
+    component: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: noahhuppert-com
+      component: server
+  template:
+    metadata:
+      labels:
+        project: noahhuppert-com
+        component: server
+    spec:
+      containers:
+        - name: server
+          image: noahhuppert/noahhuppert-com:fec464af61f84fdbb66ad54186c0cd7ffe57c972
+          ports:
+            - containerPort: 80
