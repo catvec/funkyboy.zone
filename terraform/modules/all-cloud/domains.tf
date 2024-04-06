@@ -13,36 +13,47 @@ variable "domains" {
 }
 
 locals {
-  pod_target = {
+  pod_record = {
     type = "A"
     value = digitalocean_droplet.funkyboy_zone.ipv4_address
     ttl = 60
   }
-  default_target = {
-    "*": local.pod_target,
-    "@": local.pod_target,
+  k8s_record = {
+    type = "CNAME"
+    value = "k8s.funkyboy.zone."
+    ttl = 60
+  }
+  default_targets = {
+    "*": local.pod_record,
+    "@": local.pod_record,
   }
   targets = {
     "funkyboy.zone" = {
-      "@": local.pod_target,
-      "www": local.pod_target,
-      /* "sonarr.infoline" = {
+      "@": local.pod_record,
+      "www": local.pod_record,
+    },
+    "noahh.io" = {
+      "@": local.k8s_record,
+      "www": {
         type = "CNAME"
-        value = "sonarr.media-server.svc.cluster.local."
+        value = "noahh.io."
         ttl = 60
-      } */
-      "infoline" = {
-        type = "NS"
-        value = "k8s.funkyboy.zone."
+      },
+      "*": local.pod_record,
+    },
+    "noahhuppert.com" = {
+      "@": local.k8s_record,
+      "www": {
+        type = "CNAME"
+        value = "noahhuppert.com."
         ttl = 60
-      }
-    }
-    "noahh.io" = local.default_target
-    "noahhuppert.com" = local.default_target
-    "goldblum.zone" = local.default_target
-    "oliversgame.deals" = local.default_target
-    "4e48.dev" = local.default_target
-    "turtle.wiki" = local.default_target
+      },
+      "*": local.pod_record,
+    },
+    "goldblum.zone" = local.default_targets
+    "oliversgame.deals" = local.default_targets
+    "4e48.dev" = local.default_targets
+    "turtle.wiki" = local.default_targets
   }
 }
 
