@@ -1,20 +1,17 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S pipenv run python
 import argparse
 from enum import Enum
-import subprocess
 from loguru import logger as logging
 import os
-from typing import Optional, Literal, Set, Union, List, TypedDict
-import re
-import shutil
+from typing import Optional, List
 import yaml
 import sys
 
 import pydantic
 
-from setup_k8s.kubectl import KubectlClient
-from setup_k8s.kustomize import KustomizeClient
-from setup_k8s.strategies import BigDiffComponentStrategy, DiffComponentStrategy, ComponentAction
+from client_scripts.setup_k8s.kubectl import KubectlClient
+from client_scripts.setup_k8s.kustomize import KustomizeClient
+from client_scripts.setup_k8s.strategies import BigDiffComponentStrategy, DiffComponentStrategy, ComponentAction
 
 # Setup logger
 logging.remove()
@@ -23,7 +20,7 @@ logging.level("DEBUG", color="<dim>")
 
 # Kubernetes manifests directory
 PROG_DIR = os.path.dirname(os.path.realpath(__file__))
-KUBERNETES_DIR = os.path.join(PROG_DIR, "../../kubernetes")
+KUBERNETES_DIR = os.path.join(PROG_DIR, "../kubernetes")
 KUBECONFIG_PATH = os.path.join(KUBERNETES_DIR, "kubeconfig.yaml")
 
 DEFAULT_COMPONENTS_SPEC = os.path.join(KUBERNETES_DIR, "components.yaml")

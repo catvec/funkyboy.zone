@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Optional, Set, TypedDict, Union
 
 import yaml
 
-from .bytes_util import decode_bytes
+from ..lib.bytes_util import decode_bytes
 
 class SendManifestsAction(str, Enum):
     """ Indicates what action should be taken on the manifest which are sent.

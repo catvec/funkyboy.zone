@@ -1,14 +1,14 @@
+from typing import Any, Dict, List, Optional, TypedDict
 from abc import ABC, abstractmethod
 from enum import Enum
-from loguru import logger as logging
 import json
-from typing import Any, Dict, List, Optional, TypedDict, Union
-from setup_k8s.yaml import load_all_yaml
-
 import yaml
 
-from .kubectl import KubeApplyRes, KubeDiffRes, KubeDryRunRes, KubectlClient, SendManifestsAction
-from .print_diff import print_diff
+from loguru import logger as logging
+
+from .yaml import load_all_yaml
+from .kubectl import KubeApplyRes, KubeDryRunRes, KubectlClient, SendManifestsAction
+from ..lib.print_diff import print_diff
 
 class ComponentAction(str, Enum):
     """ An action to be taken on a component.
