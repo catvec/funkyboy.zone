@@ -1,22 +1,16 @@
 #!/usr/bin/env -S pipenv run python
+from typing import Optional, List
 import argparse
 from enum import Enum
-from loguru import logger as logging
 import os
-from typing import Optional, List
 import yaml
-import sys
 
 import pydantic
 
+from client_scripts.lib.logging import logging
 from client_scripts.setup_k8s.kubectl import KubectlClient
 from client_scripts.setup_k8s.kustomize import KustomizeClient
 from client_scripts.setup_k8s.strategies import BigDiffComponentStrategy, DiffComponentStrategy, ComponentAction
-
-# Setup logger
-logging.remove()
-logging.add(sys.stdout, colorize=True, format="<green>{time:HH:mm:ss}</green> <level>{message}</level>")
-logging.level("DEBUG", color="<dim>")
 
 # Kubernetes manifests directory
 PROG_DIR = os.path.dirname(os.path.realpath(__file__))

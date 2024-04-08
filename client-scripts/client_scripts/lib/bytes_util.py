@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Tuple
 
 
 def decode_bytes(value: bytes) -> Optional[str]:
@@ -8,3 +8,8 @@ def decode_bytes(value: bytes) -> Optional[str]:
         return None
 
     return value.decode("utf-8")
+
+def decode_stdout_stderr(std_tuple: Tuple[bytes, bytes]) -> Tuple[Optional[str], Optional[str]]:
+    """Converts (stdout, stderr) bytes tuple to strings.
+    """
+    return (decode_bytes(std_tuple[0]), decode_bytes(std_tuple[1]))

@@ -1,0 +1,6 @@
+projects:
+  - path: ./compute/
+    state_file: ../secret/terraform/compute/terraform.tfstate
+
+  - path: ./domains/
+    state_file: ../secret/terraform/domains/terraform.tfstate
