@@ -52,10 +52,11 @@ def apply_projects(
     def normalize_path(path: str) -> str:
         return os.path.normpath(os.path.join(projects_spec_dir, path))
     
-    only_projects_normalized = [ normalize_path(path) for path in only_projects ] if normalize_path is not None else None
+    only_projects_normalized = [ os.path.normpath(os.path.join(os.getcwd(), path)) for path in only_projects ] if normalize_path is not None else None
+    print(only_projects_normalized)
 
     for project_spec in projects_list_spec.projects:
-        if only_projects_normalized is not None and project_spec.path not in only_projects_normalized:
+        if only_projects_normalized is not None and normalize_path(project_spec.path) not in only_projects_normalized:
             logging.debug("Skipping project '{}'", project_spec.path)
             continue
 
