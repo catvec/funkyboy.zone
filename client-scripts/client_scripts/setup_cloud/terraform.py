@@ -3,7 +3,7 @@ import subprocess
 from dataclasses import dataclass
 import os
 
-from ..lib.bytes_util import decode_stdout_stderr
+from lib.bytes_util import decode_stdout_stderr
 
 class TerraformInitError(Exception):
     """Indicates Terraform failed to initialized a project."""

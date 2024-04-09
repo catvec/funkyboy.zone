@@ -1,4 +1,3 @@
-#!/usr/bin/env -S pipenv run python
 from typing import List, Optional
 import argparse
 import yaml
@@ -6,13 +5,13 @@ import os
 
 import pydantic
 
-from client_scripts.lib.logging import logging
-from client_scripts.setup_cloud.terraform import TerraformClient
-from client_scripts.lib.print_diff import print_diff
+from lib.logging import logging
+from lib.print_diff import print_diff
+from setup_cloud.terraform import TerraformClient
 
 # Directories
 PROG_DIR = os.path.dirname(os.path.realpath(__file__))
-TERRAFORM_PROJECT_DIR = os.path.join(PROG_DIR, "../terraform")
+TERRAFORM_PROJECT_DIR = os.path.join(PROG_DIR, "../../terraform")
 
 DEFAULT_PROJECTS_SPEC = os.path.join(TERRAFORM_PROJECT_DIR, "projects.yaml")
 
@@ -52,7 +51,10 @@ def apply_projects(
     def normalize_path(path: str) -> str:
         return os.path.normpath(os.path.join(projects_spec_dir, path))
     
-    only_projects_normalized = [ os.path.normpath(os.path.join(os.getcwd(), path)) for path in only_projects ] if normalize_path is not None else None
+    only_projects_normalized = [
+        os.path.normpath(os.path.join(os.getcwd(), path))
+        for path in only_projects
+    ] if only_projects is not None else None
 
     for project_spec in projects_list_spec.projects:
         if only_projects_normalized is not None and normalize_path(project_spec.path) not in only_projects_normalized:

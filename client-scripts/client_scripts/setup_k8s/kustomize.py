@@ -2,7 +2,7 @@ from typing import List, Optional
 import shutil
 import subprocess
 
-from ..lib.bytes_util import decode_bytes
+from lib.bytes_util import decode_bytes
 
 class KustomizeBuildError(Exception):
     """ Indicates kustomize failed to build manifests.

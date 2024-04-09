@@ -7,14 +7,14 @@ import yaml
 
 import pydantic
 
-from client_scripts.lib.logging import logging
-from client_scripts.setup_k8s.kubectl import KubectlClient
-from client_scripts.setup_k8s.kustomize import KustomizeClient
-from client_scripts.setup_k8s.strategies import BigDiffComponentStrategy, DiffComponentStrategy, ComponentAction
+from lib.logging import logging
+from setup_k8s.kubectl import KubectlClient
+from setup_k8s.kustomize import KustomizeClient
+from setup_k8s.strategies import BigDiffComponentStrategy, DiffComponentStrategy, ComponentAction
 
 # Kubernetes manifests directory
 PROG_DIR = os.path.dirname(os.path.realpath(__file__))
-KUBERNETES_DIR = os.path.join(PROG_DIR, "../kubernetes")
+KUBERNETES_DIR = os.path.join(PROG_DIR, "../../kubernetes")
 KUBECONFIG_PATH = os.path.join(KUBERNETES_DIR, "kubeconfig.yaml")
 
 DEFAULT_COMPONENTS_SPEC = os.path.join(KUBERNETES_DIR, "components.yaml")
