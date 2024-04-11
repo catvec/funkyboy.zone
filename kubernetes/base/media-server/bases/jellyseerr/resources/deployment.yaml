@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: jellyseerr
-          image: noahhuppert/jellyseerr:feat-media-availability-sync-emby-jellyfin-support-2
+          image: noahhuppert/jellyseerr:feat-media-availability-sync-emby-jellyfin-support-3@sha256:577c2f68e4fca4ede0667b4ffde0fb52ea6253d55bf831dac7366677a85b7e21
           #fallenbagel/jellyseerr:1.7.0
           #@sha256:a8a6a8de3440a3d0061886391b2d8a4646d4e4ef5d7dbfab76e5ad0d98757d13
           ports:
