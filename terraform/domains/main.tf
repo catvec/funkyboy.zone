@@ -35,7 +35,12 @@ locals {
         type = "A",
         value = module.kubernetes_loadbalancer.kubernetes_loadbalancer_ipv4
         ttl = 60
-      }
+      },
+      "infoline" = {
+        type = "NS"
+        value = "k8s.funkyboy.zone."
+        ttl = 60
+      },
     },
     "noahh.io" = {
       "@": local.k8s_record,
