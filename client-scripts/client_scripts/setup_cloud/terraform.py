@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Dict
 import subprocess
 from dataclasses import dataclass
 import os
@@ -41,25 +41,54 @@ class TerraformApplyError(Exception):
         """Initialize."""
         super().__init__(f"Failed to apply Terraform plan: directory={directory}, state_file={state_file}, plan_file={plan_file}, stdout={stdout}, stderr={stderr}")
 
+class TerraformVarEnvVarMissingError(Exception):
+    """Indicates a Terraform variable which should be found as an env var wasn't found."""
+    
+    def __init__(self, tf_var: str, env_var: str) -> None:
+        """Initialize."""
+        super().__init__(f"Could not find env var '{env_var}' to get value for the '{tf_var}' Terraform variable")
+
 class TerraformClient:
     """Execute terraform commands.
     
     Fields:
         directory: Path to Terraform project directory
         state_file: Path to state file
+        tf_vars_from_env: Mapping of terraform variables (keys) to the env var which has their value (values)
     """
 
     directory: str
     state_file: str
+    tf_vars_from_env: Dict[str, str]
 
     def __init__(
         self,
         directory: str,
         state_file: str,
+        tf_vars_from_env: Dict[str, str],
     ):
         """Initialize."""
         self.directory = directory
         self.state_file = state_file
+        self.tf_vars_from_env = tf_vars_from_env
+        
+    def _env_vars_for_tf_vars(self) -> Dict[str, str]:
+        """Create dictionary of environment variables with Terraform variable values.
+        
+        Raises:
+            TerraformVarEnvVarMissingError
+        """
+        envs = dict()
+        for tf_name, env_src in self.tf_vars_from_env.items():
+            if env_src not in os.environ:
+                raise TerraformVarEnvVarMissingError(
+                    tf_var=tf_name,
+                    env_var=env_src,
+                )
+            
+            envs[f"TF_VAR_{tf_name}"] = os.getenv(env_src)
+            
+        return envs
 
     def initialize(self) -> Optional[str]:
         """Initialize Terraform project.
@@ -75,6 +104,7 @@ class TerraformClient:
                 "terraform",
                 f"-chdir={self.directory}",
                 "init",
+                "-input=false",
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -112,9 +142,14 @@ class TerraformClient:
                 "-out",
                 plan_out,
                 "-detailed-exitcode",
+                "-input=false",
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
+            env={
+                **os.environ,
+                **self._env_vars_for_tf_vars(),
+            },
         )
 
         stdout, stderr = decode_stdout_stderr(proc.communicate())
@@ -157,10 +192,15 @@ class TerraformClient:
                 f"-chdir={self.directory}",
                 "apply",
                 "-state", self.state_file,
+                "-input=false",
                 plan_file,
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
+            env={
+                **os.environ,
+                **self._env_vars_for_tf_vars(),
+            },
         )
 
         stdout, stderr = decode_stdout_stderr(proc.communicate())

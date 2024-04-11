@@ -65,6 +65,9 @@ def apply_projects(
         tf_client = TerraformClient(
             directory=normalize_path(project_spec.path),
             state_file=normalize_path(project_spec.state_file),
+            tf_vars_from_env={
+                "do_token": "DO_API_TOKEN",
+            },
         )
 
         # Check initialized
