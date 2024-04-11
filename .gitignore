@@ -1,9 +1,10 @@
 # Secret env file
 .env
 
-# Terraform plugins
+# Terraform
 *.terraform/
 .terraform.lock.hcl
+terraform/*.plan
 
 # Kubeconfig
 kubeconfig.yaml
