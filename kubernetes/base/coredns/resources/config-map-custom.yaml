@@ -16,5 +16,7 @@ data:
     @	    60    IN    SOA     funkyboy.zone.    webmaster.funkyboy.zone. 0000000001 7200 3600 1209600 60
 
     sonarr.infoline.funkyboy.zone.      IN      CNAME   sonarr.media-server.svc.cluster.local.
+    radarr.infoline.funkyboy.zone.      IN      CNAME   radarr.media-server.svc.cluster.local.
+    qbittorrent.infoline.funkyboy.zone  IN      CNAME   qbittorrent.media-server.svc.cluster.local.
 
     ;service.example.org.    IN      SRV     8080 10 10 example.org. 
