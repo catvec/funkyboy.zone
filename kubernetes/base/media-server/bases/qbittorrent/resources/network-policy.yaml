@@ -64,11 +64,23 @@ spec:
     # VPN
     # /32 CIDR covers one IP address
     - to:
-        - ipBlock:
-            cidr: 140.228.24.119/32
-        - ipBlock:
-            cidr: 140.228.24.109/32
-        - ipBlock:
-            cidr: 140.228.24.116/32
-        - ipBlock:
-            cidr: 140.228.24.128/32
+      - ipBlock:
+          cidr: 140.228.21.108/32
+      - ipBlock:
+          cidr: 140.228.21.121/32
+      - ipBlock:
+          cidr: 140.228.24.109/32
+      - ipBlock:
+          cidr: 140.228.24.116/32
+      - ipBlock:
+          cidr: 140.228.24.119/32
+      - ipBlock:
+          cidr: 140.228.24.128/32
+      - ipBlock:
+          cidr: 140.228.24.77/32
+      - ipBlock:
+          cidr: 140.228.24.88/32
+      - ipBlock:
+          cidr: 172.98.68.22/32
+      - ipBlock:
+          cidr: 172.98.68.43/32
