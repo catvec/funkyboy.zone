@@ -122,7 +122,7 @@ The IPs for the VPN were retrieved from the Gluetun container's data. This one-l
 
 ```
 export PIA_REGION="US New York"
-curl -L https://github.com/qdm12/gluetun/raw/eecfb3952f202c0de3867d88e96d80c6b0f48359/internal/storage/servers.json | jq -r '.["private internet access"].servers[] | select(.region == "$PIA_REGION") | .ips | .[]' | sort | uniq | xargs -I% echo -e '- ipBlock:\n    cidr: %/32'
+curl -L https://github.com/qdm12/gluetun/raw/eecfb3952f202c0de3867d88e96d80c6b0f48359/internal/storage/servers.json | jq -r ".[\"private internet access\"].servers[] | select(.region == \"$PIA_REGION\") | .ips | .[]" | sort | uniq | xargs -I% echo -e '- ipBlock:\n    cidr: %/32'
 ```
 
 (Be sure to get the correct SHA for the URL based on the version of Gluetun being used, additionally update the region if needed)
