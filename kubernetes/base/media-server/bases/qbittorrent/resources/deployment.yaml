@@ -83,7 +83,7 @@ spec:
             - name: vpn-port
               mountPath: /mnt
         - name: qbittorrent-port-updater
-          image: noahhuppert/qbittorrent-port-updater:v0.0.1-dev0
+          image: noahhuppert/qbittorrent-port-updater:v1.0.0
           env:
             - name: QBITTORRENT_PORT_UPDATER_PORT_FILE
               value: "/mnt/vpn-port"
