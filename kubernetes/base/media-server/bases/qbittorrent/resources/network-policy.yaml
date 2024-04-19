@@ -65,22 +65,26 @@ spec:
     # /32 CIDR covers one IP address
     - to:
       - ipBlock:
-          cidr: 140.228.21.108/32
+          cidr: 140.228.21.140/32
       - ipBlock:
-          cidr: 140.228.21.121/32
+          cidr: 140.228.21.145/32
       - ipBlock:
-          cidr: 140.228.24.109/32
+          cidr: 140.228.21.147/32
       - ipBlock:
-          cidr: 140.228.24.116/32
+          cidr: 140.228.21.156/32
       - ipBlock:
-          cidr: 140.228.24.119/32
+          cidr: 140.228.21.228/32
       - ipBlock:
-          cidr: 140.228.24.128/32
+          cidr: 140.228.21.229/32
       - ipBlock:
-          cidr: 140.228.24.77/32
+          cidr: 140.228.21.74/32
       - ipBlock:
-          cidr: 140.228.24.88/32
+          cidr: 140.228.21.77/32
       - ipBlock:
-          cidr: 172.98.68.22/32
+          cidr: 140.228.21.84/32
       - ipBlock:
-          cidr: 172.98.68.43/32
+          cidr: 140.228.21.88/32
+      - ipBlock:
+          cidr: 172.98.71.142/32
+      - ipBlock:
+          cidr: 172.98.71.159/32
