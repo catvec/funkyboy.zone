@@ -83,19 +83,21 @@ spec:
             - name: vpn-port
               mountPath: /mnt
         - name: qbittorrent-port-updater
-          image: noahhuppert/qbittorrent-port-updater:v0.0.0
+          image: noahhuppert/qbittorrent-port-updater:v0.0.1-dev0
           env:
-            - name: QBITTORRENT_PORT_PLUGIN_PORT_FILE
+            - name: QBITTORRENT_PORT_UPDATER_PORT_FILE
               value: "/mnt/vpn-port"
-            - name: QBITTORRENT_PORT_PLUGIN_QBITTORRENT_API_NETLOC
+            - name: QBITTORRENT_PORT_UPDATER_QBITTORRENT_API_NETLOC
               value: "http://localhost:8080"
-            - name: QBITTORRENT_PORT_PLUGIN_ALLOW_PORT_FILE_NOT_EXIST
+            - name: QBITTORRENT_PORT_UPDATER_ALLOW_PORT_FILE_NOT_EXIST
               value: "true"
-            - name: QBITTORRENT_PORT_PLUGIN_QBITTORRENT_PASSWORD
+            - name: QBITTORRENT_PORT_UPDATER_QBITTORRENT_SET_REFERER
+              value: "true"
+            - name: QBITTORRENT_PORT_UPDATER_QBITTORRENT_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: qbittorrent-port-updater
-                  key: QBITTORRENT_PORT_PLUGIN_QBITTORRENT_PASSWORD
+                  key: QBITTORRENT_PORT_UPDATER_QBITTORRENT_PASSWORD
           volumeMounts:
             - name: vpn-port
               mountPath: /mnt
