@@ -7,7 +7,8 @@ Setup to acquire and view TV and movies.
 - [Development](#development)
 
 # Instructions
-1. Create a copy of [`./bases/qbittorrent/pia-vpn-secret-patch.example.yaml`](./bases/qbittorrent/pia-vpn-secret-patch.example.yaml) named `pia-vpn-secret-patch.yaml`, fill in your own values
+1. Create a copy of [`./bases/qbittorrent/patches/pia-vpn-secret-patch.example.yaml`](./bases/qbittorrent/patches/pia-vpn-secret-patch.example.yaml) named `pia-vpn-secret-patch.yaml`, fill in your own values
+2. Create a copy of [`./bases/qbittorrent/conf/qbittorrent-port-updater.example.env`](./bases/qbittorrent/conf/qbittorrent-port-updater.example.env) named `qbittorrent-port-updater.env` and fill in your own values
 
 After the manifests have been applied follow the [Initial Setup](#initial-setup) instructions to connect all the services to each other.
 
@@ -121,8 +122,8 @@ To restrict the qBittorrent application from being accessed or making requests t
 The IPs for the VPN were retrieved from the Gluetun container's data. This one-liner will echo Kubernetes `NetworkPolicy` blocks.
 
 ```
-export PIA_REGION="US New York"
-curl -L https://github.com/qdm12/gluetun/raw/eecfb3952f202c0de3867d88e96d80c6b0f48359/internal/storage/servers.json | jq -r ".[\"private internet access\"].servers[] | select(.region == \"$PIA_REGION\") | .ips | .[]" | sort | uniq | xargs -I% echo -e '- ipBlock:\n    cidr: %/32'
+export PIA_REGION="CA Montreal"
+curl -L https://raw.githubusercontent.com/qdm12/gluetun/v3.38.0/internal/storage/servers.json | jq -r ".[\"private internet access\"].servers[] | select(.region == \"$PIA_REGION\") | .ips | .[]" | sort | uniq | xargs -I% echo -e '- ipBlock:\n    cidr: %/32'
 ```
 
 (Be sure to get the correct SHA for the URL based on the version of Gluetun being used, additionally update the region if needed)

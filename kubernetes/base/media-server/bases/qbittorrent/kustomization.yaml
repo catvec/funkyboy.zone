@@ -5,7 +5,12 @@ patches:
   - target:
       kind: Secret
       name: pia-vpn-credentials
-    path: ./pia-vpn-secret-patch.yaml
+    path: ./patches/pia-vpn-secret-patch.yaml
+
+secretGenerator:
+  - name: qbittorrent-port-updater
+    envs:
+      - ./conf/qbittorrent-port-updater.env
 
 resources:
   - ./resources/pia-vpn-secret.yaml

@@ -47,7 +47,7 @@ spec:
             - name: media-do-block
               mountPath: /media
         - name: vpn
-          image: qmcgaw/gluetun:v3.35.0
+          image: qmcgaw/gluetun:v3.38.0
           securityContext:
             capabilities:
               add:
@@ -77,6 +77,28 @@ spec:
               value: "on"
             - name: PORT_FORWARD_ONLY
               value: "true"
+            - name: VPN_PORT_FORWARDING_STATUS_FILE
+              value: "/mnt/vpn-port"
+          volumeMounts:
+            - name: vpn-port
+              mountPath: /mnt
+        - name: qbittorrent-port-updater
+          image: noahhuppert/qbittorrent-port-updater:v0.0.0
+          env:
+            - name: QBITTORRENT_PORT_PLUGIN_PORT_FILE
+              value: "/mnt/vpn-port"
+            - name: QBITTORRENT_PORT_PLUGIN_QBITTORRENT_API_NETLOC
+              value: "http://localhost:8080"
+            - name: QBITTORRENT_PORT_PLUGIN_ALLOW_PORT_FILE_NOT_EXIST
+              value: "true"
+            - name: QBITTORRENT_PORT_PLUGIN_QBITTORRENT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: qbittorrent-port-updater
+                  key: QBITTORRENT_PORT_PLUGIN_QBITTORRENT_PASSWORD
+          volumeMounts:
+            - name: vpn-port
+              mountPath: /mnt
       volumes:
         - name: qbittorrent-config
           configMap:
@@ -87,3 +109,5 @@ spec:
         - name: media-do-block
           persistentVolumeClaim:
             claimName: media-files-do-block
+        - name: vpn-port
+          emptyDir: {}
