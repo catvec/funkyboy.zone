@@ -9,7 +9,7 @@ metadata:
 spec:
   storageClassName: do-block-storage
   capacity:
-    storage: 400Gi
+    storage: 500Gi
   accessModes:
     - ReadWriteMany
   csi:
