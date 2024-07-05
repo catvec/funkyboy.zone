@@ -5,4 +5,4 @@ namespace: monitoring-operator
 resources:
   - ./resources/namespace.yaml
 bases:
-  - ../../bases/prometheus-operator
+  - ../../resources/prometheus-operator

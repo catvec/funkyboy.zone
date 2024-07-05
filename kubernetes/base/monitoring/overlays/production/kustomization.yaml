@@ -5,4 +5,4 @@ namespace: monitoring
 resources:
   - ./resources/namespace.yaml
 bases:
-  - ../../bases/prometheus
+  - ../../resources/prometheus
