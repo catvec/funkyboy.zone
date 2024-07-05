@@ -5,6 +5,7 @@ resources:
   - ./resources/emby-config-pvc-do-block.yaml
   - ./resources/media-pv-do-block.yaml
   - ./resources/media-pvc-do-block.yaml
+  - ./resources/encoding-cache-pvc-do-block.yaml
 
   - ./resources/deployment.yaml
   - ./resources/service.yaml

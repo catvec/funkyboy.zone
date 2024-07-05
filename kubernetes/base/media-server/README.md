@@ -60,6 +60,13 @@ After the manifests have been applied follow the [Initial Setup](#initial-setup)
 ### Emby Initial Setup
 - When Emby first starts you must navigate to its dashboard to create an initial user
 - Add the `/media/shows` and `/media/movies` directories as libraries
+- Setup "Folder Sync / Downloading" to pre-transcode media so it doesn't have to be done on the fly:
+  - Install the "Folder Sync" plugin
+  - Add a folder to "Folder Sync" named "Encoding Cache" with the `/encoding-cache` path
+  - In the media browser click "Download to" in the context menu for the TV and Movies libraries to setup the following pre-transcoding profiles for each library:
+    > Note: For the "Profile" this is a selection of codecs and encodings not the name of the library
+    - Profile: TV, Quality: 4Mbps
+    - Profile: TV, Quality: 1.5Mbps
 
 ### Jellyseerr Initial Setup
 - When Jellyseerr first starts you navigate to the dashboard and connect it to the Emby server

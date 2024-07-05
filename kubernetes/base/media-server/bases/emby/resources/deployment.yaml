@@ -40,6 +40,8 @@ spec:
               name: emby-config-do-block
             - mountPath: /media
               name: media-do-block
+#            - mountPath: /encoding-cache
+#              name: encoding-cache-do-block
       volumes:
         - name: emby-config-do-block
           persistentVolumeClaim:
@@ -47,3 +49,6 @@ spec:
         - name: media-do-block
           persistentVolumeClaim:
             claimName: media-files-do-block
+#        - name: encoding-cache-do-block
+#          persistentVolumeClaim:
+#            claimName: encoding-cache-do-block
