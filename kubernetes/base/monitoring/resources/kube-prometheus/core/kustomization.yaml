@@ -1,0 +1,95 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  # TODO: prometheusAdapter, nodeExporter, kubeStateMetrics, kubernetesControlPlane, grafana, blackboxExporter, kubePrometheus
+  # Prometheus Operator
+  # ... RBAC
+  - resources/prometheusOperator-serviceAccount.yaml
+  - resources/prometheusOperator-clusterRoleBinding.yaml
+  - resources/prometheusOperator-clusterRole.yaml
+
+  # ... Compute
+  - resources/prometheusOperator-deployment.yaml
+
+  # ... Networking
+  - resources/prometheusOperator-service.yaml
+  - resources/prometheusOperator-networkPolicy.yaml
+
+  # ... Monitoring
+  - resources/prometheusOperator-prometheusRule.yaml
+  - resources/prometheusOperator-serviceMonitor.yaml
+
+  # Prometheus
+  # ... RBAC
+  - resources/prometheus-serviceAccount.yaml
+  - resources/prometheus-roleConfig.yaml
+
+  # ... ... Cluster
+  - resources/prometheus-clusterRole.yaml
+  - resources/prometheus-clusterRoleBinding.yaml
+
+  # ... ... Namespaced
+  - resources/prometheus-roleBindingConfig.yaml
+  - resources/prometheus-roleBindingSpecificNamespaces.yaml
+  - resources/prometheus-roleSpecificNamespaces.yaml
+
+  # ... Compute
+  - resources/prometheus-prometheus.yaml
+  - resources/prometheus-podDisruptionBudget.yaml
+
+  # ... Networking
+  - resources/prometheus-service.yaml
+  - resources/prometheus-networkPolicy.yaml
+
+  # ... Monitoring
+  - resources/prometheus-prometheusRule.yaml
+  - resources/prometheus-serviceMonitor.yaml
+
+  # Alert Manager
+  # ... RBAC
+  - resources/alertmanager-serviceAccount.yaml
+
+  # Config
+  - resources/alertmanager-secret.yaml
+
+  # ... Compute
+  - resources/alertmanager-alertmanager.yaml
+  - resources/alertmanager-podDisruptionBudget.yaml
+
+  # ... Networking
+  - resources/alertmanager-service.yaml
+  - resources/alertmanager-networkPolicy.yaml
+
+  # Monitoring
+  - resources/alertmanager-prometheusRule.yaml
+  - resources/alertmanager-serviceMonitor.yaml
+
+
+  # Grafana
+  # ... RBAC
+  - resources/grafana-serviceAccount.yaml
+
+  # ... Config
+  - resources/grafana-dashboardSources.yaml
+  - resources/grafana-dashboardDatasources.yaml
+  - resources/grafana-dashboardDefinitions.yaml
+  - resources/grafana-config.yaml
+
+  # ... Compute
+  - resources/grafana-deployment.yaml
+
+  # ... Networking
+  - resources/grafana-service.yaml
+  - resources/grafana-networkPolicy.yaml
+
+  # ... Monitoring
+  - resources/grafana-serviceMonitor.yaml
+  - resources/grafana-prometheusRule.yaml
+
+
+patches:
+  # Prometheus
+  - path: patches/prometheus-prometheus.yaml
+
+  # Alert Manager
+  - path: patches/alertmanager-alertmanager.yaml
