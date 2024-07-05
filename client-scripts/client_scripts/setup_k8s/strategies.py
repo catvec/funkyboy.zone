@@ -19,21 +19,42 @@ class ComponentAction(str, Enum):
     DELETE = "delete"
 
 class ComponentStrategy(ABC):
+    """ Logic to reconcile differences in components.
+
+    Fields:
+        input_manifests: YAML manifests for different Kubernetes objects, each object is separated by newlines and 3 dashes
+    """
     input_manifests: str
 
     def __init__(self, input_manifests: str):
+        """ Initialize."""
         self.input_manifests = input_manifests
 
     @abstractmethod
-    def validate(self, action: ComponentAction, manifests: str) -> None:
+    def validate(self, action: ComponentAction) -> None:
+        """ Ensure Kubernetes manifests are valid.
+
+        Arguments:
+            - action: The action to validate manifests for
+        """
         raise NotImplementedError()
     
     @abstractmethod
-    def diff(self, action: ComponentAction, manifests: str) -> None:
+    def diff(self, action: ComponentAction) -> None:
+        """ Print diff of what will take place to console.
+
+        Arguments:
+            - action: The action to show a diff for
+        """
         raise NotImplementedError()
     
     @abstractmethod
-    def do_action(self, action: ComponentAction, manifests: str) -> None:
+    def do_action(self, action: ComponentAction) -> None:
+        """ Perform the specified action.
+
+        Arguments:
+            - action: The action to complete
+        """
         raise NotImplementedError()
     
 class DiffComponentStrategy(ComponentStrategy):
@@ -46,6 +67,8 @@ class DiffComponentStrategy(ComponentStrategy):
         self._kubectl = kubectl
 
     def validate(self, action: ComponentAction) -> None:
+        """ Runs kubectl dry-run for the action.
+        """
         kubectl_action = SendManifestsAction.APPLY if action == ComponentAction.CREATE else SendManifestsAction.DELETE
         dry_run_res = self._kubectl.send_manifests_dry_run(kubectl_action, self.input_manifests)
         
@@ -58,6 +81,8 @@ class DiffComponentStrategy(ComponentStrategy):
         logging.info("Validated manifests")
     
     def diff(self, action: ComponentAction) -> None:
+        """ Uses kubectl diff.
+        """
         if action == ComponentAction.CREATE:
             diff_res = self._kubectl.diff(self.input_manifests)
 
@@ -73,10 +98,12 @@ class DiffComponentStrategy(ComponentStrategy):
             logging.info("Cannot compute diff for delete, displaying manifests which will be passed to delete command: \n{}", self.input_manifests.replace("\\n", "\n"))
     
     def do_action(self, action: ComponentAction) -> None:
+        """ Runs kubectl apply or delete.
+        """
         kubectl_action = SendManifestsAction.APPLY if action == ComponentAction.CREATE else SendManifestsAction.DELETE
         apply_res = self._kubectl.send_manifests(kubectl_action, self.input_manifests)
 
-        logging.info("{} Kuberenetes manifests", "Applied" if action == "apply" else "Deleted")
+        logging.info("{} Kuberenetes manifests", "Applied" if action == ComponentAction.CREATE else "Deleted")
 
         if apply_res["output"] is None:
             logging.info("not output")
@@ -146,6 +173,13 @@ class BigDiffComponentStrategy(ComponentStrategy):
         return str(hash(json.dumps(value, sort_keys=True)))
     
     def _parse_manifests(self, in_manifests: str) -> List[ManifestResource]:
+        """ Convert manifests into ManifestResource dicts.
+
+        Arguments:
+            - in_manifests: The manifests to parse, should be YAML Kubernetes objects separated by 3 dashes
+
+        Returns: List of parsed manifests
+        """
         parsed_manifests = load_all_yaml(in_manifests)
 
         resources = []
@@ -216,6 +250,8 @@ class BigDiffComponentStrategy(ComponentStrategy):
         return plans
     
     def _perform_plans(self, plans: List[BigDiffPlan]) -> List[KubeApplyRes]:
+        """ Run the plan items on the Kubernetes cluster.
+        """
         outputs = []
         for plan in plans:
             logging.info("performed plan: {}", plan["action"].to_send_manifest_action())
@@ -224,6 +260,8 @@ class BigDiffComponentStrategy(ComponentStrategy):
         return outputs
     
     def _dry_run_plans(self, plans: List[BigDiffPlan]) -> List[KubeDryRunRes]:
+        """ Use kubectl --dry-run for each plan action.
+        """
         outputs = []
         for plan in plans:
             outputs.append(self._kubectl.send_manifests_dry_run(plan["action"].to_send_manifest_action(), plan["manifest"]))
@@ -231,6 +269,8 @@ class BigDiffComponentStrategy(ComponentStrategy):
         return outputs 
 
     def validate(self, action: ComponentAction) -> None:
+        """ Dry run plans.
+        """
         dry_run_results = self._dry_run_plans(self._plans)
         
         for res in dry_run_results:    
@@ -243,6 +283,8 @@ class BigDiffComponentStrategy(ComponentStrategy):
         logging.info("Validated manifests")
     
     def diff(self, action: ComponentAction) -> None:
+        """ Dry run plans to get diff.
+        """
         dry_run_results = self._dry_run_plans(self._plans)
 
         for res in dry_run_results:
@@ -256,6 +298,8 @@ class BigDiffComponentStrategy(ComponentStrategy):
             logging.info(print_diff(res["output"]))
     
     def do_action(self, action: ComponentAction) -> None:
+        """ Run plans.
+        """
         if action == ComponentAction.CREATE:
             results = self._perform_plans(self._plans)
 
