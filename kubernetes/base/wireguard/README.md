@@ -22,6 +22,12 @@ Change the peer's `AllowedIPs` to `10.0.0.0/8` if you don't want to send all tra
 
 Change the second value in `Interface.DNS` (ie., the value after the comma) to be `infoline.funkyboy.zone` so that Wireguard resolves DNS queries to `infoline.funkyboy.zone` sub-domains using the internal cluster DNS. See [DNS](#dns) for more information.
 
+The output can be saved to a file and imported into NetworkManager via:
+
+```shell
+nmcli connection import type wireguard file <FILE>
+```
+
 # Development
 ## Operator
 The contents of [`bases/operator/resources/operator.yaml`](./bases/operator/resources/operator.yaml) are taken from the [Wireguard Operator install instructions](https://github.com/jodevsa/wireguard-operator#how-to-deploy).

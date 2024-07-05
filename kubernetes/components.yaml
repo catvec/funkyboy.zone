@@ -5,10 +5,10 @@ components:
   - path: ./base/kimai/
   - path: ./base/actual-budget/
   - path: ./base/coredns/
-  - path: ./base/k8s-csi-s3/
-  - path: ./base/media-server-csi-s3/
   - path: ./base/discord-azure-boot/
   - path: ./base/noahhuppert-com/
 
-  - path: ./base/monitoring/overlays/operators/
+  # See base/monitoring/resources/README.md#deployment
+  - path: ./base/monitoring/resources/kube-prometheus/crds
     strategy: big-diff
+  - path: ./base/monitoring/resources/kube-prometheus/core/
