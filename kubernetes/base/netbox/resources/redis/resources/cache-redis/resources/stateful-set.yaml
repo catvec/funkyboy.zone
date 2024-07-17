@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cache-redis
+spec:
+  selector:
+    matchLabels:
+      app: netbox
+      component: cache-redis
+  serviceName: cache-redis
+  template:
+    metadata:
+      labels:
+        app: netbox
+        component: cache-redis
+    spec:
+      containers:
+        - name: redis
+          image: docker.io/redis:7-alpine
+          ports:
+            - name: redis
+              containerPort: 6379
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: cache-redis
+                  key: REDIS_PASSWORD
+          volumeMounts:
+            - name: cache-redis-data-do-block
+              mountPath: /data
+      volumes:
+        - name: cache-redis-data-do-block
+          persistentVolumeClaim:
+            claimName: cache-redis-data-do-block
+
