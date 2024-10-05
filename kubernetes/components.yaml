@@ -1,16 +1,24 @@
 components:
-  - path: ./
+  # Base Cluster Functionality
+  - path: ./base/priority-classes
+  - path: ./base/nginx-ingress
+  - path: ./base/operator-lifecycle-manager
+  - path: ./base/cert-manager
+
+  # Cluster Adminstrative Tools
+  - path: ./base/kubernetes-dashboard
   - path: ./base/wireguard/
+  - path: ./base/coredns/
+  # - path: ./base/monitoring/resources/kube-prometheus/crds
+  #   strategy: big-diff
+  # - path: ./base/monitoring/resources/kube-prometheus/core/
+  - path: ./base/iperf/
+
+  # End User Services
   - path: ./base/media-server/
   - path: ./base/kimai/
   - path: ./base/actual-budget/
-  - path: ./base/coredns/
   - path: ./base/discord-azure-boot/
   - path: ./base/noahhuppert-com/
-
-  # See base/monitoring/resources/README.md#deployment
-  - path: ./base/monitoring/resources/kube-prometheus/crds
-    strategy: big-diff
-  - path: ./base/monitoring/resources/kube-prometheus/core/
   - path: ./base/netbox/
-  - path: ./base/iperf/
+  - path: ./base/gotify/production
