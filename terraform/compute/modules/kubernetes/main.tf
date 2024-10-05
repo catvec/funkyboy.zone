@@ -2,6 +2,7 @@ resource "digitalocean_kubernetes_cluster" "cluster" {
   name = var.name
   region = var.region
   version = var.kubernetes_version
+  ha = true
 
   dynamic "node_pool" {
     for_each = toset([ var.primary_node_pool ])
