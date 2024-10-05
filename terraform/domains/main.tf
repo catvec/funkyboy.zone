@@ -13,7 +13,7 @@ variable "domains" {
 }
 
 locals {
-  pod_record = {
+  droplet_record = {
     type = "A"
     value = data.terraform_remote_state.compute.outputs.droplet_funkyboy_zone_ipv4
     ttl = 60
@@ -24,13 +24,13 @@ locals {
     ttl = 60
   }
   default_targets = {
-    "*": local.pod_record,
-    "@": local.pod_record,
+    "*": local.droplet_record,
+    "@": local.droplet_record,
   }
   targets = {
     "funkyboy.zone" = {
-      "@": local.pod_record,
-      "www": local.pod_record,
+      "@": local.k8s_record,
+      "www": local.k8s_record,
       "*.k8s": {
         type = "A",
         value = module.kubernetes_loadbalancer.kubernetes_loadbalancer_ipv4
@@ -45,12 +45,12 @@ locals {
     "noahh.io" = {
       "@": local.k8s_record,
       "www": local.k8s_record,
-      "*": local.pod_record,
+      "*": local.k8s_record,
     },
     "noahhuppert.com" = {
       "@": local.k8s_record,
       "www": local.k8s_record,
-      "*": local.pod_record,
+      "*": local.k8s_record,
     },
     "goldblum.zone" = local.default_targets
     "oliversgame.deals" = local.default_targets
