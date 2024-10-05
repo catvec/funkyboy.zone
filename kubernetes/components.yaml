@@ -20,5 +20,5 @@ components:
   - path: ./base/actual-budget/
   - path: ./base/discord-azure-boot/
   - path: ./base/noahhuppert-com/
-  - path: ./base/netbox/
+  # WIP: - path: ./base/netbox/
   - path: ./base/gotify/production
