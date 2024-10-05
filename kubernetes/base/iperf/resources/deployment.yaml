@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iperf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: iperf
+      component: server
+  template:
+    metadata:
+      labels:
+        project: iperf
+        component: server
+    spec:
+      containers:
+      - name: iperf
+        image: networkstatic/iperf3:latest
+        args:
+          - -s
+        ports:
+        - name: iperf
+          containerPort: 5001

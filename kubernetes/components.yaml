@@ -13,3 +13,4 @@ components:
     strategy: big-diff
   - path: ./base/monitoring/resources/kube-prometheus/core/
   - path: ./base/netbox/
+  - path: ./base/iperf/
