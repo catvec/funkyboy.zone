@@ -12,7 +12,7 @@ components:
   # - path: ./base/monitoring/resources/kube-prometheus/crds
   #   strategy: big-diff
   # - path: ./base/monitoring/resources/kube-prometheus/core/
-  - path: ./base/iperf/
+  # - path: ./base/iperf/
 
   # End User Services
   - path: ./base/media-server/
