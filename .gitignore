@@ -13,3 +13,5 @@ kubeconfig.yaml
 .idea/
 
 k8s-download/
+!lab/*.md
+lab/
