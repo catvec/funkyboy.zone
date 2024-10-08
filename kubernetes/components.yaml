@@ -9,6 +9,7 @@ components:
   - path: ./base/kubernetes-dashboard
   - path: ./base/wireguard/
   - path: ./base/coredns/
+  - path: ./base/monitoring/
   # - path: ./base/monitoring/resources/kube-prometheus/crds
   #   strategy: big-diff
   # - path: ./base/monitoring/resources/kube-prometheus/core/

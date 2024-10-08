@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: monitoring
+      component: prometheus
+  template:
+    metadata:
+      labels:
+        project: monitoring
+        component: prometheus
+    spec:
+      securityContext:
+        fsGroup: 8000
+      containers:
+      - name: prometheus
+        image: prom/prometheus:v2.54.1
+        ports:
+        - name: http
+          containerPort: 9090
+        volumeMounts:
+        - name: data
+          mountPath: /prometheus
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: prometheus-data

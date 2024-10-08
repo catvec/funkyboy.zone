@@ -1,8 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
 namespace: monitoring
+commonLabels:
+  project: monitoring
 resources:
-  - ./resources/namespace.yaml
-bases:
-  - ../../resources/prometheus
+  - resources/namespace.yaml
+  - resources/prometheus
