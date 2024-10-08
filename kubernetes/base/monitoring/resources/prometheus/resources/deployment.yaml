@@ -4,6 +4,8 @@ metadata:
   name: prometheus
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       project: monitoring
@@ -25,7 +27,15 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /prometheus
+        - name: config
+          mountPath: /etc/prometheus/
       volumes:
       - name: data
         persistentVolumeClaim:
           claimName: prometheus-data
+      - name: config
+        configMap:
+          name: prometheus-config
+          items:
+            - key: prometheus.yml
+              path: prometheus.yml

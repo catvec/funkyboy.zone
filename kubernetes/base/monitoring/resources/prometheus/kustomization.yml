@@ -6,3 +6,8 @@ resources:
   - resources/deployment.yaml
   - resources/data-pvc.yaml
   - resources/svc.yaml
+
+configMapGenerator:
+  - name: prometheus-config
+    files:
+      - conf/prometheus.yml
