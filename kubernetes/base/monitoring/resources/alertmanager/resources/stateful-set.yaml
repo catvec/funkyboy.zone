@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: alertmanager
+spec:
+  serviceName: alertmanager
+  replicas: 3
+  selector:
+    matchLabels:
+      project: monitoring
+      component: alertmanager
+  template:
+    metadata:
+      labels:
+        project: monitoring
+        component: alertmanager
+    spec:
+      containers:
+      - name: alertmanager
+        image: prom/alertmanager:v0.27.0
+        args:
+          - --config.file=/etc/alertmanager/alertmanager.yml
+          - --storage.path=/alertmanager
+          - --cluster.peer=alertmanager-0.alertmanager.monitoring.svc.cluster.local:9094
+          - --cluster.advertise-address=$(POD_IP):9094
+        env:
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        ports:
+        - name: http
+          containerPort: 9094
+        volumeMounts:
+        - name: config
+          mountPath: /etc/alertmanager/
+      volumes:
+      - name: config
+        configMap:
+          name: alertmanager-config
+          items:
+            - key: alertmanager.yml
+              path: alertmanager.yml

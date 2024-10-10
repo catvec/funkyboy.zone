@@ -6,3 +6,4 @@ commonLabels:
 resources:
   - resources/namespace.yaml
   - resources/prometheus
+  - resources/alertmanager

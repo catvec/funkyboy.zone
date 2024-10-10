@@ -9,7 +9,9 @@ alerting:
   alertmanagers:
     - static_configs:
         - targets:
-          # - alertmanager:9093
+            - alertmanager-0.alertmanager.monitoring.svc.cluster.local:9094
+            - alertmanager-1.alertmanager.monitoring.svc.cluster.local:9094
+            - alertmanager-2.alertmanager.monitoring.svc.cluster.local:9094
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
 rule_files:
