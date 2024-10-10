@@ -3,8 +3,7 @@ kind: Kustomization
 commonLabels:
   component: prometheus
 resources:
-  - resources/deployment.yaml
-  - resources/data-pvc.yaml
+  - resources/stateful-set.yaml
   - resources/svc.yaml
 
 configMapGenerator:

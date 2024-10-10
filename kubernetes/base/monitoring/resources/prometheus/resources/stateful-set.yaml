@@ -1,11 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: prometheus
 spec:
-  replicas: 1
-  strategy:
-    type: Recreate
+  serviceName: prometheus
+  replicas: 3
+  # strategy:
+  #   type: Recreate
   selector:
     matchLabels:
       project: monitoring
@@ -25,17 +26,24 @@ spec:
         - name: http
           containerPort: 9090
         volumeMounts:
-        - name: data
+        - name: prometheus-replica-data
           mountPath: /prometheus
         - name: config
           mountPath: /etc/prometheus/
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: prometheus-data
       - name: config
         configMap:
           name: prometheus-config
           items:
             - key: prometheus.yml
               path: prometheus.yml
+  volumeClaimTemplates:
+    - metadata:
+        name: prometheus-replica-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: do-block-storage
