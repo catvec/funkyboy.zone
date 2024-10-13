@@ -30,6 +30,10 @@ spec:
           mountPath: /prometheus
         - name: config
           mountPath: /etc/prometheus/
+        livenessProbe:
+          httpGet:
+            path: /api/v1/status/config
+            port: http
       volumes:
       - name: config
         configMap:
