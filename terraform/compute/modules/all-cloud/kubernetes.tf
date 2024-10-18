@@ -12,7 +12,7 @@ module "kubernetes_cluster" {
     size = "s-2vcpu-4gb" # "s-4vcpu-8gb"
     node_count = {
       autoscale = {
-        min = 2
+        min = 3
         max = 4
       }
     }
