@@ -1,9 +1,10 @@
-from typing import List, Optional
+from typing import List, Optional, Union, Literal
 import argparse
 import yaml
 import os
 
 import pydantic
+from dotenv import load_dotenv
 
 from lib.logging import logging
 from lib.print_diff import print_diff
@@ -14,6 +15,10 @@ PROG_DIR = os.path.dirname(os.path.realpath(__file__))
 TERRAFORM_PROJECT_DIR = os.path.join(PROG_DIR, "../../terraform")
 
 DEFAULT_PROJECTS_SPEC = os.path.join(TERRAFORM_PROJECT_DIR, "projects.yaml")
+
+# Constants
+SUB_CMD_APPLY = "apply"
+SUB_CMD_INIT = "init"
 
 class ProjectSpec(pydantic.BaseModel):
     """Specification of project."""
@@ -38,6 +43,8 @@ class DiffConfirmFail(Exception):
 def apply_projects(
     projects_spec_path: str,
     only_projects: Optional[List[str]],
+    action: Optional[Union[Literal[SUB_CMD_APPLY], Literal[SUB_CMD_INIT]]]=None,
+    init_upgrade: Optional[bool]=None,
     verbose: Optional[bool]=None
 ) -> None:
     """Apply Terraform projects."""
@@ -72,14 +79,19 @@ def apply_projects(
 
         # Check initialized
         dot_tf_dir = normalize_path(os.path.join(project_spec.path, "./.terraform"))
-        if not os.path.exists(dot_tf_dir):
+        if action == SUB_CMD_INIT or not os.path.exists(dot_tf_dir):
             logging.debug("'{}' directory did not exist", dot_tf_dir)
 
-            logging.info("Initializing Terraform")
-            init_out = tf_client.initialize()
+            logging.info("Initializing Terraform (upgrade={})", init_upgrade)
+            init_out = tf_client.initialize(upgrade=init_upgrade)
 
             if verbose:
                 logging.info(init_out)
+
+        # Check if just initializing
+        if action == SUB_CMD_INIT:
+            logging.info("Done running initialize")
+            continue
 
         # Plan
         logging.info("Planning '{}'", project_spec.path)
@@ -106,7 +118,6 @@ def apply_projects(
 
         os.remove(plan_res.plan_file)
 
-
 def main():
     """Entrypoint."""
     # Parse arguments
@@ -130,11 +141,33 @@ def main():
         help="Output additional non-crucial information",
     )
 
+    subcmd_parser = parser.add_subparsers(
+        dest="subcmd",
+        required=False,
+    )
+    apply_parser = subcmd_parser.add_parser(
+        SUB_CMD_APPLY,
+        help="Automatically init, plan (ask for approval), and apply",
+    )
+    init_parser = subcmd_parser.add_parser(
+        SUB_CMD_INIT,
+        help="Just initialize terraform",
+    )
+    init_parser.add_argument(
+        "--upgrade",
+        action="store_true",
+        help="Upgrade providers",
+    )
+
     args = parser.parse_args()
+
+    load_dotenv()
 
     apply_projects(
         projects_spec_path=args.projects_spec_path,
         only_projects=args.only_projects,
+        action=args.subcmd,
+        init_upgrade=args.upgrade if args.subcmd == SUB_CMD_INIT else None,
         verbose=args.verbose,
     )
 

@@ -90,8 +90,11 @@ class TerraformClient:
             
         return envs
 
-    def initialize(self) -> Optional[str]:
+    def initialize(self, upgrade: Optional[bool]=None) -> Optional[str]:
         """Initialize Terraform project.
+
+        Arguments:
+            upgrade: Upgrade providers
 
         Returns:
             Output of terraform init command.
@@ -105,6 +108,7 @@ class TerraformClient:
                 f"-chdir={self.directory}",
                 "init",
                 "-input=false",
+                *(["-upgrade"] if upgrade else []),
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,

@@ -6,6 +6,7 @@ import os
 import yaml
 
 import pydantic
+from dotenv import load_dotenv
 
 from lib.logging import logging
 from setup_k8s.kubectl import KubectlClient
@@ -107,6 +108,8 @@ def main():
     )
 
     args = parser.parse_args()
+
+    load_dotenv()
 
     render_and_apply_or_delete(
         action=args.action,
