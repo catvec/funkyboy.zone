@@ -36,6 +36,7 @@ locals {
         value = module.kubernetes_loadbalancer.kubernetes_loadbalancer_ipv4
         ttl = 60
       },
+      "factorio" = local.k8s_record,
       "infoline" = {
         type = "NS"
         value = "k8s.funkyboy.zone."

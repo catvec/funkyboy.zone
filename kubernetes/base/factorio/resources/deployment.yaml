@@ -16,14 +16,19 @@ spec:
         component: server
     spec:
       containers:
-      - name: factorio
-        image: factoriotools/factorio:2.0.10
-        ports:
-        - containerPort: 34197
-        volumeMounts:
-        - name: factorio-data
-          mountPath: /factorio
+        - name: factorio
+          image: factoriotools/factorio:2.0.10
+          ports:
+            - name: game
+              containerPort: 34197
+              protocol: UDP
+            - name: rcon
+              containerPort: 27015
+              protocol: TCP
+          volumeMounts:
+          - name: factorio-data
+            mountPath: /factorio
       volumes:
-      - name: factorio-data
-        persistentVolumeClaim:
-          claimName: factorio-data
+        - name: factorio-data
+          persistentVolumeClaim:
+            claimName: factorio-data

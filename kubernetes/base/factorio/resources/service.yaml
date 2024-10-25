@@ -3,11 +3,16 @@ kind: Service
 metadata:
   name: factorio
 spec:
+  type: NodePort
   selector:
     project: factorio
     component: server
   ports:
-    - protocol: TCP
-      port: 34197
-      targetPort: 34197
-  #type: ClusterIP
+    - name: game # out
+      targetPort: game # in
+      port: 34197 # out
+      protocol: UDP # out
+    - name: rcon
+      targetPort: rcon
+      port: 27015
+      protocol: TCP
