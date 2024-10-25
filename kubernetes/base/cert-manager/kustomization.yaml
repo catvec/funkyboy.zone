@@ -2,5 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 bases:
 - ./bases/install
+- ./bases/monitoring
 - ./lets-encrypt-staging
 - ./lets-encrypt-production
