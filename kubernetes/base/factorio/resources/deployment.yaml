@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: factorio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: factorio
+      component: server
+  serviceName: factorio
+  template:
+    metadata:
+      labels:
+        project: factorio
+        component: server
+    spec:
+      containers:
+      - name: factorio
+        image: factoriotools/factorio:2.0.10
+        ports:
+        - containerPort: 34197
+        volumeMounts:
+        - name: factorio-data
+          mountPath: /factorio
+      volumes:
+      - name: factorio-data
+        persistentVolumeClaim:
+          claimName: factorio-data
