@@ -37,19 +37,30 @@ spec:
                   key: USERNAME
             - name: TOKEN
               valueFrom:
-                configMapKeyRef:
-                  name: server-config
+                secretKeyRef:
+                  name: server-secret
                   key: TOKEN
           volumeMounts:
-          - name: factorio-data
-            mountPath: /factorio
+            - name: factorio-saves
+              mountPath: /factorio/saves/
+            - name: factorio-secret
+              mountPath: /factorio/config/rconpw
+              subPath: rconpw
+      volumes:
+        - name: factorio-secret
+          secret:
+            secretName: server-secret
+            items:
+              - key: server-rconpw.txt
+                path: rconpw
+          
   volumeClaimTemplates:
     - metadata:
-        name: factorio-data
+        name: factorio-saves
       spec:
         accessModes:
           - ReadWriteOnce
         storageClassName: do-block-storage
         resources:
           requests:
-            storage: 5Gi
+            storage: 2Gi

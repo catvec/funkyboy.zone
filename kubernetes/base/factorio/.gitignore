@@ -1,2 +1,2 @@
-conf/*.env
-!conf/server.env.example
+conf/*
+!conf/*.example

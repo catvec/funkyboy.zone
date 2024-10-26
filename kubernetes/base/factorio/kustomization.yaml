@@ -8,7 +8,14 @@ commonLabels:
 configMapGenerator:
   - name: server-config
     envs:
-      - conf/server.env
+      - conf/server-config.env
+
+secretGenerator:
+  - name: server-secret
+    envs:
+      - conf/server-secret.env
+    files:
+      - conf/server-rconpw.txt
 
 resources:
   - resources/namespace.yaml
