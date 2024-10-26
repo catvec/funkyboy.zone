@@ -24,3 +24,4 @@ components:
   # WIP: - path: ./base/funkyboy-zone/
   # WIP: - path: ./base/netbox/
   - path: ./base/gotify/production
+  - path: ./base/factorio/
