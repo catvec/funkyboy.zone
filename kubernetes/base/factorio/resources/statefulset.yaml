@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: factorio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: factorio
+      component: server
+  serviceName: factorio
+  template:
+    metadata:
+      labels:
+        project: factorio
+        component: server
+    spec:
+      containers:
+        - name: factorio
+          image: factoriotools/factorio:2.0.10
+          ports:
+            - name: game
+              containerPort: 34197
+              protocol: UDP
+            - name: rcon
+              containerPort: 27015
+              protocol: TCP
+          env:
+            - name: PORT
+              value: "34197"
+            - name: RCON_PORT
+              value: "27015"
+            - name: USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: server-config
+                  key: USERNAME
+            - name: TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: server-config
+                  key: TOKEN
+          volumeMounts:
+          - name: factorio-data
+            mountPath: /factorio
+  volumeClaimTemplates:
+    - metadata:
+        name: factorio-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: do-block-storage
+        resources:
+          requests:
+            storage: 5Gi

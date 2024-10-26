@@ -29,6 +29,7 @@ Provides the following services:
     - [`base/k8s-csi-s3/README.md`](./base/k8s-csi-s3/README.md#instructions)
     - [`base/discord-azure-boot/README.md`](./base/discord-azure-boot/README.md#instructions)
     - [`base/netbox/README.md`](./base/netbox/README.md#setup)
+    - [`base/factorio/README.md`](./base/factorio/README.md#setup)
 2. Run the `setup-k8s.py` script from the root of the repository:
    ```
    ./clients-scripts/setup-k8s.py
