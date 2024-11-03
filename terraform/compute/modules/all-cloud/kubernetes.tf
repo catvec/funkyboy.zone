@@ -8,12 +8,12 @@ module "kubernetes_cluster" {
   kubeconfig_out_path = "${path.root}/../../kubernetes/kubeconfig.yaml"
 
   primary_node_pool = {
-    name = "worker-pool-b"
-    size = "s-2vcpu-4gb" # "s-4vcpu-8gb"
+    name = "worker-pool-compute-optimized-a"
+    size = "c-2"
     node_count = {
       autoscale = {
-        min = 3
-        max = 4
+        min = 1
+        max = 2
       }
     }
   }
