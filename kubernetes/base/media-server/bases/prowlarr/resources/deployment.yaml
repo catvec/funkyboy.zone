@@ -7,6 +7,8 @@ metadata:
     component: prowlarr
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       project: media-server
