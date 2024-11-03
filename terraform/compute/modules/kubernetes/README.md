@@ -21,8 +21,8 @@ The community [has found a workaround](https://github.com/digitalocean/terraform
    Right now for the overall project this can be done by running:
    ```
    cd terraform
-   terraform state rm -state ../secret/terraform.tfstate 'module.all_cloud.module.kubernetes_cluster.digitalocean_kubernetes_node_pool.node_pool["worker_pool_b"]'
-   terraform state rm -state ../secret/terraform.tfstate module.all_cloud.module.kubernetes_cluster.digitalocean_kubernetes_cluster.cluster
+   terraform state rm -state ../secret/terraform/compute/terraform.tfstate 'module.all_cloud.module.kubernetes_cluster.digitalocean_kubernetes_node_pool.node_pool["worker_pool_b"]'
+   terraform state rm -state ../secret/terraform/compute/terraform.tfstate module.all_cloud.module.kubernetes_cluster.digitalocean_kubernetes_cluster.cluster
    ```
 
    Be sure to substitute `worker_pool_b` with the map key of your new worker pool.
@@ -30,6 +30,6 @@ The community [has found a workaround](https://github.com/digitalocean/terraform
 6. Import the Kubernetes cluster back into the Terraform state:
    Right now for the overall project this can be done by running
    ```
-   cd terraform
-   terraform import -state ../secret/terraform.tfstate module.all_cloud.module.kubernetes_cluster.digitalocean_kubernetes_cluster.cluster <DO K8S CLUSTER ID>
+   cd terraform/compute
+   terraform import -state ../../secret/terraform/compute/terraform.tfstate module.all_cloud.module.kubernetes_cluster.digitalocean_kubernetes_cluster.cluster <DO K8S CLUSTER ID>
    ```
