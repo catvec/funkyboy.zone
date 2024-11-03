@@ -15,7 +15,9 @@ data:
         }
         prometheus :9153
         forward . /etc/resolv.conf
-        cache 30
+        cache 300 {
+          prefetch 10
+        }
         loop
         reload
         loadbalance
