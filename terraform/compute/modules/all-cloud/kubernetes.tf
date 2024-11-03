@@ -18,6 +18,16 @@ module "kubernetes_cluster" {
     }
   }
 
+  additional_node_pools = {
+    worker-pool-dedicated-cpu-b = {
+      name = "worker-pool-dedicated-cpu-b"
+      size = "c-4"
+      node_count = {
+        count = 1
+      }
+    }
+  }
+
   maintenance = {
     day = "sunday"
     start_time = "04:00" # Midnight EST
