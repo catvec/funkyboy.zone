@@ -82,6 +82,10 @@ spec:
           volumeMounts:
             - name: vpn-port
               mountPath: /mnt
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 500m
         - name: qbittorrent-port-updater
           image: noahhuppert/qbittorrent-port-updater:v1.0.0
           env:
@@ -99,6 +103,10 @@ spec:
           volumeMounts:
             - name: vpn-port
               mountPath: /mnt
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 100m
       volumes:
         - name: qbittorrent-config
           configMap:

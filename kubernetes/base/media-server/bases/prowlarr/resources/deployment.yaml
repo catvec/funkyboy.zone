@@ -27,6 +27,10 @@ spec:
           volumeMounts:
             - name: config-do-block
               mountPath: /config
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 100m
       volumes:
         - name: config-do-block
           persistentVolumeClaim:

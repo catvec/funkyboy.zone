@@ -42,6 +42,10 @@ spec:
               name: media-do-block
 #            - mountPath: /encoding-cache
 #              name: encoding-cache-do-block
+          resources:
+            requests:
+              memory: 2Gi
+              cpu: 2000m
       volumes:
         - name: emby-config-do-block
           persistentVolumeClaim:

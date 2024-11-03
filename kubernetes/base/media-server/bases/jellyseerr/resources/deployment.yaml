@@ -28,6 +28,10 @@ spec:
           volumeMounts:
             - mountPath: /app/config
               name: jellyseerr-config-do-block
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 100m
       volumes:
         - name: jellyseerr-config-do-block
           persistentVolumeClaim:
