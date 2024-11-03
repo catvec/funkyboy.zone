@@ -35,7 +35,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
         - name: qbittorrent
-          image: linuxserver/qbittorrent:4.5.4
+          image: linuxserver/qbittorrent:5.0.1
           ports:
             - name: qb-web-ui
               containerPort: 8080
