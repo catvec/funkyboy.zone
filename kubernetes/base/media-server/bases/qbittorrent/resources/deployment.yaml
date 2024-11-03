@@ -11,6 +11,8 @@ spec:
     matchLabels:
       project: media-server
       component: qbittorrent
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
@@ -46,6 +48,14 @@ spec:
               mountPath: /config/qBittorrent
             - name: media-do-block
               mountPath: /media
+          livenessProbe:
+            httpGet:
+              path: /
+              port: qb-web-ui
+          readinessProbe:
+            httpGet:
+              path: /
+              port: qb-web-ui
         - name: vpn
           image: qmcgaw/gluetun:v3.38.0
           securityContext:
