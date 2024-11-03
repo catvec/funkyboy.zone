@@ -95,6 +95,11 @@ spec:
               value: "http://localhost:8080"
             - name: QBITTORRENT_PORT_UPDATER_ALLOW_PORT_FILE_NOT_EXIST
               value: "true"
+            - name: QBITTORRENT_PORT_UPDATER_QBITTORRENT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: qbittorrent-port-updater
+                  key: QBITTORRENT_PORT_UPDATER_QBITTORRENT_USERNAME
             - name: QBITTORRENT_PORT_UPDATER_QBITTORRENT_PASSWORD
               valueFrom:
                 secretKeyRef:
