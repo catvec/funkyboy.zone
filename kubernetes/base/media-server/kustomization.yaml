@@ -11,4 +11,3 @@ resources:
   - bases/radarr
   - bases/sonarr
   - bases/prowlarr
-  - bases/youtube-dl
