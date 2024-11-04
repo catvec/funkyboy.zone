@@ -15,18 +15,29 @@ Allows access to the internal Kubernetes cluster DNS. Use the following format t
 To get the configuration for a peer read the `status.config` field of a WireguardPeer resource:
 
 ```
-kubectl -n wireguard get wireguardpeer <PEER> --template={{.status.config}} | bash
+kubectl -n wireguard get wireguardpeer <PEER> --template={{.status.config}} | bash | sed 's/0\.0\.0\.0\/0/10\.0\.0\.0\/8/g' | sed 's/wireguard\.svc\.cluster\.local/infoline\.funkyboy\.zone/g'
 ```
 
-Change the peer's `AllowedIPs` to `10.0.0.0/8` if you don't want to send all traffic through the VPN and instead only access the VPN's LAN (aka., split tunnel mode).
-
-Change the second value in `Interface.DNS` (ie., the value after the comma) to be `infoline.funkyboy.zone` so that Wireguard resolves DNS queries to `infoline.funkyboy.zone` sub-domains using the internal cluster DNS. See [DNS](#dns) for more information.
+This will automatically change the configuration file to only send traffic bound for pods in the cluster over Wireguard (ie., split tunnel) and setup a custom DNS lookup.
 
 The output can be saved to a file and imported into NetworkManager via:
 
 ```shell
 nmcli connection import type wireguard file <FILE>
 ```
+
+### Manual Configuration
+To get the Wireguard configuration without any changes:
+
+```
+kubectl -n wireguard get wireguardpeer <PEER> --template={{.status.config}} | bash
+```
+
+It is recommended you do the following:
+
+Change the peer's `AllowedIPs` to `10.0.0.0/8` if you don't want to send all traffic through the VPN and instead only access the VPN's LAN (aka., split tunnel mode).
+
+Change the second value in `Interface.DNS` (ie., the value after the comma) to be `infoline.funkyboy.zone` so that Wireguard resolves DNS queries to `infoline.funkyboy.zone` sub-domains using the internal cluster DNS. See [DNS](#dns) for more information.
 
 # Development
 ## Operator
