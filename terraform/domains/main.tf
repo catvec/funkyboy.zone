@@ -20,7 +20,7 @@ locals {
   }
   k8s_record = {
     type = "A"
-    value = module.kubernetes_loadbalancer.kubernetes_loadbalancer_ipv4
+    value = module.k8s_nginx_ingress_lb.kubernetes_loadbalancer_ipv4
     ttl = 60
   }
   default_targets = {
@@ -33,7 +33,7 @@ locals {
       "www": local.k8s_record,
       "*.k8s": {
         type = "A",
-        value = module.kubernetes_loadbalancer.kubernetes_loadbalancer_ipv4
+        value = module.k8s_nginx_ingress_lb.kubernetes_loadbalancer_ipv4
         ttl = 60
       },
       "factorio" = local.k8s_record,
@@ -182,7 +182,7 @@ variable "google_verification" {
   }
 }
 
-module "kubernetes_loadbalancer" {
+module "k8s_nginx_ingress_lb" {
   source = "./modules/kubernetes_loadbalancer"
 
   digitalocean_kubernetes_cluster_name = data.terraform_remote_state.compute.outputs.kubernetes_cluster_name
