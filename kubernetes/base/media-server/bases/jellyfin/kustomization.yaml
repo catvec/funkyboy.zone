@@ -1,0 +1,9 @@
+kind: Kustomization
+
+resources:
+  - resources/deployment.yaml
+  - resources/service.yaml
+  - resources/ingress.yaml
+
+commonLabels:
+  component: jellyfin
