@@ -36,7 +36,11 @@ locals {
         value = module.k8s_nginx_ingress_lb.kubernetes_loadbalancer_ipv4
         ttl = 60
       },
-      "factorio" = local.k8s_record,
+      "factorio" = {
+        type = "A",
+        value = module.k8s_factorio_lb.kubernetes_loadbalancer_ipv4
+        ttl = 60
+      },
       "infoline" = {
         type = "NS"
         value = "k8s.funkyboy.zone."
@@ -186,6 +190,16 @@ module "k8s_nginx_ingress_lb" {
   source = "./modules/kubernetes_loadbalancer"
 
   digitalocean_kubernetes_cluster_name = data.terraform_remote_state.compute.outputs.kubernetes_cluster_name
+  kubernetes_namespace = "ingress-nginx"
+  kubernetes_service = "ingress-nginx-controller"
+}
+
+module "k8s_factorio_lb" {
+  source = "./modules/kubernetes_loadbalancer"
+
+  digitalocean_kubernetes_cluster_name = data.terraform_remote_state.compute.outputs.kubernetes_cluster_name
+  kubernetes_namespace = "factorio"
+  kubernetes_service = "factorio"
 }
 
 module "domains" {
