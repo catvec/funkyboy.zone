@@ -21,4 +21,3 @@ resources:
   - resources/namespace.yaml
   - resources/statefulset.yaml
   - resources/service.yaml
-  - resources/ingress.yaml

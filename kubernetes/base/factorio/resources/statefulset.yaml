@@ -15,33 +15,26 @@ spec:
         project: factorio
         component: server
     spec:
-      # securityContext:
-      #   runAsUser: 845
-      #   runAsGroup: 845
-      #   fsGroup: 845
-      # initContainers:
-      #   - name: chown
-      #     image: alpine:latest
-      #     securityContext:
-      #       runAsUser: 0 #845
-      #       runAsGroup: 0 #845
-      #     command:
-      #       - /bin/sh
-      #       - -c
-      #     args:
-      #       - "mkdir -p /factorio/{saves,config} && chown -R 845:845 /factorio/"
-      #     volumeMounts:
-      #       - name: factorio-saves
-      #         mountPath: /factorio/saves/
+      securityContext:
+        runAsUser: 845
+        runAsGroup: 845
+        fsGroup: 845
+      initContainers:
+        # Move configmap and secret files into a tmp volume bc the factorio container's entrypoint will write new files next to ours
+        # This normally isn't possible bc if you mount a file from a configmap or secret it makes the whole dir readonly
+        - name: copy-config
+          image: alpine:latest
+          command: [ "/bin/sh", "-c" ]
+          args: [ "cp /mnt/factorio-config/* /factorio/config" ]
+          volumeMounts:
+            - name: factorio-config-overlay
+              mountPath: /factorio/config
+            - name: factorio-secret
+              mountPath: /mnt/factorio-config/rconpw
+              subPath: rconpw
       containers:
         - name: factorio
-          image: factoriotools/factorio:2.0.10
-          command: ["/bin/bash"]
-          args: ["-c", "echo $(id -u) && sleep infinity"]
-          # securityContext:
-          #   runAsUser: 845
-          #   runAsGroup: 845
-          #   # cfsGroup: 845
+          image: factoriotools/factorio:2.0.15
           ports:
             - name: game
               containerPort: 34197
@@ -65,11 +58,10 @@ spec:
                   name: server-secret
                   key: TOKEN
           volumeMounts:
+            - name: factorio-config-overlay
+              mountPath: /factorio/config
             - name: factorio-saves
               mountPath: /factorio/saves/
-            - name: factorio-secret
-              mountPath: /factorio/config/rconpw
-              subPath: rconpw
       volumes:
         - name: factorio-secret
           secret:
@@ -77,6 +69,8 @@ spec:
             items:
               - key: server-rconpw.txt
                 path: rconpw
+        - name: factorio-config-overlay
+          emptyDir: {}
           
   volumeClaimTemplates:
     - metadata:
