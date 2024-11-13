@@ -1,19 +1,21 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: factorio
+  name: factorio-rev1
 spec:
   replicas: 1
   selector:
     matchLabels:
       project: factorio
       component: server
-  serviceName: factorio
+      revision: rev1
+  serviceName: factorio-rev1
   template:
     metadata:
       labels:
         project: factorio
         component: server
+        revision: rev1
     spec:
       securityContext:
         runAsUser: 845
@@ -32,9 +34,32 @@ spec:
             - name: factorio-secret
               mountPath: /mnt/factorio-config/rconpw
               subPath: rconpw
+
+        # Copies current save files into year/month/date/hour/minute/second/ directoy of save pvc
+        # The real purpose of creating /factorio/saves/backed-up-on is so that `cp` doesn't exit with 1 after copying an empty save directory
+        - name: backup-saves
+          image: alpine:latest
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+          command: [ "/bin/sh", "-c" ]
+          args:
+            - |
+              export datepath=$(date +'%Y/%m/%d/%H/%M/%S'); \
+              mkdir -p /mnt/factorio-saves-backup/$datepath && \
+              cp -r /factorio/saves/ /mnt/factorio-saves-backup/$datepath
+          volumeMounts:
+            - name: factorio-saves
+              mountPath: /factorio/saves/
+            - name: factorio-saves-backup
+              mountPath: /mnt/factorio-saves-backup/
       containers:
         - name: factorio
-          image: factoriotools/factorio:2.0.15
+          # Always get latest version (stable = what people get on steam without betas)
+          image: factoriotools/factorio:stable
+          imagePullPolicy: Always
+          # command: ["/bin/sh", "-c"]
+          # args: ["sleep infinity"]
           ports:
             - name: game
               containerPort: 34197
@@ -82,3 +107,12 @@ spec:
         resources:
           requests:
             storage: 2Gi
+    - metadata:
+        name: factorio-saves-backup
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: do-block-storage
+        resources:
+          requests:
+            storage: 5Gi

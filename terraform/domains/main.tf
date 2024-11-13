@@ -199,7 +199,7 @@ module "k8s_factorio_lb" {
 
   digitalocean_kubernetes_cluster_name = data.terraform_remote_state.compute.outputs.kubernetes_cluster_name
   kubernetes_namespace = "factorio"
-  kubernetes_service = "factorio"
+  kubernetes_service = "factorio-rev1"
 }
 
 module "domains" {

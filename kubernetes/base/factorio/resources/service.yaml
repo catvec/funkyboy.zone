@@ -1,12 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: factorio
+  name: factorio-rev1
 spec:
   type: LoadBalancer
   selector:
     project: factorio
     component: server
+    revision: rev1
   ports:
     - name: game # out
       targetPort: game # in
