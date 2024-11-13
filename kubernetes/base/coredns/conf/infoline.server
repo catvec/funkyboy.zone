@@ -1,0 +1,5 @@
+infoline.funkyboy.zone:53 {
+    file /etc/coredns/custom/infoline.db
+    log
+    errors
+}
