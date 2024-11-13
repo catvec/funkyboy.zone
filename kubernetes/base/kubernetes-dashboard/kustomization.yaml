@@ -3,3 +3,6 @@ kind: Kustomization
 namespace: kubernetes-dashboard
 resources:
 - resources/manifests.yaml # https://raw.githubusercontent.com/kubernetes/dashboard/v2.6.1/aio/deploy/recommended.yaml
+- resources/login-svc-acc.yaml
+- resources/login-svc-acc-cluster-role-binding.yaml
+- resources/login-svc-acc-token.yaml
