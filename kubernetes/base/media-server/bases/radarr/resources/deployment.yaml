@@ -33,7 +33,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
         - name: radarr
-          image: linuxserver/radarr:version-4.6.4.7568
+          image: linuxserver/radarr:5.14.0
           ports:
             - name: http
               containerPort: 7878
