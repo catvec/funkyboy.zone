@@ -36,7 +36,6 @@ spec:
               subPath: rconpw
 
         # Copies current save files into year/month/date/hour/minute/second/ directoy of save pvc
-        # The real purpose of creating /factorio/saves/backed-up-on is so that `cp` doesn't exit with 1 after copying an empty save directory
         - name: backup-saves
           image: alpine:latest
           securityContext:
@@ -58,8 +57,6 @@ spec:
           # Always get latest version (stable = what people get on steam without betas)
           image: factoriotools/factorio:stable
           imagePullPolicy: Always
-          # command: ["/bin/sh", "-c"]
-          # args: ["sleep infinity"]
           ports:
             - name: game
               containerPort: 34197
