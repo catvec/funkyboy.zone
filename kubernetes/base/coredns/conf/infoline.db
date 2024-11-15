@@ -7,5 +7,6 @@ radarr.infoline.funkyboy.zone.      IN      CNAME   radarr.media-server.svc.clus
 qbittorrent.infoline.funkyboy.zone. IN      CNAME   qbittorrent.media-server.svc.cluster.local.
 prowlarr.infoline.funkyboy.zone.    IN      CNAME   prowlarr.media-server.svc.cluster.local.
 kube-dashboard.infoline.funkyboy.zone. IN   CNAME   kubernetes-dashboard.kubernetes-dashboard.svc.cluster.local.
+infoline.funkyboy.zone.              IN     CNAME   infoline-dashboard.infoline-dashboard.svc.cluster.local.
 
 ;service.example.org.    IN      SRV     8080 10 10 example.org.

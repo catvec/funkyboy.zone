@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: infoline-dashboard
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: dashy
+          image: lissy93/dashy:release-3.1.1
+          ports:
+            - name: http
+              containerPort: 8080
+          volumeMounts:
+            - name: dashy-config
+              mountPath: /app/user-data/conf.yml
+              subPath: conf.yml
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            # Dashy webpack builds based on your config at startup
+            initialDelaySeconds: 120
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+      volumes:
+        - name: dashy-config
+          configMap:
+            name: dashy-config
+            items:
+              - key: conf.yml
+                path: conf.yml

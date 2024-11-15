@@ -23,5 +23,6 @@ components:
   - path: ./base/noahhuppert-com/
   # WIP: - path: ./base/funkyboy-zone/
   # WIP: - path: ./base/netbox/
-  - path: ./base/gotify/production
+  - path: ./base/gotify/production/
   - path: ./base/factorio/
+  - path: ./base/infoline-dashboard/

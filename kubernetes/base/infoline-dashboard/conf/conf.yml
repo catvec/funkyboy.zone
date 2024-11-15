@@ -1,0 +1,71 @@
+---
+# Page meta info, like heading, footer text and nav links
+pageInfo:
+  title: Infoline
+  description: Intranet
+  # navLinks:
+  # - title: GitHub
+  #   path: https://github.com/Lissy93/dashy
+  # - title: Documentation
+  #   path: https://dashy.to/docs
+
+# Optional app settings and configuration
+appConfig:
+  theme: cherry-blossom
+  statusCheck: true
+
+# Main content - An array of sections, each containing an array of items
+sections:
+- name: Private Network
+  icon: ":flying_saucer:"
+  items:
+  - title: Kubernetes Dashboard
+    icon: hl-kubernetes
+    url: https://kube-dashboard.infoline.funkyboy.zone
+    statusCheckAllowInsecure: true
+  - title: Infoline Dashboard
+    icon: hl-dashy
+    url: http://infoline.funkyboy.zone
+
+- name: Media (Public)
+  icon: ":television:"
+  items:
+  - title: Emby
+    #description: Source Code, Issues and Pull Requests
+    url: https://view.media.k8s.funkyboy.zone
+    icon: favicon
+  - title: Request
+    #description: Configuring & Usage Documentation
+    url: https://request.media.k8s.funkyboy.zone
+    icon: favicon
+  - title: Jellyfin
+    url: https://jellyfin.media.k8s.funkyboy.zone
+    icon: favicon
+
+- name: Media (Management)
+  icon: ":television:"
+  items:
+  - title: Sonarr
+    #description: See how others are using Dashy
+    url: http://sonarr.infoline.funkyboy.zone
+    icon: hl-sonarr
+  - title: Radarr
+    #description: See full list of configuration options
+    url: http://radarr.infoline.funkyboy.zone
+    icon: hl-radarr
+  - title: qBittorrent
+    #description: Get help with Dashy, raise a bug, or get in contact
+    url: http://qbittorrent.infoline.funkyboy.zone
+    icon: hl-qbittorrent
+  - title: Prowlarr
+    url: http://prowlarr.infoline.funkyboy.zone
+    icon: hl-prowlarr
+
+- name: Games
+  icon: ":video_game:"
+  items:
+    - title: Factorio
+      url: http://factorio.funkyboy.zone
+      openingMethod: clipboard
+      description: "factorio.funkyboy.zone (Default game port 34197)"
+      icon: hl-factorio
