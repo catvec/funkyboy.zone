@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+labels:
+  - pairs:
+      project: open-exercise-warehouse
+      component: postgres
+    includeSelectors: true
+    includeTemplates: true
+
+secretGenerator:
+- name: postgres-secret
+  envs:
+    - secrets/postgres.env
+
+configMapGenerator:
+- name: postgres-config
+  envs:
+    - conf/postgres.env
