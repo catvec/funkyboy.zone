@@ -3,7 +3,8 @@ module "kubernetes_cluster" {
 
   name = var.kubernetes_cluster_name
   region = "nyc1"
-  kubernetes_version = "1.28.14-do.1"
+  # Run `doctl kubernetes options versions` to get the versions
+  kubernetes_version = "1.31.1-do.4"
 
   kubeconfig_out_path = "${path.root}/../../kubernetes/kubeconfig.yaml"
 
