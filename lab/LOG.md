@@ -72,6 +72,18 @@ Configuration:
       ```
       Then follow the steps to set the image as the default
   - Ensure the config-register is set to `0x102`, run `show version` and the value will be at the way bottom ([Cisco Docs](https://www.cisco.com/c/en/us/support/docs/routers/10000-series-routers/50421-config-register-use.html))
+- Establish layer 3 connectivity to the external internet
+  - Setup name servers (Cloudflare)
+    ```
+    # configure terminal
+    ip name-server 1.1.1.1 1.0.0.1
+    ```
+  - Set switch's domain name (Used when generating TLS certificates and such)
+    ```
+    # configure terminal
+    ip domain name funkyboy.zone
+    ```
+  - 
 - Enable layer 3 routing
   ```cisco
   # configure terminal
