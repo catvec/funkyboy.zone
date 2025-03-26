@@ -33,6 +33,58 @@ Devices:
    ```
    screen /dev/ttyACM* 9600
    ```
+   Or on Windows use an app like [Tera Term](https://teratermproject.github.io/index-en.html)
+
+### Recovery
+#### Entering ROMMON Mode
+This is a backup safe mode which lets you run a limited set of commands (Like specifying a new boot image).
+
+1. Turn off the switch
+2. Press and hold the mode button on the switch (Circular button in the corner next to the mode LEDs on the front)
+3. Turn on the switch
+4. Wait a bit before releasing  
+   I've found when a message about an interface being down shows it is then a good time to release
+5. Confirm you are in ROMMON mode by checking that the prompt shows `switch:`
+
+#### Forgotten Password
+
+If you do not know the password of a switch:
+
+1. Boot into ROMMON mode
+2. Tell the switch to ignore any configuration on boot  
+   ```cisco
+   # ROMMON
+   SWITCH_IGNORE_STARTUP_CFG=1
+   ```  
+3. Boot  
+  - Either boot to the currently configured image  
+    ```cisco
+    # ROMMON
+    reset
+    ```
+  - Or specify an image to boot to  
+    ```cisco
+    # ROMMON
+    boot usbflash0:cat3k_caa-universalk9.x.x.x.SPA.bin
+    ```
+4. Once booted you should be able to access the switch
+5. Unset the start up config ignore command  
+   ```cisco
+   # enable
+   no system ignore startupconfig switch all
+   ```
+6. Decide what you want to do from here. You can either:
+  - Save the blank configuration state
+    ```cisco
+    # enable
+    write memory
+    ```
+  - Set a new enable secret  
+    ```cisco
+    # configure terminal
+    enable secret <PASSWORD>
+    write memory
+    ```
 
 ### Configure
 At the end of any session making changes save modifications:
@@ -46,7 +98,7 @@ copy running-config usbflash0:startup-config-YYYY-MM-DD-HH-TT
 Configuration:
 
 - ```cisco
-  # configure terminal#
+  # configure terminal
   no ip domain-lookup
   ```
    Stop DNS lookup on wrong command
@@ -72,6 +124,10 @@ Configuration:
       ```
       Then follow the steps to set the image as the default
   - Ensure the config-register is set to `0x102`, run `show version` and the value will be at the way bottom ([Cisco Docs](https://www.cisco.com/c/en/us/support/docs/routers/10000-series-routers/50421-config-register-use.html))
+     ```cisco
+     # configure terminal
+     config-register 0x102
+     ```
 - Establish layer 3 connectivity to the external internet
   - Setup name servers (Cloudflare)
     ```
