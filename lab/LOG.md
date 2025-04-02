@@ -181,6 +181,11 @@ Configuration:
       switchport access vlan name external0
       # exit
       ```
+    - Configure DNS to use this vlan
+      ```
+      # configure terminal
+      ip domain lookup source-interface vlan 100
+      ```
   - Enable NTP (Required for smart licensing)
     ```
     # configure terminal
