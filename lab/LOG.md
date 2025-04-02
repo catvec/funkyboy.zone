@@ -85,6 +85,23 @@ If you do not know the password of a switch:
     enable secret <PASSWORD>
     write memory
     ```
+  
+### Troubleshooting
+#### DNS Lookups on Switch Failing
+If DNS lookups are failing like so:
+
+```
+ping www.cisco.com
+...
+Unrecognized host or address, or protocol not running
+```
+
+Then DNS lookups may be disabled. To enable them run:
+
+```
+# configure terminal
+ip domain-lookup
+```
 
 ### Configure
 At the end of any session making changes save modifications:
@@ -97,11 +114,6 @@ copy running-config usbflash0:startup-config-YYYY-MM-DD-HH-TT
 
 Configuration:
 
-- ```cisco
-  # configure terminal
-  no ip domain-lookup
-  ```
-   Stop DNS lookup on wrong command
 - Hostname
   ```cisco
   # configure terminal
@@ -181,11 +193,6 @@ Configuration:
       switchport access vlan name external0
       # exit
       ```
-    - Configure DNS to use this vlan
-      ```
-      # configure terminal
-      ip domain lookup source-interface vlan 100
-      ```
   - Enable NTP (Required for smart licensing)
     ```
     # configure terminal
@@ -226,6 +233,12 @@ Configuration:
     license smart register idtoken <TOKEN>
     ```
     Be sure to replace `<TOKEN>` with the token's value in CSSM
+  - Migrate the perpetual license to smart licensing:
+    ```
+    # enable
+    license smart conversion start
+    ```
+    You can verify if this process succeeded by going to CSSM > Inventory > Product Instances. The switch's hostname should show up. If you click on it to get more details and expand the item under the "License Usage" section it should sow a license which never expires. You can also see under CSSM > Inventory > Licenses that 1 license is available to use and there are no alerts on your account.
 - Enable layer 3 routing  
   ```cisco
   # configure terminal
