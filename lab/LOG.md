@@ -123,12 +123,31 @@ Configuration:
       copy usbflash0:<IMAGE NAME> flash:<IMAGE NAME>
       ```
       Then follow the steps to set the image as the default
-  - Ensure the config-register is set to `0x102`, run `show version` and the value will be at the way bottom ([Cisco Docs](https://www.cisco.com/c/en/us/support/docs/routers/10000-series-routers/50421-config-register-use.html))
+  - Ensure the config-register is set to `0x102`, run `show version` (`# enable`) and the value will be at the way bottom ([Cisco Docs](https://www.cisco.com/c/en/us/support/docs/routers/10000-series-routers/50421-config-register-use.html))
      ```cisco
      # configure terminal
      config-register 0x102
      ```
+- Ensure switch stack number is 1 (This is the number the switch is in a stack)
+  - Check the switch number
+    ```
+    # enable
+    show switch
+    ```
+  - If `Switch#` is not 1 then:
+    ```
+    # enable
+    switch <original #> renumber 1
+    ```
+    The change will only take effect on reload so:
+    ```
+    # enable
+    write memory
+    reload
+    ```
+    (It is important to reload now because the switch number is used in interface numbers in the commands below)
 - Establish layer 3 connectivity to the external internet
+  This is required for Cisco smart licesing phone home, as well as external internet access for devices connected to the switch
   - Setup name servers (Cloudflare)
     ```
     # configure terminal
@@ -139,8 +158,70 @@ Configuration:
     # configure terminal
     ip domain name funkyboy.zone
     ```
-  - 
-- Enable layer 3 routing
+  - Setup ports for external internet access
+    - Create a vlan for the ports
+      ```
+      # configure terminal
+      vlan 100
+      name external0
+      # exit
+      ```
+    - Configure the vlan to get IPs from DHCP
+      ```
+      # configure terminal
+      interface vlan 100
+      ip address dhcp
+      # exit
+      ```
+    - Configure the physical ports to be part of the vlan
+      ```
+      # configure terminal
+      interface range gigabitEthernet 1/0/1-2
+      switchport mode access
+      switchport access vlan name external0
+      # exit
+      ```
+  - Enable NTP (Required for smart licensing)
+    ```
+    # configure terminal
+    ntp server 129.6.15.28 version 2 prefer
+    ```
+    This IP is for time-a-g.nist.gov, for more see [the NIST NTP page](https://tf.nist.gov/tf-cgi/servers.cgi)
+- Setup smart licensing:
+  - Enable smart licensing
+    ```
+    # configure terminal
+    license smart transport callhome
+    ```
+  - Configure account details:
+    ```
+    # configure terminal
+    call-home
+    no http secure server-identity-check
+    contact-email-addr <CISCO EMAIL>
+    profile CiscoTAC-1
+    destination transport-method http
+    destination address http https://tools.cisco.com/its/service/oddce/services/DDCEService
+    active
+    no destination transport-method email
+    # exit
+    # exit
+    ```
+    Be sure to replace `<CISCO EMAIL>` with your Cisco email address
+  - Enable call home
+    ```
+    # configure terminal
+    service call-home
+    ```
+  - Follow [the Cisco guide to create a new token in CSSM](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst3650/software/release/16-12/configuration_guide/sys_mgmt/b_1612_sys_mgmt_3650_cg/configuring_smart_licensing.html#id_89946)  
+    Copy the token and have it handy for the next step
+  - Register the device with the new token:
+    ```
+    # enable
+    license smart register idtoken <TOKEN>
+    ```
+    Be sure to replace `<TOKEN>` with the token's value in CSSM
+- Enable layer 3 routing  
   ```cisco
   # configure terminal
   ip routing
@@ -150,14 +231,16 @@ Configuration:
     - Management
       ```cisco
       # configure terminal
-      vlan 100
+      vlan 200
       name mgmt0
+      # exit
       ```
     - Public traffic
       ```cisco
       # configure terminal
-      vlan 200
+      vlan 300
       name public0
+      # exit
       ```
   - Attach interfaces
     - Management
@@ -166,6 +249,7 @@ Configuration:
       interface range gigabitEthernet 1/0/3-12
       switchport mode access
       switchport access vlan name mgmt0
+      # exit
       ```
     - Public traffic
       ```cisco
@@ -173,14 +257,16 @@ Configuration:
       interface range gigabitEthernet 1/0/13-24
       switchport mode access
       switchport access vlan name public0
+      # exit
       ```
   - Configure IPs
     - Management
       - Switch
         ```cisco
         # configure terminal
-        interface vlan 100
+        interface vlan 200
         ip add 10.10.10.1 255.255.255.0
+        # exit
         ```
       - DHCP pool
         ```cisco
@@ -191,6 +277,7 @@ Configuration:
         network 10.10.10.0 255.255.255.0
         default-router 10.10.10.1
         dns-server 8.8.8.8
+        # exit
         ```
         ```cisco
         service dhcp mgmt0
@@ -206,7 +293,7 @@ Configuration:
       - Switch
         ```cisco
         # configure terminal
-        interface vlan 200
+        interface vlan 300
         ip add 10.10.20.1 255.255.255.0
         ```
       - DHCP pool
