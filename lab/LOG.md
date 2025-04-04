@@ -48,6 +48,8 @@ This is a backup safe mode which lets you run a limited set of commands (Like sp
 
 #### Forgotten Password
 
+[Reference](https://www.cisco.com/c/en/us/support/docs/ios-nx-os-software/ios-xe-16/217045-troubleshoot-password-recovery-in-cisco.html)
+
 If you do not know the password of a switch:
 
 1. Boot into ROMMON mode
@@ -244,6 +246,136 @@ Configuration:
   # configure terminal
   ip routing
   ```
+- Setup a local user
+  - Enable local authentication:
+    ```cisco
+    # configure terminal
+    aaa new-model
+    aaa authentication login default local
+    ```
+  - Enable password encryption:
+    ```cisco
+    # configure terminal
+    service password-encryption
+    ```
+  - Create a user:
+    ```cisco
+    # configure terminal
+    username admin password <PASSWORD>
+    ```
+    Replace `<PASSWORD>` with a password
+
+    This username and password will then be used whenever you access the switch or web ui.
+- Setup a private management VLAN
+  - Create the VLAN
+    ```cisco
+    # configure terminal
+    vlan 200
+    name mgmt0
+    # exit
+    ```
+  - Attach interfaces
+    ```cisco
+    # configure terminal
+    interface range gigabitEthernet 1/0/3-12
+    switchport mode access
+    switchport access vlan name mgmt0
+    # exit
+    ```
+  - Set an IP for the switch in the management VLAN as a gateway
+    ```cisco
+    # configure terminal
+    interface vlan 200
+    ip add 10.10.10.1 255.255.255.0
+    # exit
+    ```
+  - Configure a DHCP pool for the VLAN
+    ```cisco
+    # configure terminal
+    ip dhcp excluded-address 10.10.10.1 10.10.10.10
+    
+    ip dhcp pool mgmt0
+    network 10.10.10.0 255.255.255.0
+    default-router 10.10.10.1
+    # exit
+    ```
+  - Set static IPs based on mac addresses of harware
+    - NodeA IPMI static IP
+      ```cisco
+      # configure terminal
+      ip dhcp pool mgmt0-static
+      host 10.10.10.254 255.255.255.0
+      client-identifier 0100.2590.d75f.94
+      # exit
+      ```
+- Configure an IPSec VPN
+  - Allow VPN traffic:
+    ```cisco
+    # configure terminal
+    access-list 101 permit udp any any eq 500
+    access-list 101 permit esp any any
+    access-list 101 permit ahp any any
+    ```
+  - Create a crypto access list:
+    ```cisco
+    # configure terminal
+    ip access-list extended vpn-tunnel
+    permit ip 10.10.10.0 0.0.0.255 any
+    # exit
+    ```
+  - Set up a transform set
+    ```cisco
+    # configure terminal
+    crypto ipsec transform-set aes-set0 esp-aes 256 esp-sha-hmac
+    mode transport
+    # exit
+    ```
+  - Setup pre-shared key
+    ```cisco
+    # configure terminal
+    crypto isakmp identity address
+    crypto isakmp key <KEY> address 0.0.0.0
+    crypto isakmp key <KEY> address 10.10.10.1
+    ```
+    Be sure to replace `<KEY>` with a pre-shared key for the VPN.
+  - Create an AES transform policy
+    ```cisco
+    # configure terminal
+    crypto isakmp policy 10
+    encryption aes 256
+    authentication pre-share
+    hash sha256
+    lifetime 180
+    group 14
+    ```
+  - Setup the address pool for clients:
+    ```cisco
+    # configure terminal
+    ip local pool vpn-client-pool0 10.10.20.0 10.10.20.255
+    crypto isakmp client configuration address-pool local vpn-client-pool0
+    ```
+  - Set up a dynamic crypto map:
+    ```cisco
+    # configure terminal
+    crypto dynamic-map vpn-tunnel-dynamic-map0 1
+    set transform-set aes-set0
+    set pfs group19
+    # exit
+    ```
+  - Set up a static crypto map:
+    ```cisco
+    # configure terminal
+    crypto map vpn-tunnel-static-map0 1 ipsec-isakmp dynamic vpn-tunnel-dynamic-map0
+    ```
+  - Apply the crypto map to the external interface
+    ```cisco
+    # configure terminal
+    interface vlan 100
+    crypto map vpn-tunnel-static-map0
+    # exit
+    ```
+---
+OLD
 - Management VLAN
   - Create VLAN
     - Management
