@@ -68,10 +68,10 @@ variable "keybase_verification" {
   type = map(string)
   description = "Keybase DNS ownership verification entries."
   default = {
-    "funkyboy.zone": "keybase-site-verification=29OQirPLhHqrbRfkhsdWl45XyYDZ537bFU2sh1zsW-A",
-    "noahh.io": "keybase-site-verification=qLC-aj3hDn591K3qx2EX-aiZTb09QLlk2IY4BmuOBmI",
-    "noahhuppert.com": "keybase-site-verification=JLTh13lgHP5frw5NRtWBWquFyy2GHCaVHXhph2g6qbQ",
-    "goldblum.zone": "keybase-site-verification=WZW-zpLmYG-6wcbQolAisRi5lrynVWsT2TRDKUv4APM",
+    "funkyboy.zone": "",
+    "noahh.io": "",
+    "noahhuppert.com": "",
+    "goldblum.zone": "",
     "oliversgame.deals": "",
     "4e48.dev": "",
     "turtle.wiki": "",
@@ -81,7 +81,7 @@ variable "keybase_verification" {
 variable "spf_email" {
   type = string
   description = "SPF value if email is enabled for a domain."
-  default = "v=spf1 include:_spf.google.com ~all"
+  default = "v=spf1 include:_spf.protonmail.ch ~all"
 }
 
 variable "spf_no_email" {
@@ -100,14 +100,22 @@ variable "mx" {
     "funkyboy.zone": {},
     "noahh.io": {
       primary = {
-        priority = 1
-        value = "smtp.google.com."
+        priority = 10
+        value = "mail.protonmail.ch."
+      }
+      secondary = {
+        priority = 20
+        value = "mailsec.protonmail.ch."
       }
     },
     "noahhuppert.com": {
       primary = {
-        priority = 1
-        value = "smtp.google.com."
+        priority = 10
+        value = "mail.protonmail.ch."
+      }
+      secondary = {
+        priority = 20
+        value = "mailsec.protonmail.ch."
       }
     },
     "goldblum.zone": {},
@@ -127,14 +135,30 @@ variable "dkim" {
     "funkyboy.zone" = {},
     "noahh.io" = {
       primary = {
-        name = "google._domainkey"
-        value = "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAglt8qyzwlzFOqM3mr4iv+Qs6trp7jq6HVbpwtrfxloFtqMXhiNquBLa/2EyL1LNS/2MknXTWq4Wa3rz/lQy1oagW2aFE9ZKpre6dl2wXv++mzyP6lLCYFcn/24IFzRYzHkJpmZru8MbZtIEVtas0ZDXRZicKqhKGfM21E9lxDWD80uRRSuuDl92uPkLaNXjoWHAIyqhcd6+uluqqW0/aItVE1XoaiV6VticNHdEZlGSNdXGCxMUMFYvcerGSWLeuFpmb4YchwS0DZT9o5kBCUpDSBuMG1zOGYoAoDB2Olq7vdRgh5CjCLr/ImtIoqL2MgEtOEp3rCuXhf9hMYPRlNQIDAQAB",
+        name = "protonmail._domainkey"
+        value = "protonmail.domainkey.dhngagtoz5n6777wkmvw6ll2aqlow4wpnwisycw6oabxgrxih5m6a.domains.proton.ch."
+      }
+      secondary = {
+        name = "protonmail2._domainkey"
+        value = "protonmail2.domainkey.dhngagtoz5n6777wkmvw6ll2aqlow4wpnwisycw6oabxgrxih5m6a.domains.proton.ch."
+      }
+      tertiary = {
+        name = "protonmail3._domainkey"
+        value = "protonmail3.domainkey.dhngagtoz5n6777wkmvw6ll2aqlow4wpnwisycw6oabxgrxih5m6a.domains.proton.ch."
       }
     } 
     "noahhuppert.com": {
       primary = {
-        name = "google._domainkey"
-        value = "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAglt8qyzwlzFOqM3mr4iv+Qs6trp7jq6HVbpwtrfxloFtqMXhiNquBLa/2EyL1LNS/2MknXTWq4Wa3rz/lQy1oagW2aFE9ZKpre6dl2wXv++mzyP6lLCYFcn/24IFzRYzHkJpmZru8MbZtIEVtas0ZDXRZicKqhKGfM21E9lxDWD80uRRSuuDl92uPkLaNXjoWHAIyqhcd6+uluqqW0/aItVE1XoaiV6VticNHdEZlGSNdXGCxMUMFYvcerGSWLeuFpmb4YchwS0DZT9o5kBCUpDSBuMG1zOGYoAoDB2Olq7vdRgh5CjCLr/ImtIoqL2MgEtOEp3rCuXhf9hMYPRlNQIDAQAB"
+        name = "protonmail._domainkey"
+        value = "protonmail.domainkey.d2i3l6setswma5tygpxpd7llkrjpntekxmytca5etovoacggdmrka.domains.proton.ch."
+      }
+      secondary = {
+        name = "protonmail2._domainkey"
+        value = "protonmail2.domainkey.d2i3l6setswma5tygpxpd7llkrjpntekxmytca5etovoacggdmrka.domains.proton.ch."
+      }
+      tertiary = {
+        name = "protonmail3._domainkey"
+        value = "protonmail3.domainkey.d2i3l6setswma5tygpxpd7llkrjpntekxmytca5etovoacggdmrka.domains.proton.ch."
       }
     },
     "goldblum.zone": {},
@@ -149,8 +173,8 @@ variable "dmarc" {
   description = "DMARC policies for domains."
   default = {
     "funkyboy.zone": "",
-    "noahh.io": "v=DMARC1; p=none; rua=mailto:webmaster@noahh.io",
-    "noahhuppert.com": "v=DMARC1; p=none; rua=mailto:webmaster@noahhuppert.com",
+    "noahh.io": "v=DMARC1; p=quarantine"
+    "noahhuppert.com": "v=DMARC1; p=quarantine"
     "goldblum.zone": "",
     "oliversgame.deals": "",
     "4e48.dev": "",
