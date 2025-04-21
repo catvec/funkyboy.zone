@@ -81,10 +81,16 @@ If you do not know the password of a switch:
     # enable
     write memory
     ```
-  - Set a new enable secret  
+  - Set a new enable secret / password  
     ```cisco
     # configure terminal
     enable secret <PASSWORD>
+    write memory
+    ```
+    or
+    ```cisco
+    # configure terminal 
+    enable password <PASSWORD>
     write memory
     ```
   
@@ -266,6 +272,12 @@ Configuration:
     Replace `<PASSWORD>` with a password
 
     This username and password will then be used whenever you access the switch or web ui.
+  - Set an enable password:
+    ```cisco
+    # configure terminal
+    enable password <PASSWORD>
+    ```
+    Replace `<PASSWORD>` with a password
 - Setup a private management VLAN
   - Create the VLAN
     ```cisco
@@ -308,6 +320,24 @@ Configuration:
       client-identifier 0100.2590.d75f.94
       # exit
       ```
+- Setup SSH access
+  - Generate an SSH key:
+    ```cisco
+    # configure terminal
+    crypto key generate rsa
+    ```
+    Select 4096 for the number of bits in the key
+  - Switch to SSH version 2:
+    ```cisco
+    # configure terminal
+    ip ssh version 2
+    ```
+  - Setup a virtual terminal for ssh:
+    ```cisco
+    # configure terminal
+    line vty 0 4
+    transport input ssh
+    ```
 - Configure an IPSec VPN
   - Allow VPN traffic:
     ```cisco
@@ -321,6 +351,7 @@ Configuration:
     # configure terminal
     ip access-list extended vpn-tunnel
     permit ip 10.10.10.0 0.0.0.255 any
+    permit ip 10.10.20.0 0.0.0.255 any
     # exit
     ```
   - Set up a transform set
@@ -359,7 +390,7 @@ Configuration:
     # configure terminal
     crypto dynamic-map vpn-tunnel-dynamic-map0 1
     set transform-set aes-set0
-    set pfs group19
+    set pfs group14
     # exit
     ```
   - Set up a static crypto map:
@@ -373,6 +404,11 @@ Configuration:
     interface vlan 100
     crypto map vpn-tunnel-static-map0
     # exit
+    ```
+  - Enable fragementation of IKE packets:
+    ```cisco
+    # configure terminal
+    crypto isakmp fragmentation 
     ```
 ---
 OLD
