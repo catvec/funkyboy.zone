@@ -1,62 +1,23 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: factorio-rev1
+  name: factorio
 spec:
   replicas: 1
   selector:
     matchLabels:
       project: factorio
       component: server
-      revision: rev1
-  serviceName: factorio-rev1
+  serviceName: factorio
   template:
     metadata:
       labels:
         project: factorio
         component: server
-        revision: rev1
     spec:
-      securityContext:
-        runAsUser: 845
-        runAsGroup: 845
-        fsGroup: 845
-      initContainers:
-        # Move configmap and secret files into a tmp volume bc the factorio container's entrypoint will write new files next to ours
-        # This normally isn't possible bc if you mount a file from a configmap or secret it makes the whole dir readonly
-        - name: copy-config
-          image: alpine:latest
-          command: [ "/bin/sh", "-c" ]
-          args: [ "cp /mnt/factorio-config/* /factorio/config" ]
-          volumeMounts:
-            - name: factorio-config-overlay
-              mountPath: /factorio/config
-            - name: factorio-secret
-              mountPath: /mnt/factorio-config/rconpw
-              subPath: rconpw
-
-        # Copies current save files into year/month/date/hour/minute/second/ directoy of save pvc
-        - name: backup-saves
-          image: alpine:latest
-          securityContext:
-            runAsUser: 0
-            runAsGroup: 0
-          command: [ "/bin/sh", "-c" ]
-          args:
-            - |
-              export datepath=$(date +'%Y/%m/%d/%H/%M/%S'); \
-              mkdir -p /mnt/factorio-saves-backup/$datepath && \
-              cp -r /factorio/saves/ /mnt/factorio-saves-backup/$datepath
-          volumeMounts:
-            - name: factorio-saves
-              mountPath: /factorio/saves/
-            - name: factorio-saves-backup
-              mountPath: /mnt/factorio-saves-backup/
       containers:
         - name: factorio
-          # Always get latest version (stable = what people get on steam without betas)
-          image: factoriotools/factorio:stable
-          imagePullPolicy: Always
+          image: factoriotools/factorio:2.0.10
           ports:
             - name: game
               containerPort: 34197
@@ -80,10 +41,11 @@ spec:
                   name: server-secret
                   key: TOKEN
           volumeMounts:
-            - name: factorio-config-overlay
-              mountPath: /factorio/config
             - name: factorio-saves
               mountPath: /factorio/saves/
+            - name: factorio-secret
+              mountPath: /factorio/config/
+              subPath: rconpw
       volumes:
         - name: factorio-secret
           secret:
@@ -91,8 +53,6 @@ spec:
             items:
               - key: server-rconpw.txt
                 path: rconpw
-        - name: factorio-config-overlay
-          emptyDir: {}
           
   volumeClaimTemplates:
     - metadata:
@@ -104,12 +64,3 @@ spec:
         resources:
           requests:
             storage: 2Gi
-    - metadata:
-        name: factorio-saves-backup
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: do-block-storage
-        resources:
-          requests:
-            storage: 5Gi
