@@ -1,0 +1,11 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: knative-operator-subscription
+  namespace: your-namespace
+spec:
+  channel: stable
+  name: knative-operator
+  source: community-operators
+  sourceNamespace: openshift-marketplace
+  startingCSV: knative-operator.v0.23.0
