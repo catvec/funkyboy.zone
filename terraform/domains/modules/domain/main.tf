@@ -49,7 +49,7 @@ resource "digitalocean_record" "record_protonmail_mx" {
 resource "digitalocean_record" "record_protonmail_dkim" {
   for_each = var.dkim
   domain = var.name
-  type = "TXT"
+  type = "CNAME"
   ttl = "60" # seconds
   name = each.value.name
   value = each.value.value
