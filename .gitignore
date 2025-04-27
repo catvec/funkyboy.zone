@@ -15,3 +15,6 @@ kubeconfig.yaml
 k8s-download/
 !lab/*.md
 lab/
+
+# Downloaded config files
+*wg.conf
