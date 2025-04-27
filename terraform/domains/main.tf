@@ -201,8 +201,8 @@ variable "google_verification" {
   description = "Google domain ownership verification."
   default = {
     "funkyboy.zone": null,
-    "noahh.io": "google-site-verification=vK90NUyqv5bx45cdFezI3tKOtAMJZBteDHVTRUvEu9o",
-    "noahhuppert.com": "google-site-verification=ROilJT-7D-FpAfySybb64ZNk3iAwuAgpl67rCnnPIKc",
+    "noahh.io": null,
+    "noahhuppert.com": null,
     "goldblum.zone": null,
     "oliversgame.deals": null,
     "4e48.dev": null,
