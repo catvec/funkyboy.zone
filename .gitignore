@@ -12,9 +12,5 @@ kubeconfig.yaml
 # Editor
 .idea/
 
-k8s-download/
-lab/
-!lab/*.md
-
 # Downloaded config files
 *wg.conf
