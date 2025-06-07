@@ -1,0 +1,3 @@
+secret.env
+share/
+!share/.gitkeep

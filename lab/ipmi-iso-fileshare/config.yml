@@ -1,0 +1,24 @@
+auth:
+  - user: ipmi
+    group: ipmi
+    uid: 1000
+    gid: 1000
+    password: secret
+
+global:
+  - "force user = ipmi"
+  - "force group = ipmi"
+  - "client min protocol = NT1"
+  - "server min protocol = NT1"
+
+share:
+  - name: share
+    path: /samba/share
+    browsable: yes
+    readonly: no
+    guestok: no
+    validusers: ipmi
+    writelist: ipmi
+    veto: no
+    hidefiles: /_*/
+    recycle: yes

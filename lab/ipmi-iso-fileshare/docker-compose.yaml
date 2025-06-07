@@ -1,0 +1,12 @@
+services:
+  samba:
+    image: crazymax/samba:4.19.6
+    env_file:
+      - ./secret.env
+    ports:
+      - 445:445
+    volumes:
+      #- ./smb.conf:/etc/samba/smb.conf
+      #- ./share/:/storage
+      - ./config.yml:/data/config.yml
+      - ./share:/samba/share
