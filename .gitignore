@@ -13,8 +13,8 @@ kubeconfig.yaml
 .idea/
 
 k8s-download/
-!lab/*.md
 lab/
+!lab/*.md
 
 # Downloaded config files
 *wg.conf
