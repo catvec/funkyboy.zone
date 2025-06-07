@@ -1,0 +1,88 @@
+#+title: 10 2 24 Outage
+* Symptoms
+Cannot send TCP packets to any services on the Kubernetes cluster.
+* Path of outage
+** DONE DNS
+#+begin_src shell
+dig view.media.k8s.funkyboy.zone
+#+end_src
+
+#+RESULTS:
+|                                |              |                               |        |                 |                              |     |         |    |            |    |             |   |
+| ;                              | <<>>         | DiG                           | 9.20.1 | <<>>            | view.media.k8s.funkyboy.zone |     |         |    |            |    |             |   |
+| ;;                             | global       | options:                      | +cmd   |                 |                              |     |         |    |            |    |             |   |
+| ;;                             | Got          | answer:                       |        |                 |                              |     |         |    |            |    |             |   |
+| ;;                             | ->>HEADER<<- | opcode:                       | QUERY, | status:         | NOERROR,                     | id: |     114 |    |            |    |             |   |
+| ;;                             | flags:       | qr                            | rd     | ra;             | QUERY:                       | 1,  | ANSWER: | 1, | AUTHORITY: | 0, | ADDITIONAL: | 0 |
+|                                |              |                               |        |                 |                              |     |         |    |            |    |             |   |
+| ;;                             | QUESTION     | SECTION:                      |        |                 |                              |     |         |    |            |    |             |   |
+| ;view.media.k8s.funkyboy.zone. | IN           | A                             |        |                 |                              |     |         |    |            |    |             |   |
+|                                |              |                               |        |                 |                              |     |         |    |            |    |             |   |
+| ;;                             | ANSWER       | SECTION:                      |        |                 |                              |     |         |    |            |    |             |   |
+| view.media.k8s.funkyboy.zone.  | 60           | IN                            | A      | 138.197.228.127 |                              |     |         |    |            |    |             |   |
+|                                |              |                               |        |                 |                              |     |         |    |            |    |             |   |
+| ;;                             | Query        | time:                         | 199    | msec            |                              |     |         |    |            |    |             |   |
+| ;;                             | SERVER:      | 192.168.88.1#53(192.168.88.1) | (UDP)  |                 |                              |     |         |    |            |    |             |   |
+| ;;                             | WHEN:        | Wed                           | Oct    | 2               | 20:05:34                     | EDT |    2024 |    |            |    |             |   |
+| ;;                             | MSG          | SIZE                          | rcvd:  | 62              |                              |     |         |    |            |    |             |   |
+|                                |              |                               |        |                 |                              |     |         |    |            |    |             |   |
+|                                |              |                               |        |                 |                              |     |         |    |            |    |             |   |
+
+Returns the `138.197.228.127` IP.`
+** DONE Laptop link to internet
+*** DONE Ping to google
+#+begin_src shell
+ping -c10 google.com
+#+end_src
+
+#+RESULTS:
+| PING | google.com       | (142.250.65.238) | 56(84)                     | bytes             | of          | data.   |           |      |        |
+|   64 | bytes            | from             | lga25s73-in-f14.1e100.net  | (142.250.65.238): | icmp_seq=1  | ttl=114 | time=19.9 | ms   |        |
+|   64 | bytes            | from             | lga25s73-in-f14.1e100.net  | (142.250.65.238): | icmp_seq=2  | ttl=114 | time=26.1 | ms   |        |
+|   64 | bytes            | from             | lga25s73-in-f14.1e100.net  | (142.250.65.238): | icmp_seq=3  | ttl=114 | time=35.4 | ms   |        |
+|   64 | bytes            | from             | lga25s73-in-f14.1e100.net  | (142.250.65.238): | icmp_seq=4  | ttl=114 | time=36.8 | ms   |        |
+|   64 | bytes            | from             | lga25s73-in-f14.1e100.net  | (142.250.65.238): | icmp_seq=5  | ttl=114 | time=22.9 | ms   |        |
+|   64 | bytes            | from             | lga25s73-in-f14.1e100.net  | (142.250.65.238): | icmp_seq=6  | ttl=114 | time=28.2 | ms   |        |
+|   64 | bytes            | from             | lga25s73-in-f14.1e100.net  | (142.250.65.238): | icmp_seq=7  | ttl=114 | time=26.0 | ms   |        |
+|   64 | bytes            | from             | lga25s73-in-f14.1e100.net  | (142.250.65.238): | icmp_seq=8  | ttl=114 | time=30.6 | ms   |        |
+|   64 | bytes            | from             | lga25s73-in-f14.1e100.net  | (142.250.65.238): | icmp_seq=9  | ttl=114 | time=30.3 | ms   |        |
+|   64 | bytes            | from             | lga25s73-in-f14.1e100.net  | (142.250.65.238): | icmp_seq=10 | ttl=114 | time=47.2 | ms   |        |
+|      |                  |                  |                            |                   |             |         |           |      |        |
+|  --- | google.com       | ping             | statistics                 | ---               |             |         |           |      |        |
+|   10 | packets          | transmitted,     | 10                         | received,         | 0%          | packet  | loss,     | time | 9006ms |
+|  rtt | min/avg/max/mdev | =                | 19.874/30.336/47.213/7.478 | ms                |             |         |           |      |        |
+*** DONE Ping cloudflare DNS
+#+begin_src shell
+ping -c10 1.1.1.1
+#+end_src
+
+#+RESULTS:
+| PING | 1.1.1.1          | (1.1.1.1)    |                     56(84) | bytes       | of     | data.     |       |      |        |
+|   64 | bytes            | from         |                   1.1.1.1: | icmp_seq=1  | ttl=57 | time=21.1 | ms    |      |        |
+|   64 | bytes            | from         |                   1.1.1.1: | icmp_seq=2  | ttl=57 | time=25.8 | ms    |      |        |
+|   64 | bytes            | from         |                   1.1.1.1: | icmp_seq=3  | ttl=57 | time=18.6 | ms    |      |        |
+|   64 | bytes            | from         |                   1.1.1.1: | icmp_seq=4  | ttl=57 | time=22.0 | ms    |      |        |
+|   64 | bytes            | from         |                   1.1.1.1: | icmp_seq=5  | ttl=57 | time=18.7 | ms    |      |        |
+|   64 | bytes            | from         |                   1.1.1.1: | icmp_seq=6  | ttl=57 | time=16.4 | ms    |      |        |
+|   64 | bytes            | from         |                   1.1.1.1: | icmp_seq=7  | ttl=57 | time=17.7 | ms    |      |        |
+|   64 | bytes            | from         |                   1.1.1.1: | icmp_seq=8  | ttl=57 | time=27.3 | ms    |      |        |
+|   64 | bytes            | from         |                   1.1.1.1: | icmp_seq=9  | ttl=57 | time=28.2 | ms    |      |        |
+|   64 | bytes            | from         |                   1.1.1.1: | icmp_seq=10 | ttl=57 | time=18.0 | ms    |      |        |
+|      |                  |              |                            |             |        |           |       |      |        |
+|  --- | 1.1.1.1          | ping         |                 statistics | ---         |        |           |       |      |        |
+|   10 | packets          | transmitted, |                         10 | received,   | 0%     | packet    | loss, | time | 9016ms |
+|  rtt | min/avg/max/mdev | =            | 16.400/21.383/28.214/4.077 | ms          |        |           |       |      |        |
+
+** TODO Internet link to Digital Ocean
+*** Path
+#+begin_src shell
+traceroute view.media.k8s.funkyboy.zone
+#+end_src
+
+#+RESULTS:
+
+** TODO Digital Ocean load balancer
+** TODO Link load balancer to cluster node
+** TODO Kubernetes ingress
+** TODO Kubernetes service
+** TODO Kubernetes pod
