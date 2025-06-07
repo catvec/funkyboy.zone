@@ -12,7 +12,10 @@ module "kubernetes_cluster" {
     name = "worker-pool-dedicated-cpu-b"
     size = "c-4"
     node_count = {
-      count = 1
+      autoscale = {
+        min = 1
+        max = 2
+      }
     }
   }
 
