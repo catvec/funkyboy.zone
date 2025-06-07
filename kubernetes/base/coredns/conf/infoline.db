@@ -2,6 +2,7 @@
 ;Name TTL   ??    Type    Primary NS        Webmaster contact        Serial     Refresh    Retry Expire TTL
 @	    60    IN    SOA     funkyboy.zone.    webmaster.funkyboy.zone. 0000000001 7200 3600 1209600 60
 
+syncthing.infoline.funkyboy.zone.   IN      CNAME   syncthing.syncthing.svc.cluster.local.
 sonarr.infoline.funkyboy.zone.      IN      CNAME   sonarr.media-server.svc.cluster.local.
 radarr.infoline.funkyboy.zone.      IN      CNAME   radarr.media-server.svc.cluster.local.
 qbittorrent.infoline.funkyboy.zone. IN      CNAME   qbittorrent.media-server.svc.cluster.local.

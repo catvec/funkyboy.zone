@@ -69,3 +69,10 @@ sections:
       openingMethod: clipboard
       description: "factorio.funkyboy.zone (Default game port 34197)"
       icon: hl-factorio
+
+- name: Storage
+  icon: ":hard-disk:"
+  items:
+    - title: Syncthing
+      url: http://syncthing.infoline.funkyboy.zone
+      icon: hl-syncthing

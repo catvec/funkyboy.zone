@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: syncthing
+spec:
+  serviceName: syncthing
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: syncthing
+          image: linuxserver/syncthing:1.29.5
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          ports:
+            - name: webui
+              containerPort: 8384
+            - name: protocol
+              containerPort: 22000
+            - name: discovery
+              containerPort: 21027
+          volumeMounts:
+            - name: syncthing-config
+              mountPath: /config
+            - name: syncthing-data
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: syncthing-config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: do-block-storage
+        resources:
+          requests:
+            storage: 1Gi
+    - metadata:
+        name: syncthing-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: do-block-storage
+        resources:
+          requests:
+            storage: 20Gi
