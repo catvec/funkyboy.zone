@@ -1,2 +1,21 @@
-apiVersion:
+apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
+namespace: funkyboy-zone
+resources:
+  - resources/namespace.yaml
+  - resources/deployment.yaml
+  - resources/svc.yaml
+  - resources/ingress.yaml
+
+labels:
+  - pairs:
+      project: funkyboy-zone
+      component: server
+    includeSelectors: true
+    includeTemplates: true
+
+images:
+  - name: funkyboy-zone
+    newName: isolation0230/funkyboy-zone
+    newTag: 2025-06-14-3

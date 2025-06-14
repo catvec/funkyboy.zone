@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Wiki</title>
+  </head>
+  <body>
+    <h1>Wiki</h1>
+
+    <h2>Table Of Contents</h2>
+    <ol>
+      <li>
+	<a href="#bash">Bash</a>
+	<ol>
+	  <li><a href="#bash-script-dir">Script Directory</a></li>
+	  <li><a href="#bash-check">Check</a></li>
+	  <li><a href="#bash-bold-echo">Bold Echo</a></li>
+	  <li><a href="#bash-die">Die</a></li>
+	  <li><a href="#bash-getopts-shift"><code>getopts</code> Shift</a></li>
+	</ol>
+      </li>
+    </ol>
+
+    <h1 id="bash">Bash</h1>
+    <section id="bash-script-dir">
+      <h2>Script Directory</h2>
+
+      Determine the directory in which a bash script is located:<br>
+      <br>
+      <pre>
+prog_dir=$(dirname $(realpath "$0"))
+      </pre>
+    </section>
+
+    <section id="bash-check">
+      <h2>Check</h2>
+
+      Check the previous command succeeded and print an
+	 error message if it failed:<br>
+      <br>
+      <pre>
+check() {
+    if [[ "$?" != "0" ]]; then
+	   die "$@"
+    fi
+}
+      </pre>
+    </section>
+
+    <section id="bash-bold-echo">
+      <h2>Bold Echo</h2>
+
+      Print bold text:<br>
+      <br>
+      <pre>
+bold() {
+    echo "$(tput bold)$@$(tput sgr0)"
+}
+      </pre>
+    </section>
+
+    <section id="bash-die">
+      <h2>Die</h2>
+
+      Print error to <code>stderr</code> and exit:<br>
+      <br>
+      <pre>
+die() {
+    echo "Error: $@" >&2
+    exit 1
+}
+      </pre>
+    </section>
+
+    <section id="bash-getopts-shift">
+      <h2><code>getopts</code> Shift</h2>
+
+      Shift after <code>getopts</code>:<br>
+      <br>
+      <pre>
+shift $((OPTIND-1))
+      </pre>
+    </section>
+  </body>
+</html>

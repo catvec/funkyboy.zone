@@ -31,11 +31,8 @@ locals {
     "funkyboy.zone" = {
       "@": local.k8s_record,
       "www": local.k8s_record,
-      "*.k8s": {
-        type = "A",
-        value = module.k8s_nginx_ingress_lb.kubernetes_loadbalancer_ipv4
-        ttl = 60
-      },
+      "wiki": local.k8s_record,
+      "*.k8s": local.k8s_record,
       "factorio" = {
         type = "A",
         value = module.k8s_factorio_lb.kubernetes_loadbalancer_ipv4
