@@ -197,6 +197,11 @@ def render_and_apply_or_delete(
         else:
             logging.info("Not validating manifests")
 
+        # Show manifests
+        if show_manifests:
+            logging.debug("Kubernetes manifests")
+            logging.debug(str(kustomize_build_str).replace("\\n", "\n"))
+
         # Show manifest diff
         if not no_diff:
             strategy.diff(action)
@@ -208,11 +213,6 @@ def render_and_apply_or_delete(
                 raise DiffConfirmFail()
         else:
             logging.info("Not computing Kubernetes manifest differences")
-
-        # Show manifests
-        if show_manifests:
-            logging.debug("Kubernetes manifests")
-            logging.debug(str(kustomize_build_str).replace("\\n", "\n"))
 
         # Apply Kubernetes manifest
         logging.info("{} manifests", "Applying" if action == ComponentAction.CREATE else "Deleting")
