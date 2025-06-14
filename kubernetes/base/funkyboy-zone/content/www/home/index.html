@@ -4,18 +4,57 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
 		<title>Funky Boy</title>
+
+		<style>
+		 html, body {
+			 width: 100%;
+			 height: 100%;
+			 padding: 0;
+			 margin: 0;
+		 }
+
+		 body {
+			 display: flex;
+			 justify-content: center;
+			 align-items: center;
+
+			 font-family: "Sans-Serif";
+
+			 background-image: url("Funky_Boy.webp");
+			 background-repeat: no-repeat;
+			 background-size: cover;
+		 }
+
+		 h1 {
+			 color: #d489c9;
+			 text-shadow: 4px 4px 2px rgba(137,212,148,0.6);
+			 font-size: 64px;
+		 }
+
+		 @media(max-width: 400px) {
+			 h1 {
+				 font-size: 13vw;
+			 }
+		 }
+
+		 a {
+			 position: absolute;
+			 bottom: 0;
+			 left: 0;
+			 padding: 5px;
+
+			 color: #fdfdae;
+		 }
+		 a:visited {
+			 color: #fdfdae;
+		 }
+		</style>
 	</head>
 	<body>
 		<h1>Funky Boy</h1>
 
-		<h2>About</h2>
-		A Linux server hosted by Noah Huppert.<br>
-		<br>
-		Provides services for: <br>
-		<ul>
-			<li><a href="https://funkyboy.zone">funkyboy.zone</a></li>
-			<li><a href="https://goldblum.zone">goldblum.zone</a></li>
-		</ul>
-		The server's setup scripts are open source: <a href="https://github.com/Noah-Huppert/funkyboy.zone">GitHub repository</a>.
+		<a href="https://www.imdb.com/title/tt1483797/">
+			What?
+		</a>
 	</body>
 </html>

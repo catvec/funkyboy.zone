@@ -18,4 +18,4 @@ labels:
 images:
   - name: funkyboy-zone
     newName: isolation0230/funkyboy-zone
-    newTag: 2025-06-14-3
+    newTag: 2025-06-14-4
