@@ -54,7 +54,10 @@ locals {
       "www": local.k8s_record,
       "*": local.k8s_record,
     },
-    "goldblum.zone" = local.default_targets
+    "goldblum.zone" = {
+      "@": local.k8s_record,
+      "*": local.k8s_record,
+    },
     "oliversgame.deals" = local.default_targets
     "4e48.dev" = local.default_targets
     "turtle.wiki" = local.default_targets

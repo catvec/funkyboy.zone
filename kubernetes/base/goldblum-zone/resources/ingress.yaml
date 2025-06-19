@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: goldblum-zone
+  annotations:
+    cert-manager.io/cluster-issuer: lets-encrypt-production-http01
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: goldblum.zone
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: goldblum-zone
+                port:
+                  name: http
+
+    - host: www.goldblum.zone
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: goldblum-zone
+                port:
+                  name: http
+
+  tls:
+    - hosts:
+        - www.goldblum.zone
+        - goldblum.zone
+      secretName: goldblum-zone-ingress-cert

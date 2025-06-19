@@ -22,6 +22,7 @@ components:
   - path: ./base/discord-azure-boot/
   - path: ./base/noahhuppert-com/
   - path: ./base/funkyboy-zone/
+  - path: ./base/goldblum-zone/
   # WIP: - path: ./base/netbox/
   - path: ./base/gotify/production/
   - path: ./base/factorio/
