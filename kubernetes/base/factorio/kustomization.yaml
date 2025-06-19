@@ -23,4 +23,9 @@ secretGenerator:
 resources:
   - resources/namespace.yaml
   - resources/statefulset.yaml
-  - resources/service.yaml
+  # Comment out service when not in use so don't have to pay for LB
+  #- resources/service.yaml
+
+replicas:
+  - name: factorio
+    count: 0
