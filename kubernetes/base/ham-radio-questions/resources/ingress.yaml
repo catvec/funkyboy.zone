@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ham-radio-questions
+  annotations:
+    cert-manager.io/cluster-issuer: lets-encrypt-production-http01
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: ham-radio-questions.k8s.funkyboy.zone
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ham-radio-questions
+                port:
+                  name: http
+
+    - host: ham-radio-questions.funkyboy.zone
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ham-radio-questions
+                port:
+                  name: http
+
+  tls:
+    - hosts:
+        - ham-radio-questions.k8s.funkyboy.zone
+        - ham-radio-questions.funkyboy.zone
+      secretName: ham-radio-questions-ingress-cert

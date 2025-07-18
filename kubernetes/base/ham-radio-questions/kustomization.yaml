@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: ham-radio-questions
+resources:
+  - resources/namespace.yaml
+  - resources/deployment.yaml
+  - resources/svc.yaml
+  - resources/ingress.yaml
+
+labels:
+  - pairs:
+      project: ham-radio-questions
+      component: server
+    includeSelectors: true
+    includeTemplates: true
+
+images:
+  - name: ham-radio-questions
+    newName: isolation0230/ham-radio-questions
+    newTag: 2025-7-17-7

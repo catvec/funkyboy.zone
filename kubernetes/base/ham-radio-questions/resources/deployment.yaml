@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ham-radio-questions
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: nginx
+          image: ham-radio-questions
+          ports:
+            - name: http
+              containerPort: 80

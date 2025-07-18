@@ -33,16 +33,17 @@ locals {
       "www": local.k8s_record,
       "wiki": local.k8s_record,
       "*.k8s": local.k8s_record,
-      "factorio" = {
-        type = "A",
-        value = module.k8s_factorio_lb.kubernetes_loadbalancer_ipv4
-        ttl = 60
-      },
+      # "factorio" = {
+      #   type = "A",
+      #   value = module.k8s_factorio_lb.kubernetes_loadbalancer_ipv4
+      #   ttl = 60
+      # },
       "infoline" = {
         type = "NS"
         value = "k8s.funkyboy.zone."
         ttl = 60
       },
+      "ham-radio-questions" = local.k8s_record,
     },
     "noahh.io" = {
       "@": local.k8s_record,
@@ -218,13 +219,13 @@ module "k8s_nginx_ingress_lb" {
   kubernetes_service = "ingress-nginx-controller"
 }
 
-module "k8s_factorio_lb" {
-  source = "./modules/kubernetes_loadbalancer"
+# module "k8s_factorio_lb" {
+#   source = "./modules/kubernetes_loadbalancer"
 
-  digitalocean_kubernetes_cluster_name = data.terraform_remote_state.compute.outputs.kubernetes_cluster_name
-  kubernetes_namespace = "factorio"
-  kubernetes_service = "factorio-rev1"
-}
+#   digitalocean_kubernetes_cluster_name = data.terraform_remote_state.compute.outputs.kubernetes_cluster_name
+#   kubernetes_namespace = "factorio"
+#   kubernetes_service = "factorio-rev1"
+# }
 
 module "domains" {
   source = "./modules/domain"

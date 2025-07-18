@@ -23,6 +23,7 @@ components:
   - path: ./base/noahhuppert-com/
   - path: ./base/funkyboy-zone/
   - path: ./base/goldblum-zone/
+  - path: ./base/ham-radio-questions/
   # WIP: - path: ./base/netbox/
   - path: ./base/gotify/production/
   - path: ./base/factorio/
