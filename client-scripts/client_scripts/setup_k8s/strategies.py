@@ -86,7 +86,7 @@ class DiffComponentStrategy(ComponentStrategy):
         if action == ComponentAction.CREATE:
             diff_res = self._kubectl.diff(self.input_manifests)
 
-            if diff_res["missing_namespaces"] is not None:
+            if len(diff_res["missing_namespaces"]) > 0:
                 for ns in diff_res['missing_namespaces']:
                     logging.warning("Must create namespace: {}", ns)
 

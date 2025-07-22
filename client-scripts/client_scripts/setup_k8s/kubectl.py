@@ -199,6 +199,11 @@ class KubectlClient:
                     stdout=decode_bytes(out[0]),
                     stderr=stderr,
                 )
+
+            return {
+                'missing_namespaces': ns_errs['missing_namespaces'],
+                'output': decode_bytes(out[0]),
+            }
             
         return {
             'missing_namespaces': [],
@@ -276,4 +281,3 @@ class KubectlClient:
             return None
         
         return yaml.safe_load(stdout)
-        
