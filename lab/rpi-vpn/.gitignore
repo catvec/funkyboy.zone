@@ -3,3 +3,5 @@
 *.img
 
 salt-run/cache/
+
+bootstrap-roster.yaml

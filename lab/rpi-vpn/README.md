@@ -39,6 +39,24 @@ Raspberry PI VPN.
        ```
        ssh-copy-id -i ../../secret/lab/rpi-vpn/pki/management_key admin@${RPI_HOST}
        ```
+4. Run Salt for the first time with a custom roster file:
+   > This is needed because SSH will still be using the default SSH port (`22`):
+   - Make a temporary file like `bootstrap-roster.yaml`:
+     ```
+     rpi_vpn:
+       host: <IP>
+       user: admin
+       port: 22
+     ```
+   - Run `salt-ssh` with the `--roster-file` argument:
+     ```
+     ./scripts/salt-ssh --roster-file ./bootstrap-roster.yaml state.apply
+     ```
+   - Then SSH in to the Pi and run the following to restart the SSH server:
+     ```
+     sudo systemctl reload sshd
+     ```
+     You must run this command whenever a config file change is made. We don't want to run this command automatically in case it bricks our installation remotely.
 # Ways to Brick
 This is a list of ways you can brick the installation. Usually resulting in needing physical access to the Raspberry Pi. So try not to do these things:
 
