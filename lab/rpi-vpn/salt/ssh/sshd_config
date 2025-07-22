@@ -11,29 +11,35 @@
 
 Include /etc/ssh/sshd_config.d/*.conf
 
-#Port 22
+Port {{ pillar.ssh.port }}
 #AddressFamily any
 #ListenAddress 0.0.0.0
 #ListenAddress ::
 
-#HostKey /etc/ssh/ssh_host_rsa_key
-#HostKey /etc/ssh/ssh_host_ecdsa_key
-#HostKey /etc/ssh/ssh_host_ed25519_key
+# Supported HostKey algorithms by order of preference.
+HostKey /etc/ssh/ssh_host_ed25519_key
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
 
 # Ciphers and keying
 #RekeyLimit default none
 
+KexAlgorithms {{ pillar.ssh.kex_algs }}
+Ciphers {{ pillar.ssh.ciphers }}
+MACs {{ pillar.ssh.macs }}
+
 # Logging
 #SyslogFacility AUTH
-#LogLevel INFO
+# LogLevel VERBOSE logs user's key fingerprint on login. Needed to have a clear audit track of which key was using to log in.
+LogLevel VERBOSE
 
 # Authentication:
 
 #LoginGraceTime 2m
-#PermitRootLogin prohibit-password
+PermitRootLogin no
 #StrictModes yes
-#MaxAuthTries 6
-#MaxSessions 10
+MaxAuthTries 3
+MaxSessions 5
 
 #PubkeyAuthentication yes
 
@@ -110,6 +116,9 @@ PrintMotd no
 
 # Allow client to pass locale environment variables
 AcceptEnv LANG LC_*
+
+# Restrict SSH access to admin user only
+AllowUsers admin
 
 # override default of no subsystems
 Subsystem	sftp	/usr/lib/openssh/sftp-server
