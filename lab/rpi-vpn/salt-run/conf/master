@@ -9,7 +9,7 @@ roster_file: salt-run/conf/roster.yaml
 roster_defaults:
   priv: ./management_key
 
-salt_roots:
+file_roots:
   base:
     - salt
 
