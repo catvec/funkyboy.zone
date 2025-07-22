@@ -5,7 +5,7 @@ root_dir: ../../../../
 pki_dir: secret/lab/rpi-vpn/pki
 log_file: lab/rpi-vpn/salt-run/logs/ssh.log
 cachedir: lab/rpi-vpn/salt-run/cache
-roster_file: salt-run/conf/roster.yaml
+roster_file: ../../secret/lab/rpi-vpn/conf/roster.yaml
 roster_defaults:
   priv: ./management_key
 
@@ -16,3 +16,4 @@ file_roots:
 pillar_roots:
   base:
     - pillar
+    - ../../secret/lab/rpi-vpn/pillar
