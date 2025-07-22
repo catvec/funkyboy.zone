@@ -1,3 +1,5 @@
 # OS image files
 *.img.xz
 *.img
+
+salt-run/cache/
