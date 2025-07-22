@@ -29,6 +29,17 @@ spec:
                 port:
                   name: http
 
+    - host: modes.funkyboy.zone
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: funkyboy-zone
+                port:
+                  name: http
+
     - host: funkyboy.zone
       http:
         paths:
@@ -44,5 +55,6 @@ spec:
     - hosts:
         - www.funkyboy.zone
         - wiki.funkyboy.zone
+        - modes.funkyboy.zone
         - funkyboy.zone
       secretName: www-apex-wiki-funkyboy-zone-ingress-cert

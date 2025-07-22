@@ -32,6 +32,7 @@ locals {
       "@": local.k8s_record,
       "www": local.k8s_record,
       "wiki": local.k8s_record,
+      "modes": local.k8s_record,
       "*.k8s": local.k8s_record,
       # "factorio" = {
       #   type = "A",
