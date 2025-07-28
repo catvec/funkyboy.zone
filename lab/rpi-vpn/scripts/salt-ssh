@@ -5,6 +5,16 @@ set -eu
 PROG_DIR=$(dirname $(realpath "$0"))
 CONFIG_DIR="${PROG_DIR}/../salt-run/conf/"
 
+# Set REPO_ROOT for environment variable substitution in master config
+export REPO_ROOT="${PROG_DIR}/../../../"
+
+# Generate master config from template with environment variable substitution
+MASTER_CONFIG="${CONFIG_DIR}/master"
+envsubst < "${CONFIG_DIR}/master.template" > "$MASTER_CONFIG"
+
+# Clean up generated config on exit
+trap "rm -f '$MASTER_CONFIG'" EXIT
+
 # Change to rpi-vpn directory bc paths in conf (that aren't prepended with root_dir) are relative to current directory
 cd "${PROG_DIR}/../"
 

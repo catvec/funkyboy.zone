@@ -3,5 +3,6 @@
 *.img
 
 salt-run/cache/
+salt-run/conf/master
 
 bootstrap-roster.yaml

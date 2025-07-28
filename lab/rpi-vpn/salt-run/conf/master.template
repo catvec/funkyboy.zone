@@ -9,12 +9,13 @@ roster_file: ../../secret/lab/rpi-vpn/conf/roster.yaml
 roster_defaults:
   priv: ./management_key
 
+file_client: local
 file_roots:
   base:
-    - salt
-    - ../../secret/lab/rpi-vpn/salt
+    - ${REPO_ROOT}/lab/rpi-vpn/salt
+    - ${REPO_ROOT}/secret/lab/rpi-vpn/salt
 
 pillar_roots:
   base:
-    - pillar
-    - ../../secret/lab/rpi-vpn/pillar
+    - ${REPO_ROOT}/lab/rpi-vpn/pillar
+    - ${REPO_ROOT}/secret/lab/rpi-vpn/pillar
