@@ -1,0 +1,28 @@
+FROM debian:bookworm-slim
+
+# Install only SSH and Python for Salt SSH
+RUN apt-get update && apt-get install -y \
+    openssh-server \
+    python3 \
+    python3-pip \
+    sudo \
+    bash \
+    iproute2 \
+    iputils-ping
+
+# Create SSH host keys and SSH directory
+RUN mkdir -p /var/run/sshd && ssh-keygen -A
+
+# Create salt user with sudo access (for Salt SSH)
+RUN useradd -m -s /bin/bash salt && \
+    echo "salt:salt" | chpasswd && \
+    echo "salt ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Configure SSH for Salt SSH access
+RUN sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config && \
+    sed -i 's/#PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config && \
+    sed -i 's/#Port 22/Port 22/' /etc/ssh/sshd_config
+
+
+# Start SSH daemon
+CMD ["/usr/sbin/sshd", "-D"]

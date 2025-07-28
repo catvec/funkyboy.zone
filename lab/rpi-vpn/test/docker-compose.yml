@@ -1,0 +1,52 @@
+services:
+  rpi-vpn:
+    build:
+      context: .
+      dockerfile: Dockerfile.rpi-vpn
+    container_name: nftables-rpi-vpn
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    networks:
+      external:
+        ipv4_address: 10.10.9.10    # External network (simulates internet)
+      internal:
+        ipv4_address: 10.10.10.208  # RPI VPN IP from LOG.md
+
+  external:
+    build:
+      context: .
+      dockerfile: Dockerfile.external
+    container_name: external-server
+    networks:
+      external:
+        ipv4_address: 10.10.9.200    # External network server
+
+  orchestrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.orchestrator
+    container_name: salt-orchestrator
+    networks:
+      - external
+      - internal
+    depends_on:
+      - rpi-vpn
+      - external
+    volumes:
+      - ../../..:/repo:ro  # Mount repo root as read-only
+
+networks:
+  external:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.9.0/24      # Simulated external network
+          gateway: 10.10.9.1
+  internal:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.10.10.0/24     # Management network (mgmt0)
+          gateway: 10.10.10.1

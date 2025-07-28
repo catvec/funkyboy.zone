@@ -12,6 +12,7 @@ roster_defaults:
 file_roots:
   base:
     - salt
+    - ../../secret/lab/rpi-vpn/salt
 
 pillar_roots:
   base:

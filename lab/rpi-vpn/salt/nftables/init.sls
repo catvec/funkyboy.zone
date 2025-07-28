@@ -5,7 +5,7 @@ nftables_pkg:
 
 {{ pillar.nftables.config_file }}:
   file.managed:
-    - source: salt://nftables/nftables.conf
+    - source: salt://nftables-secret/nftables.conf
     - template: jinja
     - check_cmd: nft -c -f
     - require:

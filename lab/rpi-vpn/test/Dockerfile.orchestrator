@@ -1,0 +1,36 @@
+FROM debian:bookworm-slim
+
+# Install dependencies for Salt onedir
+RUN apt-get update && apt-get install -y \
+    bash \
+    curl \
+    python3 \
+    python3-pip \
+    nmap \
+    netcat-openbsd \
+    jq \
+    xz-utils \
+    ssh \
+    iproute2 \
+    iputils-ping
+
+# Install Salt 3006.8 manually via onedir tar
+RUN curl -fsSL "https://packages.broadcom.com/artifactory/saltproject-generic/onedir/3006.8/salt-3006.8-onedir-linux-x86_64.tar.xz" -o salt.tar.xz && \
+    tar -xf salt.tar.xz -C /opt/ && \
+    rm salt.tar.xz
+
+# Update PATH to include Salt binaries
+ENV PATH="/opt/salt/:/opt/salt/bin/:$PATH"
+RUN echo 'export PATH="/opt/salt/:/opt/salt/bin/:$PATH"' >> /etc/profile
+
+# Configure SSH to skip host key verification for testing
+RUN mkdir -p /root/.ssh && \
+    echo "Host *" > /root/.ssh/config && \
+    echo "    StrictHostKeyChecking no" >> /root/.ssh/config && \
+    echo "    UserKnownHostsFile /dev/null" >> /root/.ssh/config
+
+# Create working directory
+WORKDIR /repo
+
+# Wait for other containers to start, then run tests
+CMD ["sh", "-c", "sleep 10 && /repo/lab/rpi-vpn/test/scripts/run-tests.sh"]

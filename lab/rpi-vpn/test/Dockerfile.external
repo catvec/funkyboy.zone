@@ -1,0 +1,12 @@
+FROM debian:bookworm-slim
+
+# Install Python for simple HTTP server
+RUN apt-get update && apt-get install -y \
+    python3 \
+    bash \
+    iproute2 \
+    iputils-ping
+
+
+# Start simple HTTP server for NAT testing
+CMD ["python3", "-m", "http.server", "80"]

@@ -1,0 +1,2 @@
+# This file keeps the results directory in git
+# The directory itself will be ignored but this file ensures the directory exists

@@ -5,3 +5,6 @@ base:
 
     # Security
     - nftables
+
+    # Access
+    - wireguard

@@ -20,11 +20,25 @@ Reserved for future use: 10.0.0.0/24 to 10.9.0.0/24. In each subnet the addresse
 
 Static IP allocations should start from X.X.X.254 and count down.
 
-Devices:
+IP blocks (Start & end are inclusive):
 
-| Name         | Interface              | IP           |
-|--------------|------------------------|--------------|
-| NodeA - IPMI | GigabitEthernet 1/0/11 | 10.10.10.254 |
+- Subnet: `mgmt0`:
+  | Name        | Start        | End          | # Addresses |
+  |-------------|--------------|--------------|-------------|
+  | Reserved    | 10.10.10.0   | 10.10.10.15  | 16          |
+  | ...         | 10.10.10.16  | 10.10.10.207 | 192         |
+  | VPN Clients | 10.10.10.208 | 10.10.10.223 | 16          |
+  | Node IPMI   | 10.10.10.224 | 10.10.10.239 | 16          |
+  | Reserved    | 10.10.10.240 | 10.10.10.255 | 16          |
+
+Static addresses:
+
+- Subnet: `mgmt0`:
+  | Name         | IP           |
+  |--------------|--------------|
+  | RPI VPN (WG) | 10.10.10.208 |
+  | Pascal (WG)  | 10.10.10.209 |
+  | NodeA - IPMI | 10.10.10.224 |
 
 ## SwitchA
 ### Connecting

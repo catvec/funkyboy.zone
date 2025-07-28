@@ -1,0 +1,4 @@
+# Test results and logs
+results/*
+!results/.gitkeep
+*.log
