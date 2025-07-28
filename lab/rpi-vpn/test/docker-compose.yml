@@ -35,7 +35,7 @@ services:
       - rpi-vpn
       - external
     volumes:
-      - ../../..:/repo:ro  # Mount repo root as read-only
+      - ../../..:/repo
 
 networks:
   external:
