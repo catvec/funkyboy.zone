@@ -9,7 +9,7 @@ roster_file: ../../secret/lab/rpi-vpn/conf/roster.yaml
 roster_defaults:
   priv: ./management_key
 
-file_client: local
+salt_env: base
 file_roots:
   base:
     - ${REPO_ROOT}/lab/rpi-vpn/salt
