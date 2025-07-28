@@ -1,13 +1,13 @@
 # -*- mode: yaml -*-
 
 # Root dir: Set to repository root
-root_dir: ../../../../
-pki_dir: secret/lab/rpi-vpn/pki
-log_file: lab/rpi-vpn/salt-run/logs/ssh.log
-cachedir: lab/rpi-vpn/salt-run/cache
-roster_file: ../../secret/lab/rpi-vpn/conf/roster.yaml
+root_dir: ${REPO_ROOT}
+pki_dir: ${REPO_ROOT}/secret/lab/rpi-vpn/pki
+log_file: ${REPO_ROOT}/lab/rpi-vpn/salt-run/logs/ssh.log
+cachedir: ${REPO_ROOT}/lab/rpi-vpn/salt-run/cache
+roster_file: ${REPO_ROOT}/secret/lab/rpi-vpn/conf/roster.yaml
 roster_defaults:
-  priv: ./management_key
+  priv: ${REPO_ROOT}/secret/lab/rpi-vpn/pki/management_key
 
 salt_env: base
 file_roots:

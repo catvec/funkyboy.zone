@@ -1,0 +1,65 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  # Use Debian bookworm to match our Docker setup
+  config.vm.box = "debian/bookworm64"
+  
+  # Disable automatic box update checking
+  config.vm.box_check_update = false
+
+  # RPI-VPN VM (target for Salt configuration)
+  config.vm.define "rpi-vpn" do |vm|
+    vm.vm.hostname = "rpi-vpn"
+    vm.vm.network "private_network", ip: "10.10.10.208"  # RPI VPN IP from LOG.md
+    vm.vm.network "private_network", ip: "10.10.9.10"    # External network (simulates internet)
+
+    # Mount the entire repo (equivalent to Docker volume mount)
+    vm.vm.synced_folder "../../..", "/repo", type: "virtualbox"
+
+    vm.vm.provider "virtualbox" do |vb|
+      vb.name = "salt-test-rpi-vpn"
+      vb.memory = "512"
+      vb.cpus = 1
+    end
+    
+    vm.vm.provision "shell", path: "provision/rpi-vpn.sh"
+  end
+
+  # External server VM (for NAT testing)
+  config.vm.define "external" do |vm|
+    vm.vm.hostname = "external-server"
+    vm.vm.network "private_network", ip: "10.10.9.200"   # External network server
+    
+    vm.vm.provider "virtualbox" do |vb|
+      vb.name = "salt-test-external"
+      vb.memory = "256"
+      vb.cpus = 1
+    end
+    
+    vm.vm.provision "shell", path: "provision/external.sh"
+  end
+
+  # Orchestrator VM (runs Salt SSH and tests)
+  config.vm.define "orchestrator" do |vm|
+    vm.vm.hostname = "salt-orchestrator"
+    vm.vm.network "private_network", ip: "10.10.10.210"  # New IP for orchestrator
+    vm.vm.network "private_network", ip: "10.10.9.100"   # Access to external network
+    
+    vm.vm.provider "virtualbox" do |vb|
+      vb.name = "salt-test-orchestrator"
+      vb.memory = "1024"
+      vb.cpus = 2
+    end
+    
+    # Mount the entire repo (equivalent to Docker volume mount)
+    vm.vm.synced_folder "../../..", "/repo", type: "virtualbox"
+    
+    vm.vm.provision "shell", path: "provision/orchestrator.sh"
+    
+    # Run tests after provisioning
+    vm.vm.provision "shell", 
+      path: "provision/run-tests.sh",
+      run: "always"  # Run tests on every vagrant up
+  end
+end

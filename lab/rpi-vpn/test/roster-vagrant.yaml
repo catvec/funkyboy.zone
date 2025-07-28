@@ -1,0 +1,4 @@
+rpi_vpn:
+  host: 10.10.10.208  # Static IP from Vagrant private network
+  user: vagrant
+  sudo: True
