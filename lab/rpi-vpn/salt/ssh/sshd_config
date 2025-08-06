@@ -118,7 +118,7 @@ PrintMotd no
 AcceptEnv LANG LC_*
 
 # Restrict SSH access to admin user only
-AllowUsers admin
+AllowUsers {{ pillar['users'][pillar['ssh']['allow_ssh_from']]['username'] }}
 
 # override default of no subsystems
 Subsystem	sftp	/usr/lib/openssh/sftp-server

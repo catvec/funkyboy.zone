@@ -3,3 +3,6 @@ users:
   root:
     username: root
     group: root
+  admin:
+    username: admin
+    group: admin
