@@ -15,7 +15,8 @@ Allows access to the internal Kubernetes cluster DNS. Use the following format t
 To get the configuration for a peer read the `status.config` field of a WireguardPeer resource:
 
 ```
-kubectl -n wireguard get wireguardpeer <PEER> --template={{.status.config}} | bash | sed 's/0\.0\.0\.0\/0/10\.0\.0\.0\/8/g' | sed 's/wireguard\.svc\.cluster\.local/infoline\.funkyboy\.zone/g'
+export PEER="<peer>"
+kubectl -n wireguard get wireguardpeer "$PEER" --template={{.status.config}} | bash | sed 's/0\.0\.0\.0\/0/10\.0\.0\.0\/8/g' | sed 's/wireguard\.svc\.cluster\.local/infoline\.funkyboy\.zone/g'
 ```
 
 This will automatically change the configuration file to only send traffic bound for pods in the cluster over Wireguard (ie., split tunnel) and setup a custom DNS lookup.
