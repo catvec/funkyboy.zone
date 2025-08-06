@@ -6,8 +6,10 @@ PROG_DIR=$(dirname $(realpath "$0"))
 TEST_DIR="$PROG_DIR/../tests/"
 RESULTS_DIR="$PROG_DIR/../results"
 SALT_SSH_SCRIPT="/repo/lab/rpi-vpn/scripts/salt-ssh"
-ROSTER_FILE="/repo/secret/lab/rpi-vpn/test/roster-bootstrap.yaml"
+BOOTSTRAP_ROSTER_FILE="/repo/secret/lab/rpi-vpn/test/roster-bootstrap.yaml"
 POST_SETUP_ROSTER_FILE="/repo/secret/lab/rpi-vpn/test/roster.yaml"
+
+ROSTER_FILE="$BOOTSTRAP_ROSTER_FILE"
 
 # Colors for output
 RED='\033[0;31m'
@@ -27,12 +29,14 @@ echo "Generating roster files..."
 TEMP_TEST_DIR=""
 cleanup() {
     echo "Cleaning up temporary files..."
+    set -x
     rm -f /tmp/use-bootstrap-roster /tmp/use-post-setup-roster
-    rm -f "$ROSTER_FILE"
+    rm -f "$BOOTSTRAP_ROSTER_FILE"
     rm -f "$POST_SETUP_ROSTER_FILE"
     if [[ -n "$TEMP_TEST_DIR" && -d "$TEMP_TEST_DIR" ]]; then
         rm -rf "$TEMP_TEST_DIR"
     fi
+    set +x
 }
 trap cleanup EXIT
 
