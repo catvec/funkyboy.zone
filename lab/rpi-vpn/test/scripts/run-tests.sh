@@ -137,7 +137,7 @@ for test_script in "$TEST_DIR"/*.sh; do
         
         # Render the test script using Salt's Jinja templating
         rendered_script="$TEMP_TEST_DIR/${test_name}.sh"
-        if "$SALT_SSH_SCRIPT" --roster-file="$ROSTER_FILE" 'rpi_vpn' slsutil.renderer "$test_script" default_renderer=jinja > "$rendered_script"; then
+        if "$SALT_SSH_SCRIPT" --roster-file="$ROSTER_FILE" 'rpi_vpn' slsutil.renderer "$test_script" default_renderer=jinja | tail -n +2 > "$rendered_script"; then
             chmod +x "$rendered_script"
             
             # Execute the rendered test script
