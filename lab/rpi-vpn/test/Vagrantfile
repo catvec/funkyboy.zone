@@ -1,6 +1,10 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# Load IP configuration from environment file
+require 'dotenv'
+Dotenv.load('vm-config.env')
+
 Vagrant.configure("2") do |config|
   # Use Debian bookworm to match our Docker setup
   config.vm.box = "debian/bookworm64"
@@ -11,8 +15,8 @@ Vagrant.configure("2") do |config|
   # RPI-VPN VM (target for Salt configuration)
   config.vm.define "rpi-vpn" do |vm|
     vm.vm.hostname = "rpi-vpn"
-    vm.vm.network "private_network", ip: "10.10.10.208"  # RPI VPN IP from LOG.md
-    vm.vm.network "private_network", ip: "10.10.9.10"    # External network (simulates internet)
+    vm.vm.network "private_network", ip: ENV['RPI_VPN_PRIVATE_IP']
+    vm.vm.network "private_network", ip: ENV['RPI_VPN_PUBLIC_IP']
 
     # Mount the entire repo (equivalent to Docker volume mount)
     vm.vm.synced_folder "../../..", "/repo", type: "virtualbox"
@@ -29,7 +33,7 @@ Vagrant.configure("2") do |config|
   # External server VM (for NAT testing)
   config.vm.define "external" do |vm|
     vm.vm.hostname = "external-server"
-    vm.vm.network "private_network", ip: "10.10.9.200"   # External network server
+    vm.vm.network "private_network", ip: ENV['EXTERNAL_SERVER_IP']
     
     vm.vm.provider "virtualbox" do |vb|
       vb.name = "salt-test-external"
@@ -43,8 +47,8 @@ Vagrant.configure("2") do |config|
   # Orchestrator VM (runs Salt SSH and tests)
   config.vm.define "orchestrator" do |vm|
     vm.vm.hostname = "salt-orchestrator"
-    vm.vm.network "private_network", ip: "10.10.10.210"  # New IP for orchestrator
-    vm.vm.network "private_network", ip: "10.10.9.100"   # Access to external network
+    vm.vm.network "private_network", ip: ENV['ORCHESTRATOR_PRIVATE_IP']
+    vm.vm.network "private_network", ip: ENV['ORCHESTRATOR_PUBLIC_IP']
     
     vm.vm.provider "virtualbox" do |vb|
       vb.name = "salt-test-orchestrator"
@@ -56,10 +60,5 @@ Vagrant.configure("2") do |config|
     vm.vm.synced_folder "../../..", "/repo", type: "virtualbox"
     
     vm.vm.provision "shell", path: "provision/orchestrator.sh"
-    
-    # Run tests after provisioning
-    vm.vm.provision "shell", 
-      path: "provision/run-tests.sh",
-      run: "always"  # Run tests on every vagrant up
   end
 end

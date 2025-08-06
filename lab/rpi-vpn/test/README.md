@@ -6,25 +6,37 @@ Test Salt states using full VMs with complete kernel support for nftables and ne
 
 - [Vagrant](https://www.vagrantup.com/downloads)
 - [VirtualBox](https://www.virtualbox.org/wiki/Downloads)
+- [Bundler](https://bundler.io/) (for Ruby dependency management)
 
 ## Usage
 
 ```bash
 cd lab/rpi-vpn/test
+
+# Install Ruby dependencies
+bundle install
+
+# Start and provision VMs
 vagrant up
+
+# Run tests manually
+vagrant ssh orchestrator -c "/repo/lab/rpi-vpn/test/scripts/run-tests.sh"
 ```
 
 This will:
 1. Start 3 VMs: rpi-vpn, external, orchestrator
 2. Install Salt SSH on orchestrator
-3. Apply Salt states to rpi-vpn VM
-4. Run validation tests with full kernel support
-5. Show results
+3. Then you manually run the tests which will:
+   - Apply Salt states to rpi-vpn VM
+   - Run validation tests with full kernel support
+   - Show results
 
-## VMs
+## Configuration
 
-- **orchestrator** (10.10.10.210) - Runs Salt SSH and tests
-- **rpi-vpn** (10.10.10.208) - Target for Salt configuration  
+VM IP addresses are configured in `vm-config.env`. Default values:
+
+- **orchestrator** (10.10.10.210 private, 10.10.9.100 public) - Runs Salt SSH and tests
+- **rpi-vpn** (10.10.10.208 private, 10.10.9.10 public) - Target for Salt configuration  
 - **external** (10.10.9.200) - External server for NAT testing
 
 ## Tests
@@ -36,11 +48,14 @@ Results go to `results/test_summary.txt`.
 ## Commands
 
 ```bash
-# Start VMs and run tests
+# Start and provision VMs
 vagrant up
 
-# Re-run tests only
-vagrant provision orchestrator
+# Run tests
+vagrant ssh orchestrator -c "/repo/lab/rpi-vpn/test/scripts/run-tests.sh"
+
+# Re-run tests
+vagrant ssh orchestrator -c "/repo/lab/rpi-vpn/test/scripts/run-tests.sh"
 
 # SSH into a VM
 vagrant ssh rpi-vpn

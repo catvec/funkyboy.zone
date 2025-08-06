@@ -16,8 +16,6 @@ apt-get install -y \
     bash \
     iproute2 \
     iputils-ping \
-    nftables \
-    wireguard \
     systemd
 
 # Create SSH host keys and SSH directory
@@ -33,15 +31,25 @@ echo "salt ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 sed -i 's/#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
 sed -i 's/#PasswordAuthentication.*/PasswordAuthentication yes/' /etc/ssh/sshd_config
 sed -i 's/#Port 22/Port 22/' /etc/ssh/sshd_config
-cat /repo/secret/lab/rpi-vpn/pki/management_key.pub >> /home/vagrant/.ssh/authorized_keys
+# Create admin user with sudo privileges
+useradd -m -s /bin/bash admin || true
+echo "admin:admin" | chpasswd
+echo "admin ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+# Set up SSH for admin user
+mkdir -p /home/admin/.ssh
+chmod 700 /home/admin/.ssh
+chown admin:admin /home/admin/.ssh
+
+# Add management key to admin's authorized_keys
+cat /repo/secret/lab/rpi-vpn/pki/management_key.pub >> /home/admin/.ssh/authorized_keys
+chmod 600 /home/admin/.ssh/authorized_keys
+chown admin:admin /home/admin/.ssh/authorized_keys
+
+echo "Created admin user and added management key"
 
 # Enable and start SSH service
 systemctl enable ssh
 systemctl start ssh
-
-# Enable IP forwarding for WireGuard
-echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf
-echo 'net.ipv6.conf.all.forwarding=1' >> /etc/sysctl.conf
-sysctl -p
 
 echo "RPI-VPN VM provisioned successfully!"

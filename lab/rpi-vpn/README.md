@@ -4,6 +4,7 @@ Raspberry PI VPN.
 # Table Of Contents
 - [Install Instructions](#install-instructions)
 - [Ways to Brick](#ways-to-brick)
+- [Test Suite](#test-suite)
 
 # Install Instructions
 1. Install the [Raspberry Pi Imager tool](https://www.raspberrypi.com/software/)
@@ -57,6 +58,7 @@ Raspberry PI VPN.
      sudo systemctl reload sshd
      ```
      You must run this command whenever a config file change is made. We don't want to run this command automatically in case it bricks our installation remotely.
+ 
 # Ways to Brick
 This is a list of ways you can brick the installation. Usually resulting in needing physical access to the Raspberry Pi. So try not to do these things:
 
@@ -64,3 +66,6 @@ This is a list of ways you can brick the installation. Usually resulting in need
   Since the Raspberry Pi has SSH password authentication disabled the only way to access it is via public key authentication. If you remove your key from the authorized keys file then you cannot log in at all.  
   
   To fix this you need to get the Raspberry Pi SD card, mount it on your computer, and manually add your public key back to the authorized keys file.
+
+# Test Suite
+See [`tests/`](./tests) for a Vagrant simulation of the VPN and some tests.
