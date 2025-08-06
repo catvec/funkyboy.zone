@@ -18,6 +18,30 @@ YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# Options
+FORCE_SALT_APPLY=""
+while getopts "hf" opt; do
+    case "$opt" in
+        h)
+            cat <<EOF
+run-tests.sh - Run salt integration tests
+
+OPTIONS
+
+  -h    Show this help text and exit
+  -f    Force re-apply salt high state even if already set up
+
+EOF
+            exit 0
+            ;;
+        f) FORCE_SALT_APPLY="t" ;;
+        '?')
+            echo "Error: Unknown option" >&2
+            exit 1
+            ;;
+    esac
+done
+
 echo -e "${BLUE}Starting Salt SSH Test Framework${NC}"
 echo "======================================"
 
@@ -29,14 +53,12 @@ echo "Generating roster files..."
 TEMP_TEST_DIR=""
 cleanup() {
     echo "Cleaning up temporary files..."
-    set -x
     rm -f /tmp/use-bootstrap-roster /tmp/use-post-setup-roster
     rm -f "$BOOTSTRAP_ROSTER_FILE"
     rm -f "$POST_SETUP_ROSTER_FILE"
     if [[ -n "$TEMP_TEST_DIR" && -d "$TEMP_TEST_DIR" ]]; then
         rm -rf "$TEMP_TEST_DIR"
     fi
-    set +x
 }
 trap cleanup EXIT
 
@@ -47,6 +69,7 @@ cd /repo/lab/rpi-vpn
 echo -e "${BLUE}Checking VM state...${NC}"
 
 # Try post-setup roster first (VM already configured)
+NEED_SALT_APPLY=""
 echo "Trying post-setup roster (custom port): $POST_SETUP_ROSTER_FILE"
 if timeout 10 "$SALT_SSH_SCRIPT" --roster-file="$POST_SETUP_ROSTER_FILE" 'rpi_vpn' test.ping; then
     echo -e "${GREEN}✓ VM already configured (using custom port)${NC}"
@@ -54,11 +77,20 @@ if timeout 10 "$SALT_SSH_SCRIPT" --roster-file="$POST_SETUP_ROSTER_FILE" 'rpi_vp
 # Try bootstrap roster (VM in initial state)
 elif echo "Trying bootstrap roster (port 22): $ROSTER_FILE" && timeout 10 "$SALT_SSH_SCRIPT" --roster-file="$ROSTER_FILE" 'rpi_vpn' test.ping; then
     echo -e "${YELLOW}VM in initial state (using port 22) - applying configuration${NC}"
-    
+
+    NEED_SALT_APPLY="y"
+    echo -e "${GREEN}✓ Connected with custom SSH port${NC}"
+else
+    echo -e "${RED}✗ Cannot connect to VM${NC}"
+    exit 1
+fi
+
+# Apply salt if needed
+if [[ -n "$NEED_SALT_APPLY" ]] || [[ -n "$FORCE_SALT_APPLY" ]]; then
     echo -e "${BLUE}Applying Salt states to configure VM...${NC}"
     if "$SALT_SSH_SCRIPT" --roster-file="$ROSTER_FILE" 'rpi_vpn' state.apply; then
         echo -e "${GREEN}✓ RPI VPN configured successfully${NC}"
-        
+
         # Restart SSH service to apply new configuration
         echo -e "${BLUE}Restarting SSH service...${NC}"
         if "$SALT_SSH_SCRIPT" --roster-file="$ROSTER_FILE" 'rpi_vpn' cmd.run 'sudo systemctl restart ssh' > /dev/null 2>&1; then
@@ -67,23 +99,20 @@ elif echo "Trying bootstrap roster (port 22): $ROSTER_FILE" && timeout 10 "$SALT
         else
             echo -e "${YELLOW}⚠ Failed to restart SSH service via Salt, continuing...${NC}"
         fi
-        
+
         # Switch to post-setup roster after configuration
         ROSTER_FILE="$POST_SETUP_ROSTER_FILE"
-        
+
         # Verify we can connect with new port
         if ! timeout 10 "$SALT_SSH_SCRIPT" --roster-file="$ROSTER_FILE" 'rpi_vpn' test.ping > /dev/null 2>&1; then
             echo -e "${RED}✗ Failed to connect after configuration${NC}"
             exit 1
         fi
-        echo -e "${GREEN}✓ Connected with custom SSH port${NC}"
+
     else
         echo -e "${RED}✗ RPI VPN configuration failed${NC}"
         exit 1
     fi
-else
-    echo -e "${RED}✗ Cannot connect to VM${NC}"
-    exit 1
 fi
 
 # Run all unit test scripts
