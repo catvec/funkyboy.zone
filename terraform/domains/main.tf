@@ -83,7 +83,7 @@ variable "keybase_verification" {
 variable "spf_email" {
   type = string
   description = "SPF value if email is enabled for a domain."
-  default = "v=spf1 include:_spf.protonmail.ch ~all"
+  default = "v=spf1 include:spf.messagingengine.com ?all"
 }
 
 variable "spf_no_email" {
@@ -103,21 +103,21 @@ variable "mx" {
     "noahh.io": {
       primary = {
         priority = 10
-        value = "mail.protonmail.ch."
+        value = "in1-smtp.messagingengine.com."
       }
       secondary = {
         priority = 20
-        value = "mailsec.protonmail.ch."
+        value = "in2-smtp.messagingengine.com."
       }
     },
     "noahhuppert.com": {
       primary = {
         priority = 10
-        value = "mail.protonmail.ch."
+        value = "in1-smtp.messagingengine.com."
       }
       secondary = {
         priority = 20
-        value = "mailsec.protonmail.ch."
+        value = "in2-smtp.messagingengine.com."
       }
     },
     "goldblum.zone": {},
@@ -137,30 +137,30 @@ variable "dkim" {
     "funkyboy.zone" = {},
     "noahh.io" = {
       primary = {
-        name = "protonmail._domainkey"
-        value = "protonmail.domainkey.dhngagtoz5n6777wkmvw6ll2aqlow4wpnwisycw6oabxgrxih5m6a.domains.proton.ch."
+        name = "fm1._domainkey"
+        value = "fm1.noahh.io.dkim.fmhosted.com."
       }
       secondary = {
-        name = "protonmail2._domainkey"
-        value = "protonmail2.domainkey.dhngagtoz5n6777wkmvw6ll2aqlow4wpnwisycw6oabxgrxih5m6a.domains.proton.ch."
+        name = "fm2._domainkey"
+        value = "fm2.noahh.io.dkim.fmhosted.com."
       }
       tertiary = {
-        name = "protonmail3._domainkey"
-        value = "protonmail3.domainkey.dhngagtoz5n6777wkmvw6ll2aqlow4wpnwisycw6oabxgrxih5m6a.domains.proton.ch."
+        name = "fm3._domainkey"
+        value = "fm3.noahh.io.dkim.fmhosted.com."
       }
     } 
     "noahhuppert.com": {
       primary = {
-        name = "protonmail._domainkey"
-        value = "protonmail.domainkey.d2i3l6setswma5tygpxpd7llkrjpntekxmytca5etovoacggdmrka.domains.proton.ch."
+        name = "fm1._domainkey"
+        value = "fm1.noahhuppert.com.dkim.fmhosted.com."
       }
       secondary = {
-        name = "protonmail2._domainkey"
-        value = "protonmail2.domainkey.d2i3l6setswma5tygpxpd7llkrjpntekxmytca5etovoacggdmrka.domains.proton.ch."
+        name = "fm2._domainkey"
+        value = "fm2.noahhuppert.com.dkim.fmhosted.com."
       }
       tertiary = {
-        name = "protonmail3._domainkey"
-        value = "protonmail3.domainkey.d2i3l6setswma5tygpxpd7llkrjpntekxmytca5etovoacggdmrka.domains.proton.ch."
+        name = "fm3._domainkey"
+        value = "fm3.noahhuppert.com.dkim.fmhosted.com."
       }
     },
     "goldblum.zone": {},
