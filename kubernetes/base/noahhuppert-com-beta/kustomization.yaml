@@ -1,0 +1,53 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: noahhuppert-com-beta
+resources:
+  - ./namespace.yaml
+  - ./../noahhuppert-com/bases/server/
+
+images:
+  - name: noahhuppert/noahhuppert-com
+    newName: isolation0230/noahhuppert-com
+    newTag: 2025-09-27-0
+
+labels:
+  - pairs:
+      project: noahhuppert-com-beta
+    includeSelectors: true
+    includeTemplates: true
+
+patches:
+  - patch: |-
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: noahhuppert-com
+      spec:
+        rules:
+          - host: beta-www.noahh.io
+            http:
+              paths:
+              - path: /
+                pathType: Prefix
+                backend:
+                  service:
+                    name: noahhuppert-com
+                    port:
+                      number: 80
+
+          - host: beta-www.noahhuppert.com
+            http:
+              paths:
+              - path: /
+                pathType: Prefix
+                backend:
+                  service:
+                    name: noahhuppert-com
+                    port:
+                      number: 80
+
+        tls:
+          - hosts:
+              - beta-www.noahh.io
+              - beta-www.noahhuppert.com
+            secretName: noahhuppert-com-beta-ingress-cert
