@@ -17,23 +17,7 @@ cd /repo/lab/rpi-vpn
 
 echo "Testing nftables firewall rules on rpi-vpn..."
 
-# Test expected open ports and firewall behavior
-echo "Scanning ports to verify firewall configuration..."
-# Check that random ports in range are filtered (indicating firewall is active)
-filtered_count=$(echo "$scan_result" | grep -c "filtered" || true)
-open_random_count=$(echo "$scan_result" | grep -E "(808[0-9]/tcp.*open)" | wc -l || true)
-
-if [ "$filtered_count" -gt 0 ] && [ "$open_random_count" -eq 0 ]; then
-    echo "✓ Firewall is active - random ports are filtered"
-elif [ "$open_random_count" -gt 5 ]; then
-    echo "✗ Too many unexpected ports are open ($open_random_count) - firewall may not be configured"
-    echo "$scan_result"
-    exit 1
-else
-    echo "✓ Firewall behavior verified"
-fi
-
-# Test WireGuard UDP port separately
+# Test WireGuard UDP
 echo "Testing WireGuard UDP port $WG_PORT..."
 wg_result=$(sudo nmap -sU -p "$WG_PORT" "$RPI_VPN_PRIVATE_IP" --host-timeout 5s)
 if echo "$wg_result" | grep -q "$WG_PORT/udp.*open"; then

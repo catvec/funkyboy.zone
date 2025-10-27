@@ -48,7 +48,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "orchestrator" do |vm|
     vm.vm.hostname = "salt-orchestrator"
     vm.vm.network "private_network", ip: ENV['ORCHESTRATOR_PRIVATE_IP']
-    vm.vm.network "private_network", ip: ENV['ORCHESTRATOR_PUBLIC_IP']
+    # Removed direct external network access - must use VPN to reach external server
     
     vm.vm.provider "virtualbox" do |vb|
       vb.name = "salt-test-orchestrator"

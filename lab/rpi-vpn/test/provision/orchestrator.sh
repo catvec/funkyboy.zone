@@ -20,7 +20,9 @@ apt-get install -y \
     ssh \
     iproute2 \
     iputils-ping \
-    gettext-base
+    gettext-base \
+    wireguard-tools \
+    iptables-persistent
 
 # Install Salt 3007.6 manually via onedir tar
 echo "Installing Salt 3007.6..."
@@ -39,5 +41,12 @@ Host *
     StrictHostKeyChecking no
     UserKnownHostsFile /dev/null
 EOF
+
+# Block direct access to external server network (force VPN usage)
+# This ensures WireGuard connectivity tests work properly
+echo "Configuring network isolation for VPN testing..."
+iptables -A OUTPUT -d 10.10.9.0/24 ! -o wg+ -j DROP
+# Save iptables rules
+iptables-save > /etc/iptables/rules.v4
 
 echo "Orchestrator VM provisioned successfully!"
