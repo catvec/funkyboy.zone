@@ -202,7 +202,7 @@ class KubectlClient:
 
             return {
                 'missing_namespaces': ns_errs['missing_namespaces'],
-                'output': decode_bytes(out[0]),
+                'diff': decode_bytes(out[0]),
             }
             
         return {
