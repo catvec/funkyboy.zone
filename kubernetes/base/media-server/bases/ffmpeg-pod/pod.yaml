@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ffmpeg
+  labels:
+    project: media-server
+    component: ffmpeg
+spec:
+  priorityClassName: streaming
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: project
+                operator: In
+                values:
+                  - media-server
+              - key: component
+                operator: In
+                values:
+                  - emby
+          topologyKey: kubernetes.io/hostname
+  containers:
+    - name: ffmpeg
+      image: linuxserver/ffmpeg:version-8.0-cli
+      command: [ "/bin/bash", "-c", "sleep infinity" ]
+      env:
+        - name: UID
+          value: "911"
+        - name: GID
+          value: "911"
+      volumeMounts:
+        - mountPath: /media
+          name: media-do-block
+  volumes:
+    - name: media-do-block
+      persistentVolumeClaim:
+        claimName: media-files-do-block
