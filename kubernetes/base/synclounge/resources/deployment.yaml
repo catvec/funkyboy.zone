@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synclounge
+  labels:
+    project: synclounge
+    component: synclounge
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      project: synclounge
+      component: synclounge
+  template:
+    metadata:
+      labels:
+        project: synclounge
+        component: synclounge
+    spec:
+      containers:
+        - name: synclounge
+          image: isolation0230/synclounge:dev-2025-09-11-7
+          ports:
+            - name: http
+              containerPort: 8088
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 500m
+            limits:
+              memory: 1Gi
+              cpu: 1000m
