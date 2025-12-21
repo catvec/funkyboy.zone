@@ -17,6 +17,7 @@ spec:
         project: media-server
         component: sonarr
     spec:
+      priorityClassName: streaming
       affinity:
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

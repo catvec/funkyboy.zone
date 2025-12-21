@@ -17,6 +17,7 @@ spec:
         project: media-server
         component: radarr
     spec:
+      priorityClassName: streaming
       affinity:
         podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

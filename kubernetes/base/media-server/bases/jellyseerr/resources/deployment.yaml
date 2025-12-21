@@ -17,6 +17,7 @@ spec:
         project: media-server
         component: jellyseerr
     spec:
+      priorityClassName: streaming
       containers:
         - name: jellyseerr
           image: fallenbagel/jellyseerr:2.1.0

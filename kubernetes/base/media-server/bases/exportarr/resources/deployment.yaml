@@ -17,6 +17,7 @@ spec:
         project: media-server
         component: exportarr
     spec:
+      priorityClassName: streaming
       containers:
         - name: exportarr
           image: ghcr.io/onedr0p/exportarr:v1.6.1
