@@ -17,17 +17,13 @@ components:
 
   # End User Services
   - path: ./base/media-server/
-  - path: ./base/synclounge/
-  - path: ./base/kimai/
-  - path: ./base/actual-budget/
-  - path: ./base/discord-azure-boot/
+  - path: ./base/discord-azure-boot/ # No longer needed, all game servers are self hosted now
   - path: ./base/noahhuppert-com/
   - path: ./base/noahhuppert-com-beta/
   - path: ./base/funkyboy-zone/
   - path: ./base/goldblum-zone/
   - path: ./base/ham-radio-questions/
   # WIP: - path: ./base/netbox/
-  - path: ./base/gotify/production/
   - path: ./base/factorio/
   - path: ./base/infoline-dashboard/
   #- path: ./base/syncthing
