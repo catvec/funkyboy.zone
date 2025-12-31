@@ -38,9 +38,9 @@ class KustomizeClient:
         """
         if self.__kustomize_cmd_name is None:
             if shutil.which("kustomize") is not None:
-                self.__kustomize_cmd_name = ["kustomize"]
+                self.__kustomize_cmd_name = ["kustomize", "--enable-helm"]
             elif shutil.which("kubectl") is not None:
-                self.__kustomize_cmd_name = ["kubectl", "kustomize"]
+                self.__kustomize_cmd_name = ["kubectl", "kustomize", "--enable-helm"]
             else:
                 raise KustomizeBinNotFound()
 
