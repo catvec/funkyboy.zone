@@ -8,6 +8,9 @@ components:
   # Cluster Adminstrative Tools
   - path: ./base/kubernetes-dashboard
   - path: ./base/wireguard/
+  - path: ./base/headscale/headscale-operator
+  - path: ./base/headscale/headscale-instance
+  - path: ./base/headscale/web-ui
   - path: ./base/coredns/
   - path: ./base/monitoring/
   # - path: ./base/monitoring/resources/kube-prometheus/crds
