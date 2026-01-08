@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-django
+spec:
+  template:
+    spec:
+      containers:
+      - name: app
+        env:
+        - name: GOOGLE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: django-secret
+              key: GOOGLE_API_KEY
+        - name: GOOGLE_SEARCH_ENGINE_ID
+          valueFrom:
+            secretKeyRef:
+              name: django-secret
+              key: GOOGLE_SEARCH_ENGINE_ID
