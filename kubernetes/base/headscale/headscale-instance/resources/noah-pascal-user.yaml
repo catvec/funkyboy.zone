@@ -1,0 +1,17 @@
+apiVersion: headscale.infrado.cloud/v1beta1
+kind: HeadscaleUser
+metadata:
+  name: noah-pascal
+  namespace: headscale
+spec:
+  headscaleRef: headscale
+  username: noah-pascal
+
+  # Optional: Display name for the user
+  displayName: Noah (Pascal)
+
+  # Optional: Email address
+  #email: alice@example.com
+
+  # Optional: Profile picture URL
+  #pictureURL: https://example.com/alice.jpg

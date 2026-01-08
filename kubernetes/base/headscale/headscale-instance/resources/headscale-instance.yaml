@@ -1,0 +1,26 @@
+apiVersion: headscale.infrado.cloud/v1beta1
+kind: Headscale
+metadata:
+  name: headscale
+  namespace: headscale
+spec:
+  version: "v0.27.0"
+  replicas: 1
+  config:
+    server_url: https://headscale.k8s.funkyboy.zone
+    grpc_allow_insecure: false
+    derp:
+      server:
+        enabled: false
+    disable_check_updates: false
+    database:
+      type: sqlite
+    dns:
+      magic_dns: true
+      base_domain: infoline.funkyboy.zone
+  # Automatic API key management (optional)
+  api_key:
+    auto_manage: true        # Automatically create and rotate API keys
+    secret_name: headscale-api-key
+    expiration: "2160h"     # API key expires in 90 days (2160 hours)
+    rotation_buffer: "240h"  # Rotate 10 days (240 hours) before expiration

@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: headscale-server
+  labels:
+    component: headscale-server
+  annotations:
+    cert-manager.io/cluster-issuer: lets-encrypt-production-http01
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: headscale.k8s.funkyboy.zone
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: headscale
+            port:
+              number: 8080
+  tls:
+    - hosts:
+        - headscale.k8s.funkyboy.zone
+      secretName: headscale-server-ingress-cert

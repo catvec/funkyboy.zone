@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: headscale-webui
+  labels:
+    component: webui
+  annotations:
+    cert-manager.io/cluster-issuer: lets-encrypt-production-http01
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: headscale.k8s.funkyboy.zone
+    http:
+      paths:
+      - path: /web
+        pathType: Prefix
+        backend:
+          service:
+            name: headscale-webui
+            port:
+              number: 80
+  tls:
+    - hosts:
+        - headscale.k8s.funkyboy.zone
+      secretName: headscale-webui-ingress-cert
