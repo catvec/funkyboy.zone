@@ -9,4 +9,5 @@ Make a copy of the following `.env` configuration files and fill in your own val
 - `conf/app-secret.example.env`
 
 # Todo
-- CSSF verification failed when I submitted a form....
+- Setup DO space
+- Setup PG backups
