@@ -1,2 +1,3 @@
-conf/django.env
+conf/app-config.env
+conf/app-secret.env
 conf/postgres.env

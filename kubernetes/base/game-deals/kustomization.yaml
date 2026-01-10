@@ -10,16 +10,18 @@ resources:
 
 images:
 - name: ghcr.io/wwpol/game-deals
-  newTag: django-0f09e00
+  newTag: django-9fd7ebd
+
 
 secretGenerator:
 - name: postgres-secret
   envs:
   - conf/postgres.env
-- name: django-secret
+- name: app-secret
   envs:
-  - conf/django.env
+  - conf/app-secret.env
 
-patches:
-- path: patches/app-django.yaml
-- path: patches/app-celery.yaml
+configMapGenerator:
+- name: app-config
+  envs:
+  - conf/app-config.env
