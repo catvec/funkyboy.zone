@@ -4,11 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pyyaml = "*"
-pydantic = "*"
-loguru = "*"
-win32-setctime = "*"
-python-dotenv = "*"
+pyyaml = "~=6.0.3"
+pydantic = "~=2.12.5"
+loguru = "~=0.7.3"
+win32-setctime = "~=1.2.0"
+python-dotenv = "~=1.2.1"
 
 [dev-packages]
 mypy = "*"
