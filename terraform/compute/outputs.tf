@@ -7,3 +7,14 @@ output "kubernetes_cluster_name" {
     description = "Name of Kubernetes cluster"
     value = var.kubernetes_cluster_name
 }
+
+output "game_deals_spaces_access_key" {
+    description = "Access key for game-deals Spaces bucket"
+    value = module.all_cloud.game_deals_spaces_access_key
+}
+
+output "game_deals_spaces_secret_key" {
+    description = "Secret key for game-deals Spaces bucket"
+    value = module.all_cloud.game_deals_spaces_secret_key
+    sensitive = true
+}
