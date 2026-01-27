@@ -2,6 +2,9 @@ from typing import Optional, Dict
 import subprocess
 from dataclasses import dataclass
 import os
+import json
+
+from pydantic import BaseModel, RootModel, Field
 
 from lib.bytes_util import decode_stdout_stderr
 
@@ -47,6 +50,23 @@ class TerraformVarEnvVarMissingError(Exception):
     def __init__(self, tf_var: str, env_var: str) -> None:
         """Initialize."""
         super().__init__(f"Could not find env var '{env_var}' to get value for the '{tf_var}' Terraform variable")
+
+class TerraformOutputError(Exception):
+    """Indicates a error ocurred with the Terraform output commad."""
+
+    def __init__(self, stdout: Optional[str], stderr: Optional[str]):
+        """Initialize."""
+        super().__init__(f"Failed to run Terraform output command, stdout={stdout}, stderr={stderr}")
+
+class TerraformOutputItem(BaseModel):
+    """Information about one Terraform output in JSON format."""
+    sensitive: bool
+    output_type: str = Field(alias="type")
+    value: str
+
+class TerraformOutputs(RootModel):
+    """Collection of Terraform outputs."""
+    root: Dict[str, TerraformOutputItem]
 
 class TerraformClient:
     """Execute terraform commands.
@@ -219,3 +239,60 @@ class TerraformClient:
             )
         
         return stdout
+
+    def output(self, only_output: Optional[str]) -> Dict[str, str]:
+        """Print terraform outputs.
+
+        Args:
+            only_output: If provided only retrieve value for provided output name
+
+        Returns:
+            Mapping of Terraform output names and values.
+
+        Raises:
+            TerraformOutputError
+        """
+        args = [
+            "terraform",
+            f"-chdir={self.directory}",
+            "output",
+            "-state", self.state_file,
+            "-json",
+        ]
+
+        if only_output is not None:
+            args.append(only_output)
+
+        proc = subprocess.Popen(
+            args,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            env={
+                **os.environ,
+                **self._env_vars_for_tf_vars(),
+            },
+        )
+
+        stdout, stderr = decode_stdout_stderr(proc.communicate())
+
+        if proc.returncode != 0:
+            raise TerraformOutputError(
+                stdout=stdout,
+                stderr=stderr,
+            )
+
+        # Parse result
+        if only_output is not None:
+            # Terraform output only returns the specific output value as a string in this mode
+            return {
+                only_output: json.loads(stdout),
+            }
+
+        tf_outputs = TerraformOutputs.model_validate(json.loads(stdout))
+
+        res = {}
+
+        for key, info in tf_outputs.root.items():
+            res[key] = info.value
+
+        return res

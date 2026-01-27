@@ -5,6 +5,7 @@ import os
 
 import pydantic
 from dotenv import load_dotenv
+from tabulate import tabulate
 
 from lib.logging import logging
 from lib.print_diff import print_diff
@@ -19,6 +20,7 @@ DEFAULT_PROJECTS_SPEC = os.path.join(TERRAFORM_PROJECT_DIR, "projects.yaml")
 # Constants
 SUB_CMD_APPLY = "apply"
 SUB_CMD_INIT = "init"
+SUB_CMD_OUTPUT = "output"
 
 class ProjectSpec(pydantic.BaseModel):
     """Specification of project."""
@@ -144,6 +146,32 @@ def apply_init_projects(
 
         os.remove(plan_res.plan_file)
 
+def show_projects_outputs(
+    projects_spec_path: str,
+    only_projects: Optional[List[str]],
+    only_output: Optional[str],
+) -> None:
+    """Show project outputs."""
+    for project_spec in projects_generator(
+        projects_spec_path=projects_spec_path,
+        only_projects=only_projects,
+    ):
+        logging.info("Outputs for '{}'", project_spec.path)
+
+        tf_client = tf_client_for_project(
+            projects_spec_path=projects_spec_path,
+            project_spec=project_spec,
+        )
+
+        tf_outputs = tf_client.output(only_output=only_output).items()
+
+        logging.info("\n{}", tabulate(
+            tf_outputs,
+            headers=['Key', 'Value'],
+            tablefmt='orgtbl',
+        ))
+
+
 def main():
     """Entrypoint."""
     # Parse arguments
@@ -184,18 +212,34 @@ def main():
         action="store_true",
         help="Upgrade providers",
     )
+    output_parser = subcmd_parser.add_parser(
+        SUB_CMD_OUTPUT,
+        help="Print Terraform outputs",
+    )
+    output_parser.add_argument(
+        "only_output",
+        help="Name of specific output to retrieve",
+        nargs="?",
+    )
 
     args = parser.parse_args()
 
     load_dotenv()
 
-    apply_projects(
-        projects_spec_path=args.projects_spec_path,
-        only_projects=args.only_projects,
-        action=args.subcmd,
-        init_upgrade=args.upgrade if args.subcmd == SUB_CMD_INIT else None,
-        verbose=args.verbose,
-    )
+    if args.subcmd in [SUB_CMD_INIT, SUB_CMD_APPLY]:
+        apply_init_projects(
+            projects_spec_path=args.projects_spec_path,
+            only_projects=args.only_projects,
+            action=args.subcmd,
+            init_upgrade=args.upgrade if args.subcmd == SUB_CMD_INIT else None,
+            verbose=args.verbose,
+        )
+    elif args.subcmd == SUB_CMD_OUTPUT:
+        show_projects_outputs(
+            projects_spec_path=args.projects_spec_path,
+            only_projects=args.only_projects,
+            only_output=args.only_output,
+        )
 
 if __name__ == '__main__':
     main()

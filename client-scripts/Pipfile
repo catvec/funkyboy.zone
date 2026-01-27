@@ -9,6 +9,7 @@ pydantic = "~=2.12.5"
 loguru = "~=0.7.3"
 win32-setctime = "~=1.2.0"
 python-dotenv = "~=1.2.1"
+tabulate = "~=0.9.0"
 
 [dev-packages]
 mypy = "*"
