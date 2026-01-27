@@ -39,15 +39,16 @@ class DiffConfirmFail(Exception):
     
     def __init__(self) -> None:
         super().__init__("Did not confirm diff, exiting...")
-        
-def apply_projects(
+
+def normalize_path(parent_dir: str, path: str) -> str:
+    """Given a project path transform it to be the same format every time, relative to a parent directory."""
+    return os.path.normpath(os.path.join(parent_dir, path))
+
+def projects_generator(
     projects_spec_path: str,
     only_projects: Optional[List[str]],
-    action: Optional[Union[Literal[SUB_CMD_APPLY], Literal[SUB_CMD_INIT]]]=None,
-    init_upgrade: Optional[bool]=None,
-    verbose: Optional[bool]=None
 ) -> None:
-    """Apply Terraform projects."""
+    """Given project specs generate a list of project specs."""
     # Load projects spec
     logging.info("Loading projects specification {}", projects_spec_path)
     projects_list_spec = ProjectsListSpec.from_yaml_file(projects_spec_path)
@@ -55,30 +56,55 @@ def apply_projects(
 
     projects_spec_dir = os.path.dirname(os.path.realpath(projects_spec_path))
 
-    def normalize_path(path: str) -> str:
-        return os.path.normpath(os.path.join(projects_spec_dir, path))
-    
     only_projects_normalized = [
         os.path.normpath(os.path.join(os.getcwd(), path))
         for path in only_projects
     ] if only_projects is not None else None
 
     for project_spec in projects_list_spec.projects:
-        if only_projects_normalized is not None and normalize_path(project_spec.path) not in only_projects_normalized:
+        project_spec_norm_path = normalize_path(projects_spec_dir, project_spec.path)
+        if only_projects_normalized is not None and project_spec_norm_path not in only_projects_normalized:
             logging.debug("Skipping project '{}'", project_spec.path)
             continue
 
+        yield project_spec
+
+def tf_client_for_project(projects_spec_path: str, project_spec: ProjectSpec) -> TerraformClient:
+    """Given a project spec create a terraform client for it."""
+    projects_spec_dir = os.path.dirname(os.path.realpath(projects_spec_path))
+
+    return TerraformClient(
+        directory=normalize_path(projects_spec_dir, project_spec.path),
+        state_file=normalize_path(projects_spec_dir,project_spec.state_file),
+        tf_vars_from_env={
+            "do_token": "DO_API_TOKEN",
+            "spaces_access_id": "SPACES_ACCESS_ID",
+            "spaces_secret_key": "SPACES_SECRET_KEY",
+        },
+    )
+
+def apply_init_projects(
+    projects_spec_path: str,
+    only_projects: Optional[List[str]],
+    action: Optional[Union[Literal[SUB_CMD_APPLY], Literal[SUB_CMD_INIT]]]=None,
+    init_upgrade: Optional[bool]=None,
+    verbose: Optional[bool]=None
+) -> None:
+    """Apply Terraform projects."""
+    projects_spec_dir = os.path.dirname(os.path.realpath(projects_spec_path))
+
+    for project_spec in projects_generator(
+        projects_spec_path=projects_spec_path,
+        only_projects=only_projects,
+    ):
         logging.info("Processing project project '{}'", project_spec.path)
-        tf_client = TerraformClient(
-            directory=normalize_path(project_spec.path),
-            state_file=normalize_path(project_spec.state_file),
-            tf_vars_from_env={
-                "do_token": "DO_API_TOKEN",
-            },
+        tf_client = tf_client_for_project(
+            projects_spec_path=projects_spec_path,
+            project_spec=project_spec,
         )
 
         # Check initialized
-        dot_tf_dir = normalize_path(os.path.join(project_spec.path, "./.terraform"))
+        dot_tf_dir = normalize_path(projects_spec_dir, os.path.join(project_spec.path, "./.terraform"))
         if action == SUB_CMD_INIT or not os.path.exists(dot_tf_dir):
             logging.debug("'{}' directory did not exist", dot_tf_dir)
 
