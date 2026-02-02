@@ -49,6 +49,7 @@ locals {
     "noahh.io" = {
       "@": local.k8s_record,
       "www": local.k8s_record,
+      "qr": local.k8s_record,
       "*": local.k8s_record,
     },
     "noahhuppert.com" = {
