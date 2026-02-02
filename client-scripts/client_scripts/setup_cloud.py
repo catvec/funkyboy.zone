@@ -226,15 +226,17 @@ def main():
 
     load_dotenv()
 
-    if args.subcmd in [SUB_CMD_INIT, SUB_CMD_APPLY]:
+    subcmd = args.subcmd or SUB_CMD_APPLY
+
+    if subcmd in [SUB_CMD_INIT, SUB_CMD_APPLY]:
         apply_init_projects(
             projects_spec_path=args.projects_spec_path,
             only_projects=args.only_projects,
-            action=args.subcmd,
-            init_upgrade=args.upgrade if args.subcmd == SUB_CMD_INIT else None,
+            action=subcmd,
+            init_upgrade=args.upgrade if subcmd == SUB_CMD_INIT else None,
             verbose=args.verbose,
         )
-    elif args.subcmd == SUB_CMD_OUTPUT:
+    elif subcmd == SUB_CMD_OUTPUT:
         show_projects_outputs(
             projects_spec_path=args.projects_spec_path,
             only_projects=args.only_projects,
