@@ -10,7 +10,7 @@ resources:
 
 images:
 - name: ghcr.io/wwpol/game-deals
-  newTag: django-6c0abc1
+  newTag: django-60d2fde
 
 
 secretGenerator:
