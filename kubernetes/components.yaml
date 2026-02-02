@@ -31,3 +31,4 @@ components:
   - path: ./base/infoline-dashboard/
   #- path: ./base/syncthing
   - path: ./base/game-deals/
+  - path: ./base/qr-code-landing-page/

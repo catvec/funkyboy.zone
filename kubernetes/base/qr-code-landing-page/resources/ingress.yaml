@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: qr-code-landing-page
+  annotations:
+    cert-manager.io/cluster-issuer: lets-encrypt-production-http01
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: qr.noahh.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: app-django
+                port:
+                  name: http
+
+  tls:
+    - hosts:
+        - qr.noahh.io
+      secretName: qr-noahh-io-ingress-cert

@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: qr-code-landing-page
+
+resources:
+  - resources/namespace.yaml
+  - https://git.sr.ht/~catvec/qr-code-landing-page//deployment/base?ref=194c04829b6b1155dfef306a08ec5a1aba4b20ac
+  - resources/ingress.yaml
+
+images:
+- name: docker.io/isolation0230/qr-code-landing-page
+  newTag: "f4afb06"
+
+secretGenerator:
+- name: postgres-secret
+  envs:
+  - conf/postgres.env
+- name: app-secret
+  envs:
+  - conf/app-secret.env
+
+configMapGenerator:
+- name: app-config
+  envs:
+  - conf/app-config.env
