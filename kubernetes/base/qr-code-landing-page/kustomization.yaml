@@ -10,7 +10,7 @@ resources:
 
 images:
 - name: docker.io/isolation0230/qr-code-landing-page
-  newTag: "f4afb06"
+  newTag: "1929492"
 
 secretGenerator:
 - name: postgres-secret
