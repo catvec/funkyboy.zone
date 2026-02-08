@@ -5,12 +5,12 @@ namespace: game-deals
 
 resources:
   - resources/namespace.yaml
-  - https://github.com/WWPOL/Game-Deals.git//deployment/base?ref=django
+  - https://github.com/WWPOL/Game-Deals.git//deployment/base?ref=54f2a10b48e058ae57e931da92fd609d3dd72785
   - resources/ingress.yaml
 
 images:
 - name: ghcr.io/wwpol/game-deals
-  newTag: django-60d2fde
+  newTag: django-386b297
 
 
 secretGenerator:
